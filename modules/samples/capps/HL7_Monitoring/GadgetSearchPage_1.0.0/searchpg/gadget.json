@@ -1,0 +1,20 @@
+{
+  "id": "searchpg",
+  "title": "Search Page",
+  "type": "gadget",
+  "category": "Gadgets",
+  "thumbnail": "store://gadget/searchpg/index.png",
+  "data": {
+    "url": "store://gadget/searchpg/index.xml"
+  },
+  "styles": {
+    "borders": false,
+    "title": false
+  },
+  "toolbarButtons":{
+    "default":{
+        "maximize": false,
+        "configurations": false
+    }
+  }
+}

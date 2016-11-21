@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="ddm" description="g1" height="250">
+        <Require feature="pubsub-2"/>
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+
+          <!-- Custom Theme -->
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+          <link rel="stylesheet" type="text/css" href="../common/css/gadget.css" />
+
+          <!-- jQuery -->
+          <script src="../common/js/jquery-1.10.2.js"></script>
+
+          <!-- Include Date Range Picker -->
+          <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+          <link rel="stylesheet" type="text/css" href="css/dropdownmenu.css" />
+          <script type="text/javascript" src="js/moment.min.js"></script>
+
+          <!-- Custom -->
+          <script src="../common/js/gadget-utils.js"></script>
+          <script src="js/main.js"></script>
+
+        </head>
+        <body class="widget">
+
+<div class="clearfix" id="dropdown-menu">
+<div>
+
+            <script src="/portal/libs/bootstrap_3.3.5/js/bootstrap.min.js"></script>
+
+        </body>
+        ]]>
+    </Content>
+</Module>

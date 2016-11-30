@@ -4,7 +4,7 @@ var href = parent.window.location.href,
     parentWindow = window.parent.document,
     gadgetWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.grid-stack-item');
 
-var     page=gadgetUtil.getCurrentPageName();
+var page=gadgetUtil.getCurrentPageName();
 var TOPIC = "range-selected";
 $(function() {
     var dateLabel = $('#reportrange'),
@@ -65,15 +65,7 @@ $(function() {
               gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
               gadgetUtil.updateURLParam("msgType", message.msgType.toString());
           }
-          else if(page == TYPE_SEARCH){
-              message = {
-                  timeFrom: new Date(start).getTime(),
-                  timeTo: new Date(end).getTime(),
-                  timeUnit: "Custom"
-              };
-              gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-              gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-          }
+
 
         gadgets.Hub.publish(TOPIC, message);
         }
@@ -155,17 +147,6 @@ $(function() {
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page ==TYPE_SEARCH){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'hour')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      timeUnit: "Hour"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-
                 }
                 break;
             case 'LastDay':
@@ -191,7 +172,6 @@ $(function() {
                       timeUnit: "Day"
 
                   };
-
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
@@ -203,21 +183,9 @@ $(function() {
                       timeUnit: "Day"
 
                   };
-
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page ==TYPE_SEARCH){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'day')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      timeUnit: "Day"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-
                 }
                 break;
             case 'LastMonth':
@@ -242,7 +210,6 @@ $(function() {
                       timeUnit: "Month"
 
                   };
-
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
@@ -258,17 +225,6 @@ $(function() {
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page ==TYPE_SEARCH){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'month')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      timeUnit: "Month"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-
                 }
                 break;
             case 'LastYear':
@@ -293,7 +249,6 @@ $(function() {
                       timeUnit: "Year"
 
                   };
-
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
@@ -305,23 +260,10 @@ $(function() {
                       timeUnit: "Year"
 
                   };
-
                                   gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
                                   gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                                   gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page ==TYPE_SEARCH){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'year')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      timeUnit: "Year"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-
                 }
-
                 break;
             default:
                 return;

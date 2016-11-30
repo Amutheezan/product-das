@@ -203,5 +203,5 @@
     GROUP BY year, month) temp;
 
 </Script>
-    <CronExpression>0 0/3 * * * ?</CronExpression>
+    <CronExpression>0 * * * * ?</CronExpression>
 </Analytics>

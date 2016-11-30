@@ -15,6 +15,11 @@ var selectedData="";
 var oTable;
 var DEFAULT_MAX_ROWS=1000;
 var maxRows;
+
+window.onload=function(){
+  gadgetUtil.updateURLParam("timeFrom", new Date(moment().subtract(29, 'days')).getTime());
+  gadgetUtil.updateURLParam("timeTo", new Date(moment()).getTime());
+}
 $(function() {
     type=TYPE_SEARCH_CODE;
     $("#tables").hide();

@@ -5,7 +5,7 @@
     <Script>
         CREATE TEMPORARY TABLE hl7msg USING CarbonAnalytics
         OPTIONS(tableName "das_hl7_data_publisher_store",
-        incrementalParams "hl7messagePerMinute, HOUR");
+        incrementalParams "hl7msg, MINUTE");
 
         CREATE TEMPORARY TABLE hl7messagePerMinute USING CarbonAnalytics
         OPTIONS (tableName "das_hl7_data_publisher_store_perMinute",

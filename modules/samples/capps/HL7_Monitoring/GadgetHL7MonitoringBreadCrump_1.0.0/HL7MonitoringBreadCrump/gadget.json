@@ -11,10 +11,10 @@
     "borders": false,
     "title": false
   },
-  "toolbarButtons":{
-    "default":{
-        "maximize": false,
-        "configurations": false
+  "toolbarButtons": {
+    "default": {
+      "maximize": false,
+      "configurations": false
     }
   }
 }

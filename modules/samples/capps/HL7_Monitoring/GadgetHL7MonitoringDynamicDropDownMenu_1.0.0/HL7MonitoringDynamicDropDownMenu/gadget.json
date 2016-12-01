@@ -17,10 +17,10 @@
       "description": "This notifies selected state"
     }
   },
-  "toolbarButtons":{
-    "default":{
-        "maximize": false,
-        "configurations": false
+  "toolbarButtons": {
+    "default": {
+      "maximize": false,
+      "configurations": false
     }
   }
 }

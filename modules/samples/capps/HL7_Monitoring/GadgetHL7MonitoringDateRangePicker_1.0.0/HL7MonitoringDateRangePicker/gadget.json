@@ -18,15 +18,15 @@
     }
   },
   "listen": {
-        "chart-zoomed": {
-            "type": "date-range",
-            "description": "This notifies message generated in publisher"
-        }
+    "chart-zoomed": {
+      "type": "date-range",
+      "description": "This notifies message generated in publisher"
+    }
   },
-  "toolbarButtons":{
-    "default":{
-        "maximize": false,
-        "configurations": false
+  "toolbarButtons": {
+    "default": {
+      "maximize": false,
+      "configurations": false
     }
   }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     <ModulePrefs title="Subscriber" description="Subscriber">
-      <Require feature="pubsub-2"/>
-      <Require feature="dynamic-height"/>
-  </ModulePrefs>
-      <Content type="html">
+        <Require feature="pubsub-2"/>
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html">
         <![CDATA[
         <head>
 

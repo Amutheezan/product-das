@@ -17,13 +17,13 @@
 */
 package org.wso2.das.integration.common.clients;
 
-import java.rmi.RemoteException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.event.receiver.stub.EventReceiverAdminServiceStub;
 import org.wso2.carbon.event.receiver.stub.types.EventReceiverConfigurationDto;
+
+import java.rmi.RemoteException;
 
 /**
  * This class represents a client to do event receiver artifact related actions.
@@ -31,11 +31,11 @@ import org.wso2.carbon.event.receiver.stub.types.EventReceiverConfigurationDto;
 public class EventReceiverClient {
 
     private static final Log log = LogFactory.getLog(EventReceiverClient.class);
-    
+
     private static final String serviceName = "EventReceiverAdminService";
-    
+
     private EventReceiverAdminServiceStub eventReceiverStub;
-        
+
     public EventReceiverClient(String backEndUrl, String sessionCookie) throws AxisFault {
         try {
             this.eventReceiverStub = new EventReceiverAdminServiceStub(backEndUrl + serviceName);
@@ -46,17 +46,17 @@ public class EventReceiverClient {
             throw new AxisFault(msg, e);
         }
     }
-    
+
     public EventReceiverConfigurationDto getActiveEventReceiver(String name) throws RemoteException {
         return this.eventReceiverStub.getActiveEventReceiverConfiguration(name);
     }
-    
+
     public void undeployEventReceiver(String name) throws RemoteException {
         try {
             this.eventReceiverStub.undeployActiveEventReceiverConfiguration(name);
         } catch (Exception ignore) { /* ignore */ }
     }
-    
+
     public boolean addOrUpdateEventReceiver(String name, String content) throws RemoteException {
         try {
             return this.eventReceiverStub.deployEventReceiverConfiguration(content);
@@ -65,5 +65,5 @@ public class EventReceiverClient {
             return this.eventReceiverStub.deployEventReceiverConfiguration(content);
         }
     }
-    
+
 }

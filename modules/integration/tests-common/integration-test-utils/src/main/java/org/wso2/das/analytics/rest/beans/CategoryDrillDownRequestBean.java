@@ -44,39 +44,39 @@ public class CategoryDrillDownRequestBean {
         return tableName;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public String getScoreFunction() {
-        return scoreFunction;
-    }
-
-    public String[] getCategoryPath() {
-        return categoryPath;
-    }
-
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    public void setCategoryPath(String[] categoryPath) {
-        this.categoryPath = categoryPath;
+    public String getQuery() {
+        return query;
     }
 
     public void setQuery(String query) {
         this.query = query;
     }
 
+    public String getScoreFunction() {
+        return scoreFunction;
+    }
+
     public void setScoreFunction(String scoreFunction) {
         this.scoreFunction = scoreFunction;
+    }
+
+    public String[] getCategoryPath() {
+        return categoryPath;
+    }
+
+    public void setCategoryPath(String[] categoryPath) {
+        this.categoryPath = categoryPath;
     }
 }

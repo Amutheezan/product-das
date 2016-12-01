@@ -40,12 +40,12 @@ import java.util.*;
 
 public class AnalyticsAPITenantTestCase extends DASIntegrationTest {
     private static final Log log = LogFactory.getLog(AnalyticsAPITenantTestCase.class);
-    private AnalyticsDataAPI analyticsDataAPI;
     private static final String CREATE_TABLE_NAME = "LogApiTable";
     private static final String DELETE_TABLE_NAME = "LogApiDeleteTable";
     private static final String LOG_FIELD = "log";
     private static final String IP_FIELD = "ip";
     private static final String LOG_TIMESTAMP = "logTimeStamp";
+    private AnalyticsDataAPI analyticsDataAPI;
     private List<String> recordIds;
 
     @BeforeClass(groups = {"wso2.das"}, alwaysRun = true)

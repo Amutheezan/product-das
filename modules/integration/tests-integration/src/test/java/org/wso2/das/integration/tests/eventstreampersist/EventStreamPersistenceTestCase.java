@@ -27,15 +27,8 @@ import org.wso2.carbon.analytics.api.CarbonAnalyticsAPI;
 import org.wso2.carbon.analytics.datasource.core.util.GenericUtils;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTable;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTableRecord;
-import org.wso2.carbon.analytics.webservice.stub.beans.RecordBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.RecordValueEntryBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefAttributeBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefinitionBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.ValuesBatchBean;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-import org.wso2.carbon.automation.test.utils.common.FileManager;
+import org.wso2.carbon.analytics.webservice.stub.beans.*;
 import org.wso2.carbon.databridge.commons.Event;
-import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.das.integration.common.clients.AnalyticsWebServiceClient;
 import org.wso2.das.integration.common.clients.DataPublisherClient;
@@ -45,7 +38,6 @@ import org.wso2.das.integration.common.utils.DASIntegrationTest;
 import org.wso2.das.integration.common.utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 /**
@@ -53,16 +45,16 @@ import java.util.concurrent.Callable;
  */
 public class EventStreamPersistenceTestCase extends DASIntegrationTest {
 
-    private EventStreamPersistenceClient persistenceClient;
-    private DataPublisherClient dataPublisherClient;
-    private AnalyticsWebServiceClient webServiceClient;
-    private EventReceiverClient eventReceiverClient;
-    AnalyticsDataAPI analyticsDataAPI;
     private static final String TABLE1 = "integration.test.event.persist.table1";
     private static final String TABLE2 = "integration.test.event.persist.table2";
     private static final String TABLE3 = "integration.test.event.persist.table3";
     private static final String STREAM_VERSION_1 = "1.0.0";
     private static final String STREAM_VERSION_2 = "2.0.0";
+    AnalyticsDataAPI analyticsDataAPI;
+    private EventStreamPersistenceClient persistenceClient;
+    private DataPublisherClient dataPublisherClient;
+    private AnalyticsWebServiceClient webServiceClient;
+    private EventReceiverClient eventReceiverClient;
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
@@ -72,14 +64,14 @@ public class EventStreamPersistenceTestCase extends DASIntegrationTest {
         this.webServiceClient = new AnalyticsWebServiceClient(this.backendURL, session);
         this.dataPublisherClient = new DataPublisherClient();
         this.eventReceiverClient = new EventReceiverClient(this.backendURL, session);
-        String apiConf = new File(this.getClass().getClassLoader().getResource("dasconfig" + File.separator + 
+        String apiConf = new File(this.getClass().getClassLoader().getResource("dasconfig" + File.separator +
                 "api" + File.separator + "analytics-data-config.xml").toURI()).getAbsolutePath();
         this.analyticsDataAPI = new CarbonAnalyticsAPI(apiConf);
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, "integration_test_event_persist_table1");
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, "integration_test_event_persist_table2");
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, "integration_test_event_persist_table3");
     }
-    
+
     @AfterClass(alwaysRun = true)
     public void cleanup() throws Exception {
         this.dataPublisherClient.shutdown();
@@ -166,18 +158,18 @@ public class EventStreamPersistenceTestCase extends DASIntegrationTest {
         RecordBean[] records = webServiceClient.getByRange(GenericUtils.streamToTableName(TABLE1), 0, Long.MAX_VALUE, 0, 100);
         Assert.assertTrue(checkFieldExistingInRecord(records[0], "Name"), "Name field is not existing in the records");
         AnalyticsTable table = getAnalyticsTable1Version1();
-        
+
         table.getAnalyticsTableRecords()[0].setPrimaryKey(true);
         table.getAnalyticsTableRecords()[1].setPersist(false);
         persistenceClient.addAnalyticsTable(table);
-        Utils.checkAndWaitForStreamAndPersistColumn(this.webServiceClient, this.persistenceClient, TABLE1, STREAM_VERSION_1, 
+        Utils.checkAndWaitForStreamAndPersistColumn(this.webServiceClient, this.persistenceClient, TABLE1, STREAM_VERSION_1,
                 table.getAnalyticsTableRecords()[1].getColumnName(), false);
         publishEventTable1(3, "Test Event 3");
         Utils.checkAndWaitForTableSize(this.webServiceClient, GenericUtils.streamToTableName(TABLE1), 3);
-        
+
         table.getAnalyticsTableRecords()[1].setPersist(true);
         persistenceClient.addAnalyticsTable(table);
-        Utils.checkAndWaitForStreamAndPersistColumn(this.webServiceClient, this.persistenceClient, TABLE1, STREAM_VERSION_1, 
+        Utils.checkAndWaitForStreamAndPersistColumn(this.webServiceClient, this.persistenceClient, TABLE1, STREAM_VERSION_1,
                 table.getAnalyticsTableRecords()[1].getColumnName(), true);
         publishEventTable1(4, "Test Event 4");
         Utils.checkAndWaitForTableSize(this.webServiceClient, GenericUtils.streamToTableName(TABLE1), 4);
@@ -281,9 +273,9 @@ public class EventStreamPersistenceTestCase extends DASIntegrationTest {
     private void deployEventReceivers() throws Exception {
         /* the following are blocking calls */
         boolean status = this.eventReceiverClient.addOrUpdateEventReceiver("test_table_1", getResourceContent(
-                EventStreamPersistenceTestCase.class, "eventstreampersist" + File.separator +  "test_table_1.xml"));
+                EventStreamPersistenceTestCase.class, "eventstreampersist" + File.separator + "test_table_1.xml"));
         status &= this.eventReceiverClient.addOrUpdateEventReceiver("table3", getResourceContent(
-                EventStreamPersistenceTestCase.class, "eventstreampersist" + File.separator +  "table3.xml"));
+                EventStreamPersistenceTestCase.class, "eventstreampersist" + File.separator + "table3.xml"));
         Assert.assertTrue(status);
     }
 
@@ -622,5 +614,5 @@ public class EventStreamPersistenceTestCase extends DASIntegrationTest {
         dataPublisherClient = new DataPublisherClient();
         this.dataPublisherClient.publish(TABLE3, STREAM_VERSION_1, event);
     }
-    
+
 }

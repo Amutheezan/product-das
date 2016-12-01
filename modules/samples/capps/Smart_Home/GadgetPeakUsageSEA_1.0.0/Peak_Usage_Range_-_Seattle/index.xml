@@ -5,7 +5,7 @@
         <Require feature="dynamic-height"/>
         <Require feature="setprefs"/>
     </ModulePrefs>
-    <UserPref name="role" display_name="Gadet Role" required="true" />
+    <UserPref name="role" display_name="Gadet Role" required="true"/>
     <Content type="html">
         <![CDATA[
         <head>

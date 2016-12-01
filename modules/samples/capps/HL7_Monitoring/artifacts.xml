@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <artifacts>
     <artifact name="HL7_Monitoring" version="1.0.0" type="carbon/application">
-        <dependency artifact="Eventstream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="Eventstore" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Eventreceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+
+        <dependency artifact="EventstreamHL7InputStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventstreamDiseaseOutputStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventstreamWaitTimeOutputStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+
+        <dependency artifact="EventpublisherDiseaseAlert" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventpublisherWaitingTimeAlert" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+
+
+
+        <dependency artifact="Eventstore" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringCommon" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringDynamicDropDownMenu" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringBreadCrump" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetHL7MonitoringSearchPage" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+
+        <dependency artifact="GadgetHL7MonitoringCommon" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringDateRangePicker" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringDynamicDropDownMenu" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringBreadCrump" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringLineChart" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringSearchPage" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
+
         <dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="DataPurging" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>

@@ -61,7 +61,7 @@ $(function() {
             { "className":'details-group', title :"Message Direction", data: "message_direction" },
             {"className":'details-group',  title: "Date and Time",data: "timestamp",
              "render": function (data) {
-                      return new Date(data);;
+                      return new Date(data);
               }
             },
             {
@@ -320,11 +320,7 @@ $(function() {
         }
         maxRows=value=$('#length').val();
         type = TYPE_SEARCH_CODE;
-        if(typeof maxRows === "undefined" ){
-          maxRows=DEFAULT_MAX_ROWS;
-        }else if(maxRows === null ){
-            maxRows=DEFAULT_MAX_ROWS;
-        }else if(maxRows === "" ){
+        if(isNull(maxRows)){
           maxRows=DEFAULT_MAX_ROWS;
         }
         oTable.clear().draw();

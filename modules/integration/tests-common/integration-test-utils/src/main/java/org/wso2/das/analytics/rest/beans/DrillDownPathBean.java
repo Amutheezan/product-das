@@ -27,16 +27,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * This class represents a facet object bean. facet object defines the hierarchical fieldName,
  * which can be drilled down. This can be used as a value in a record.
  * Example :
- *   Assume a record represents a book.
- *      Then the record field : value pairs will be, e.g.
- *          Price : $50.00
- *          Author : firstName LastName
- *          ISBN : 234325435445435436
- *          Published Date : "1987" , "March", "21"
- *
+ * Assume a record represents a book.
+ * Then the record field : value pairs will be, e.g.
+ * Price : $50.00
+ * Author : firstName LastName
+ * ISBN : 234325435445435436
+ * Published Date : "1987" , "March", "21"
+ * <p>
  * Here Publish Date will be a facet/categoryPath, since it can be drilled down to Year, then month and date
  * and categorizes by each level.
- *
  */
 @XmlRootElement(name = "categoryPath")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +44,7 @@ public class DrillDownPathBean {
     @XmlElement(name = "path")
     private String[] path;
     @XmlElement(name = "fieldName")
-    private  String fieldName;
+    private String fieldName;
 
     /**
      * This constructor is for jax-rs json serialization/deserialization
@@ -58,12 +57,12 @@ public class DrillDownPathBean {
         return path;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
     public void setPath(String[] path) {
         this.path = path;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public void setFieldName(String fieldName) {

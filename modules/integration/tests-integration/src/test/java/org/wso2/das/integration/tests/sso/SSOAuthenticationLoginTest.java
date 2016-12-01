@@ -39,7 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SSOAuthenticationLoginTest extends DASIntegrationTest {
-    private AuthenticatorClient authClient;
     private static final String SSO = "sso";
     private static final String POST = "POST";
     private static final String SAML_REQUEST = "SAMLRequest";
@@ -48,8 +47,10 @@ public class SSOAuthenticationLoginTest extends DASIntegrationTest {
     private static final String INPUT = "input";
     private static final String SIGNATURE = "ds:Signature";
     private static final String UTF_8 = "utf-8";
+    private AuthenticatorClient authClient;
 
-    @Test(groups = "wso2.das", description = "Login to server with SSO - RequestSigning Enable") public void testSSOLoginAuthRequest()
+    @Test(groups = "wso2.das", description = "Login to server with SSO - RequestSigning Enable")
+    public void testSSOLoginAuthRequest()
             throws Exception {
         registerPortalApplication();
         setLoginMethod(SSO);

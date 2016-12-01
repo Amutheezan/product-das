@@ -90,23 +90,23 @@ public class DAS395SearchPaginationInHAClusterTestCase extends DASIntegrationTes
         List<Event> events = new ArrayList<>(100);
         for (int i = 0; i < 100; i++) {
             Event event = new Event(null, System.currentTimeMillis(),
-                                    new Object[0], new Object[0], new Object[]{(long) i, String.valueOf(i)});
+                    new Object[0], new Object[0], new Object[]{(long) i, String.valueOf(i)});
             events.add(event);
         }
         publishEvents(events);
         Thread.sleep(5000);
         for (int i = 0; i < 4; i++) {
-            RecordBean[] search = webServiceClient.search(TABLE1.replace('.', '_'), "*:*", i*25, 25);
+            RecordBean[] search = webServiceClient.search(TABLE1.replace('.', '_'), "*:*", i * 25, 25);
             Assert.assertEquals(search.length, 25, "Pagination result count is wrong");
             Assert.assertNotNull(search, "Returning null array");
         }
 
         Assert.assertEquals(webServiceClient.searchCount(TABLE1.replace('.', '_'), "*:*"), 100, "Search count is " +
-                                                                                                 "wrong");
+                "wrong");
         webServiceClient.clearIndices(TABLE1.replace('.', '_'));
         Thread.sleep(5000);
         Assert.assertEquals(webServiceClient.searchCount(TABLE1.replace('.', '_'), "*:*"), 0, "Clear indexing not " +
-                                                                                                 "happening");
+                "happening");
     }
 
     private StreamDefinitionBean getEventStreamBeanTable1Version1() {
@@ -170,7 +170,7 @@ public class DAS395SearchPaginationInHAClusterTestCase extends DASIntegrationTes
     private void deployEventReceivers() throws IOException {
         String streamResourceDir = FrameworkPathUtil.getSystemResourceLocation() + "webservice" + File.separator;
         String streamsLocation = FrameworkPathUtil.getCarbonHome() + File.separator + "repository"
-                                 + File.separator + "deployment" + File.separator + "server" + File.separator + "eventreceivers" + File.separator;
+                + File.separator + "deployment" + File.separator + "server" + File.separator + "eventreceivers" + File.separator;
         FileManager.copyResourceToFileSystem(streamResourceDir + "webservice_test_table1.xml", streamsLocation, "webservice_test_table1.xml");
     }
 }

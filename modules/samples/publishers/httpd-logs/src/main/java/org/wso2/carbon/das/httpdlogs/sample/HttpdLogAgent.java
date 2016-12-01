@@ -23,18 +23,13 @@ import org.wso2.carbon.databridge.agent.exception.DataEndpointAuthenticationExce
 import org.wso2.carbon.databridge.agent.exception.DataEndpointConfigurationException;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
 import org.wso2.carbon.databridge.commons.Event;
-import org.wso2.carbon.databridge.commons.exception.*;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
-import org.wso2.carbon.databridge.commons.utils.EventConverterUtils;
-import org.wso2.carbon.databridge.commons.utils.EventDefinitionConverterUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.*;
 import java.util.Enumeration;
 import java.util.Scanner;
-import java.lang.String;
 
 
 public class HttpdLogAgent {

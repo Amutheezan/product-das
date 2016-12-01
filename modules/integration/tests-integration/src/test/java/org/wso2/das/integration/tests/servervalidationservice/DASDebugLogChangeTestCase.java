@@ -36,7 +36,7 @@ public class DASDebugLogChangeTestCase extends DASIntegrationTest {
         super.init();
         ServerConfigurationManager serverManager = new ServerConfigurationManager(dasServer);
         String artifactsLocation = FrameworkPathUtil.getSystemResourceLocation() + File.separator + "config" +
-                                   File.separator + "log4j.properties";
+                File.separator + "log4j.properties";
         String dataserviceConfigLocation =
                 FrameworkPathUtil.getCarbonHome() + File.separator + "repository" + File.separator + "conf" + File
                         .separator + "log4j.properties";

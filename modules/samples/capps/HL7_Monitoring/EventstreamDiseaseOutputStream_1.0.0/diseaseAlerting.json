@@ -1,0 +1,31 @@
+{
+  "streamId": "diseaseAlerting:1.0.0",
+  "name": "diseaseAlerting",
+  "version": "1.0.0",
+  "nickName": "",
+  "description": "",
+  "metaData": [],
+  "correlationData": [],
+  "payloadData": [
+    {
+      "name": "City",
+      "type": "STRING"
+    },
+    {
+      "name": "Province",
+      "type": "STRING"
+    },
+    {
+      "name": "Country",
+      "type": "STRING"
+    },
+    {
+      "name": "Disease",
+      "type": "STRING"
+    },
+    {
+      "name": "timestamp",
+      "type": "LONG"
+    }
+  ]
+}

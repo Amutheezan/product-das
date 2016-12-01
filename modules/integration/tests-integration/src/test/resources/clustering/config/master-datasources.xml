@@ -1,11 +1,11 @@
-<datasources-configuration xmlns:svns="http://org.wso2.securevault/configuration">
-  
+<datasources-configuration>
+
     <providers>
         <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
     </providers>
-  
+
     <datasources>
-      
+
         <datasource>
             <name>WSO2_CARBON_DB</name>
             <description>The datasource used for registry and user manager</description>
@@ -30,13 +30,15 @@
 
         <datasource>
             <name>WSO2_REGISTRY_DB</name>
-            <description>The datasource used for registry </description>
+            <description>The datasource used for registry</description>
             <jndiConfig>
                 <name>jdbc/WSO2_DAS_REG</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:h2:[[[carbonHome]]]/repository/database/WSO2REGISTRY_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000</url>
+                    <url>
+                        jdbc:h2:[[[carbonHome]]]/repository/database/WSO2REGISTRY_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000
+                    </url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>org.h2.Driver</driverClassName>

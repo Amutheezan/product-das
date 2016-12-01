@@ -49,10 +49,9 @@ public class SparkIndexingTestCase extends DASIntegrationTest {
 
     private static final String TABLE_NAME = "spark_indexing_test";
     private static final String ANALYTICS_SERVICE_NAME = "AnalyticsProcessorAdminService";
-
+    private static final Gson gson = new Gson();
     private AnalyticsProcessorAdminServiceStub analyticsStub;
     private Map<String, String> headers;
-    private static final Gson gson = new Gson();
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
@@ -71,12 +70,12 @@ public class SparkIndexingTestCase extends DASIntegrationTest {
                 createConfigurationContextFromFileSystem(null);
         String loggedInSessionCookie = getSessionCookie();
         analyticsStub = new AnalyticsProcessorAdminServiceStub(configContext,
-                                                               backendURL + "/services/" + ANALYTICS_SERVICE_NAME);
+                backendURL + "/services/" + ANALYTICS_SERVICE_NAME);
         ServiceClient client = analyticsStub._getServiceClient();
         Options option = client.getOptions();
         option.setManageSession(true);
         option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,
-                           loggedInSessionCookie);
+                loggedInSessionCookie);
     }
 
 
@@ -84,11 +83,11 @@ public class SparkIndexingTestCase extends DASIntegrationTest {
     public void populateDataUsingSpark() throws Exception {
         log.info("Executing data population test case ...");
         analyticsStub.executeQuery("CREATE TEMPORARY TABLE testIdx USING CarbonAnalytics OPTIONS" +
-                                   "(tableName \"" + TABLE_NAME + "\", schema \"x int -i, y int -i\" ) ;");
+                "(tableName \"" + TABLE_NAME + "\", schema \"x int -i, y int -i\" ) ;");
         Random rn = new Random();
         for (int i = 0; i < 10; i++) {
             analyticsStub.executeQuery("INSERT INTO TABLE testIdx SELECT " + rn.nextInt(1000) + " , "
-                                       + rn.nextInt(1000) + " ;");
+                    + rn.nextInt(1000) + " ;");
         }
         AnalyticsProcessorAdminServiceStub.AnalyticsQueryResultDto result = analyticsStub.
                 executeQuery("SELECT * FROM testIdx ;");

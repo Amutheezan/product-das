@@ -33,6 +33,7 @@ public class JSDrillDownRangeBean {
     private double to;
     @XmlElement(name = "count", required = false)
     private double count;
+
     /**
      * This constructor is for jax rs serialization/deserialization
      */
@@ -50,6 +51,10 @@ public class JSDrillDownRangeBean {
         return from;
     }
 
+    public void setFrom(double from) {
+        this.from = from;
+    }
+
     public double getTo() {
         return to;
     }
@@ -64,10 +69,6 @@ public class JSDrillDownRangeBean {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public void setFrom(double from) {
-        this.from = from;
     }
 
     public double getCount() {

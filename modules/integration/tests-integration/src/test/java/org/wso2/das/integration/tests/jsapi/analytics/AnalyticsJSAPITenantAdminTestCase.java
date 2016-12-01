@@ -24,11 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.wso2.carbon.analytics.jsservice.beans.AnalyticsSchemaBean;
-import org.wso2.carbon.analytics.jsservice.beans.EventBean;
-import org.wso2.carbon.analytics.jsservice.beans.ResponseBean;
-import org.wso2.carbon.analytics.jsservice.beans.StreamDefinitionBean;
-import org.wso2.carbon.analytics.jsservice.beans.StreamDefinitionQueryBean;
+import org.wso2.carbon.analytics.jsservice.beans.*;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTable;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTableRecord;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
@@ -51,15 +47,10 @@ import java.util.Map;
  * This class contains integration tests for Javascript analytics API
  */
 public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
-    private static final int ONE_HOUR_IN_MILLISECONDS = 3600000;
-    private Log log = LogFactory.getLog(AnalyticsJSAPITenantAdminTestCase.class);
     public static final String STREAM_NAME = "tenantTestStream";
+    private static final int ONE_HOUR_IN_MILLISECONDS = 3600000;
     private static final String STREAM_VERSION = "1.0.0";
     private static final String STREAM_DESCRIPTION = "Sample Description";
-    private Gson gson;
-    private Map<String, String> httpHeaders;
-    private static LogViewerClient logViewerClient;
-
     private static final int TYPE_CLEAR_INDEX_DATA = 1;
     //    public static final int TYPE_CREATE_TABLE = 2;
 //    public static final int TYPE_DELETE_BY_ID = 3;
@@ -84,6 +75,10 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     private static final int TYPE_ADD_STREAM_DEFINITION = 22;
     private static final int TYPE_GET_STREAM_DEFINITION = 23;
     private static final int TYPE_PUBLISH_EVENT = 24;
+    private static LogViewerClient logViewerClient;
+    private Log log = LogFactory.getLog(AnalyticsJSAPITenantAdminTestCase.class);
+    private Gson gson;
+    private Map<String, String> httpHeaders;
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
@@ -116,9 +111,9 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
         streamDefinitionBean.setCorrelationData(correlationData);
 
         String url = TestConstants.ANALYTICS_JS_ENDPOINT +
-                     "?type=" + TYPE_ADD_STREAM_DEFINITION;
+                "?type=" + TYPE_ADD_STREAM_DEFINITION;
         URL jsapiURL = new URL(url);
-        HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(streamDefinitionBean),httpHeaders);
+        HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(streamDefinitionBean), httpHeaders);
         log.info("response: " + response.getData());
         Assert.assertEquals(response.getResponseCode(), 201, "response code is different");
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -302,10 +297,10 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Check if the table exists or not", dependsOnMethods = "addStreamDefinition")
-    public void tableExists() throws Exception{
+    public void tableExists() throws Exception {
         log.info("Executing JSAPI.tableExists");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_TABLE_EXISTS +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -313,11 +308,11 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by range info", dependsOnMethods = "publishEvent3")
-    public void getByRangeWithoutOptionalParams() throws Exception{
+    public void getByRangeWithoutOptionalParams() throws Exception {
         Thread.sleep(15000);
         log.info("Executing JSAPI.getRecordsByRange - without optional params");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_RANGE +
-                     "&tableName=" + STREAM_NAME + "&timeFrom=undefined&timeTo=undefined&start=undefined&count=undefined";
+                "&tableName=" + STREAM_NAME + "&timeFrom=undefined&timeTo=undefined&start=undefined&count=undefined";
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -325,15 +320,15 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by range info", dependsOnMethods = "getByRangeWithoutOptionalParams")
-    public void getByRangeWithOptionalParams() throws Exception{
+    public void getByRangeWithOptionalParams() throws Exception {
         log.info("Executing JSAPI.getRecordsByRange - With optional params");
         int start = 0;
         int count = 10;
         long from = System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS;
         long to = System.currentTimeMillis() + ONE_HOUR_IN_MILLISECONDS;
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_RANGE +
-                     "&tableName=" + STREAM_NAME + "&timeFrom=" + from + "&timeTo=" + to +
-                     "&start=" + start + "&count=" + count;
+                "&tableName=" + STREAM_NAME + "&timeFrom=" + from + "&timeTo=" + to +
+                "&start=" + start + "&count=" + count;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -341,10 +336,10 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by id info", dependsOnMethods = "getByRangeWithOptionalParams", enabled = true)
-    public void getByIds() throws Exception{
+    public void getByIds() throws Exception {
         log.info("Executing JSAPI.getRecordsByIds");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_ID +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         String[] ids = new String[]{"001", "002", "003"};
         HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(ids), httpHeaders);
@@ -369,10 +364,10 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the search count", dependsOnMethods = "getRecordCount", enabled = true)
-    public void searchCount() throws Exception{
+    public void searchCount() throws Exception {
         log.info("Executing JSAPI.searchCount");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_SEARCH_COUNT +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         QueryBean bean = new QueryBean();
         bean.setQuery("name : AAA");
@@ -394,11 +389,11 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
         }
     }
 
-    @Test(groups = "wso2.das", description = "Get the records which match the search query", dependsOnMethods = "searchCount",enabled = true)
-    public void search() throws Exception{
+    @Test(groups = "wso2.das", description = "Get the records which match the search query", dependsOnMethods = "searchCount", enabled = true)
+    public void search() throws Exception {
         log.info("Executing JSAPI.search");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_SEARCH +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         QueryBean bean = new QueryBean();
         bean.setQuery("name : BBB");
@@ -410,10 +405,10 @@ public class AnalyticsJSAPITenantAdminTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the record count", dependsOnMethods = "getRecordCount")
-    public void getSchema() throws Exception{
+    public void getSchema() throws Exception {
         log.info("Executing JSAPI.getSchema");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_SCHEMA +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);

@@ -22,35 +22,33 @@ import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-
 /**
  * This class represents a data agent that will publish wikipedia articles from a full wikipedia dump, as events.
  */
 public class WikipediaDataAgent {
-    
+
     private static final String WIKIPEDIA_DATA_STREAM = "org.wso2.das.sample.wikipedia.data";
-    
+
     private static final String NS = "http://www.mediawiki.org/xml/export-0.10/";
-    
+
     private static final String VERSION = "1.0.0";
-    
+
     private static final int defaultThriftPort = 7611;
-    
+
     private static final int defaultBinaryPort = 9611;
-    
+
     private static final SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public static void main(String[] args) throws Exception {
@@ -81,7 +79,7 @@ public class WikipediaDataAgent {
         } else {
             path = args[0];
         }
-        
+
         long count;
         if (args.length < 2 || args[1] == null || args[1].isEmpty()) {
             count = Long.MAX_VALUE;
@@ -137,10 +135,10 @@ public class WikipediaDataAgent {
         }
         return result;
     }
-    
-    private static void publishEvents(DataPublisher dataPublisher, 
-            String streamId, String path, 
-            long count) throws Exception {
+
+    private static void publishEvents(DataPublisher dataPublisher,
+                                      String streamId, String path,
+                                      long count) throws Exception {
         long prevDataCount = 0;
         final AtomicLong dataCount = new AtomicLong();
         File file = new File(path);
@@ -153,12 +151,14 @@ public class WikipediaDataAgent {
                 dataCount.incrementAndGet();
                 return b;
             }
+
             @Override
             public int read(byte[] b) throws IOException {
                 int i = super.read(b);
                 dataCount.addAndGet(i);
                 return i;
             }
+
             @Override
             public int read(byte[] b, int offset, int length) throws IOException {
                 int i = super.read(b, offset, length);
@@ -204,21 +204,21 @@ public class WikipediaDataAgent {
                 double dataRate = (dataCount.get() - prevDataCount) / ((1024.0 * 1024.0) * (tpsEndTS - tpsStartTS)) * 1000.0;
                 prevDataCount = dataCount.get();
                 tpsStartTS = tpsEndTS;
-                System.out.println("[" + (new Date()).toString() + "] " + progress + "% -> " + 
-                    (int) (dataCount.get() / (double) (1024 * 1024)) + " MB, Count: " + i + ", TPS: " + tps + 
-                    ", Data Rate: " + dataRate + " MB/s");
+                System.out.println("[" + (new Date()).toString() + "] " + progress + "% -> " +
+                        (int) (dataCount.get() / (double) (1024 * 1024)) + " MB, Count: " + i + ", TPS: " + tps +
+                        ", Data Rate: " + dataRate + " MB/s");
             }
         }
         long end = System.currentTimeMillis();
         in.close();
-        System.out.println("Published " + i + " Wikipedia page(s) as events in " + (end - start) / 1000.0 + 
+        System.out.println("Published " + i + " Wikipedia page(s) as events in " + (end - start) / 1000.0 +
                 " seconds, TPS: " + (i / (double) (end - start) * 1000.0) + ".");
     }
-    
+
     private static long timestamp(String tsStr) throws ParseException {
         return tsFormat.parse(tsStr).getTime();
     }
-    
+
     private static String text(OMElement element) {
         if (element == null) {
             return "";
@@ -226,7 +226,7 @@ public class WikipediaDataAgent {
             return element.getText();
         }
     }
-    
+
     private static long getLong(String value) {
         if (value == null || value.isEmpty()) {
             return 0;
@@ -234,7 +234,7 @@ public class WikipediaDataAgent {
             return Long.parseLong(value);
         }
     }
-    
+
     private static Object[] createPayload(OMElement page) throws ParseException {
         String title = text(page.getFirstChildWithName(new QName(NS, "title")));
         OMElement revision = page.getFirstChildWithName(new QName(NS, "revision"));
@@ -248,8 +248,8 @@ public class WikipediaDataAgent {
         String format = text(revision.getFirstChildWithName(new QName(NS, "format")));
         String text = text(revision.getFirstChildWithName(new QName(NS, "text")));
         String sha1 = text(revision.getFirstChildWithName(new QName(NS, "sha1")));
-        return new Object[] { sha1, title, revisionTS, contributorUsername, 
-                contributorId, comment, model, format, text, text.length() };
+        return new Object[]{sha1, title, revisionTS, contributorUsername,
+                contributorId, comment, model, format, text, text.length()};
     }
 
 }

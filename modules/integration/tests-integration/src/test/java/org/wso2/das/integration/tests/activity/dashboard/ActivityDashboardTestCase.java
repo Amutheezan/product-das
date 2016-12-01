@@ -67,13 +67,15 @@ import java.util.List;
  */
 public class ActivityDashboardTestCase extends DASIntegrationTest {
     private static final String ACTIVITY_DASHBOARD_SERVICE = "ActivityDashboardAdminService";
+    String streamResourceDir = FrameworkPathUtil.getSystemResourceLocation() + "activity" + File.separator + "dashboard"
+            + File.separator + "streams" + File.separator;
     private ActivityDashboardAdminServiceStub activityDashboardStub;
     private AnalyticsDataAPI analyticsDataAPI;
     private AnalyticsWebServiceClient webServiceClient;
     private EventStreamPersistenceClient persistenceClient;
     private EventReceiverClient eventReceiverClient;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
         super.init();
         String apiConf = new File(this.getClass().getClassLoader().getResource(
@@ -90,21 +92,21 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
         this.cleanupData();
         publishActivities();
     }
-    
+
     private void purgeTable(int tenantId, String tableName) throws AnalyticsException {
         if (this.analyticsDataAPI.tableExists(tenantId, tableName)) {
             this.analyticsDataAPI.delete(tenantId, tableName, Long.MIN_VALUE, Long.MAX_VALUE);
         }
     }
-    
-    @AfterClass (alwaysRun = true)
+
+    @AfterClass(alwaysRun = true)
     protected void cleanup() throws AnalyticsException, RemoteException {
         this.eventReceiverClient.undeployEventReceiver("BAMActivityWSO2Event");
         this.eventReceiverClient.undeployEventReceiver("DASActivityWSO2Event");
         this.eventReceiverClient.undeployEventReceiver("CEPActivityWSO2Event");
         this.cleanupData();
     }
-    
+
     private void cleanupData() throws AnalyticsException {
         this.purgeTable(MultitenantConstants.SUPER_TENANT_ID, "ORG_WSO2_BAM_ACTIVITY_MONITORING");
         this.purgeTable(MultitenantConstants.SUPER_TENANT_ID, "ORG_WSO2_CEP_ACTIVITY_MONITORING");
@@ -228,9 +230,8 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
         searchRequest.setToTime(calendar.getTimeInMillis());
         if (currentHour == 0) {
             //reducing two hours from to time
-            searchRequest.setFromTime(calendar.getTimeInMillis() - 2*60*60*1000);
-        }
-        else {
+            searchRequest.setFromTime(calendar.getTimeInMillis() - 2 * 60 * 60 * 1000);
+        } else {
             calendar.set(Calendar.HOUR_OF_DAY, currentHour - 1);
             searchRequest.setFromTime(calendar.getTimeInMillis());
         }
@@ -245,7 +246,6 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
         Assert.assertEquals(activities.length, 5);
     }
 
-
     private boolean tableExists(String[] tableNames, String tableName) {
         for (String table : tableNames) {
             if (table.equalsIgnoreCase(tableName)) {
@@ -254,9 +254,6 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
         }
         return false;
     }
-
-    String streamResourceDir = FrameworkPathUtil.getSystemResourceLocation() + "activity" + File.separator + "dashboard"
-            + File.separator + "streams" + File.separator;
 
     private void deployStreamDefinition() throws IOException {
         String streamsLocation = FrameworkPathUtil.getCarbonHome() + File.separator + "repository" + File.separator
@@ -286,14 +283,14 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
     }
 
     private void deployEventReceivers() throws Exception {
-        String streamResourceDir = "activity" + File.separator + "dashboard" + File.separator + 
+        String streamResourceDir = "activity" + File.separator + "dashboard" + File.separator +
                 "eventreceivers" + File.separator;
         this.eventReceiverClient.addOrUpdateEventReceiver("BAMActivityWSO2Event", getResourceContent(
-                ActivityDashboardTestCase.class, streamResourceDir +  "BAMActivityWSO2Event.xml"));
+                ActivityDashboardTestCase.class, streamResourceDir + "BAMActivityWSO2Event.xml"));
         this.eventReceiverClient.addOrUpdateEventReceiver("CEPActivityWSO2Event", getResourceContent(
-                ActivityDashboardTestCase.class, streamResourceDir +  "CEPActivityWSO2Event.xml"));
+                ActivityDashboardTestCase.class, streamResourceDir + "CEPActivityWSO2Event.xml"));
         this.eventReceiverClient.addOrUpdateEventReceiver("DASActivityWSO2Event", getResourceContent(
-                ActivityDashboardTestCase.class, streamResourceDir +  "DASActivityWSO2Event.xml"));
+                ActivityDashboardTestCase.class, streamResourceDir + "DASActivityWSO2Event.xml"));
     }
 
     private void publishActivities() throws DataEndpointException, DataEndpointConfigurationException,
@@ -323,13 +320,13 @@ public class ActivityDashboardTestCase extends DASIntegrationTest {
         activityIds.add("5cecbb16-6b89-46f3-bd2f-fd9f7ac447b6");
         activityDataPublisher.publish("org.wso2.das.activity.monitoring", "1.0.0", activityIds);
 
-        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient, 
+        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient,
                 GenericUtils.streamToTableName("org.wso2.bam.activity.monitoring"), "*:*", ActivityDataPublisher.EVENT_COUNT);
-        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient, 
+        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient,
                 GenericUtils.streamToTableName("org.wso2.cep.activity.monitoring"), "*:*", ActivityDataPublisher.EVENT_COUNT);
-        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient, 
+        Utils.checkAndWaitForSearchQuerySize(this.webServiceClient,
                 GenericUtils.streamToTableName("org.wso2.das.activity.monitoring"), "*:*", ActivityDataPublisher.EVENT_COUNT);
-        
+
         activityDataPublisher.shutdown();
     }
 

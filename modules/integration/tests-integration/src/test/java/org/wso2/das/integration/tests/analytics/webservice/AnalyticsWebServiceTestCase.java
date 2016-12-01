@@ -29,19 +29,7 @@ import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.analytics.api.CarbonAnalyticsAPI;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTable;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTableRecord;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsAggregateField;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsAggregateRequest;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsDrillDownRequestBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsSchemaBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.CategoryDrillDownRequestBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.CategoryPathBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.EventBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.RecordBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.RecordValueEntryBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.SortByFieldBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefAttributeBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefinitionBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.SubCategoriesBean;
+import org.wso2.carbon.analytics.webservice.stub.beans.*;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.databridge.commons.Event;
@@ -52,11 +40,7 @@ import org.wso2.das.integration.common.utils.DASIntegrationTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
 
@@ -227,7 +211,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
     public void drillDownSearch() throws Exception {
 
         AnalyticsDrillDownRequestBean bean = new AnalyticsDrillDownRequestBean();
-        bean.setTableName(TABLE1.replace(".","_"));
+        bean.setTableName(TABLE1.replace(".", "_"));
         CategoryPathBean categoryPathBean = new CategoryPathBean();
         categoryPathBean.setFieldName("name");
         categoryPathBean.setPath(new String[]{});
@@ -238,7 +222,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         RecordBean[] search = webServiceClient.drillDownSearch(bean);
         Assert.assertNotNull(search, "Returning null array");
         Assert.assertEquals(webServiceClient.drillDownSearchCount(bean), (double) search.length, "Search count is " +
-                                                                                                 "wrong");
+                "wrong");
     }
 
     @Test(groups = "wso2.das", description = "drilldownCategories operations", dependsOnMethods = "drillDownSearch")
@@ -255,7 +239,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         SubCategoriesBean result = webServiceClient.drillDownCategories(bean);
         Assert.assertNotNull(result, "Returning null array");
         Assert.assertEquals(result.getCategoryCount(), 99, "category count is " +
-                                                           "wrong");
+                "wrong");
         Assert.assertEquals(result.getCategories().length, 99, "category count is wrong");
         Assert.assertEquals(result.getCategories()[0].getCategoryName(), "99", "category name is wrong");
         Assert.assertEquals(result.getCategories()[98].getCategoryName(), "1", "category name is wrong");
@@ -279,7 +263,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         RecordBean[] result = webServiceClient.searchWithAggregates(bean);
         Assert.assertNotNull(result, "Returning null array");
         Assert.assertEquals(result.length, 100, "aggregate count is " +
-                                                           "wrong");
+                "wrong");
     }
 
     @Test(groups = "wso2.das", description = "search with sorting operations", dependsOnMethods = "performAggregations")
@@ -291,7 +275,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         bean2.setFieldName("name");
         bean2.setSortType("ASC");
         RecordBean[] search = webServiceClient.search(TABLE1.replace('.', '_'), "*:*", 0, 100, new String[]{"name", "uuid"},
-                                                      new SortByFieldBean[]{bean1, bean2});
+                new SortByFieldBean[]{bean1, bean2});
         Assert.assertNotNull(search, "Returning null array");
         Assert.assertEquals(search.length, 100, "Result doesn't contain one record");
         RecordBean recordBean1 = search[0];
@@ -315,7 +299,7 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         SortByFieldBean byFieldBean = new SortByFieldBean();
         byFieldBean.setFieldName("name");
         byFieldBean.setSortType("ASC");
-        bean.setTableName(TABLE1.replace(".","_"));
+        bean.setTableName(TABLE1.replace(".", "_"));
         CategoryPathBean categoryPathBean = new CategoryPathBean();
         categoryPathBean.setFieldName("name");
         categoryPathBean.setPath(new String[]{});
@@ -327,11 +311,11 @@ public class AnalyticsWebServiceTestCase extends DASIntegrationTest {
         RecordBean[] search = webServiceClient.drillDownSearch(bean);
         Assert.assertNotNull(search, "Returning null array");
         Assert.assertEquals(webServiceClient.drillDownSearchCount(bean), (double) search.length, "Search count is " +
-                                                                                                 "wrong");
+                "wrong");
         webServiceClient.clearIndices(TABLE1.replace('.', '_'));
         Thread.sleep(5000);
         Assert.assertEquals(webServiceClient.searchCount(TABLE1.replace('.', '_'), "uuid:1"), 0, "Clear indexing not " +
-                                                                                                 "happening");
+                "happening");
     }
 
     private StreamDefinitionBean getEventStreamBeanTable1Version1() {

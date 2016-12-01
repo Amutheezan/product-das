@@ -56,15 +56,15 @@ public class DASClusteredTestServerManager extends TestServerManager {
         for (FileReplacementInformation fileReplacement : fileReplacementInformationList) {
             try {
                 // if the carbonHome is empty, set the current carbon home
-                if (fileReplacement.getCarbonHome().isEmpty()){
+                if (fileReplacement.getCarbonHome().isEmpty()) {
                     fileReplacement.setCarbonHome(this.getCarbonHome());
                 }
                 replaceFiles(fileReplacement.getSourceURL(),
-                             fileReplacement.getPlaceHolderMap(fileReplacement.getCarbonHome(), this.getLocalhostIP()),
-                             fileReplacement.getDestination());
+                        fileReplacement.getPlaceHolderMap(fileReplacement.getCarbonHome(), this.getLocalhostIP()),
+                        fileReplacement.getDestination());
             } catch (Exception e) {
                 throw new AutomationFrameworkException("Unable to replace the configuration file : "
-                                                       + fileReplacement.getSourceURL(), e);
+                        + fileReplacement.getSourceURL(), e);
             }
         }
     }

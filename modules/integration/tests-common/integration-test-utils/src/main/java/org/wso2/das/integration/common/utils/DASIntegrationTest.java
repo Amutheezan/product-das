@@ -85,9 +85,9 @@ public class DASIntegrationTest {
                 }
             }
         } else {
-            throw new Exception("No resource found in the given path : "+ resourcePath);
+            throw new Exception("No resource found in the given path : " + resourcePath);
         }
     }
-    
+
 }
 

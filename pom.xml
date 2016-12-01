@@ -8,7 +8,8 @@
 	License for the ~ specific language governing permissions and limitations
 	~ under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2</groupId>
@@ -533,7 +534,7 @@
         </pluginRepository>
     </pluginRepositories>
 
- <repositories>
+    <repositories>
         <repository>
             <id>wso2releases</id>
             <name>WSO2 internal Repository</name>

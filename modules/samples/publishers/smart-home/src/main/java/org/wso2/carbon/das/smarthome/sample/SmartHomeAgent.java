@@ -28,7 +28,6 @@ import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.*;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -39,12 +38,10 @@ public class SmartHomeAgent {
     private static final int defaultThriftPort = 7611;
     private static final int defaultBinaryPort = 9611;
     private static final Random RAND = new Random();
-    private static int count;
-
     private static final String[] CITIES = {"New York", "Los Angeles", "Chicago", "Dallas",
             "Miami", "Salt Lake City", "Seattle", "Phoenix", "San Francisco", "Indianapolis"};
-
     private static final String[] STATES = {"New York", "California", "Illinois", "Texas", "Florida", "Utah", "Washington", "Arizona", "California", "Indiana"};
+    private static int count;
 
     public static void main(String[] args) throws DataEndpointAuthenticationException,
             DataEndpointAgentConfigurationException,

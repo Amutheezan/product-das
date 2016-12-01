@@ -30,23 +30,15 @@ import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTable;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTableRecord;
 import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefAttributeBean;
 import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefinitionBean;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.wso2.das.integration.common.clients.AnalyticsWebServiceClient;
-import org.wso2.das.integration.common.clients.DataPublisherClient;
-import org.wso2.das.integration.common.clients.EventReceiverClient;
-import org.wso2.das.integration.common.clients.EventStreamPersistenceClient;
-import org.wso2.das.integration.common.clients.MessageConsoleClient;
+import org.wso2.das.integration.common.clients.*;
 import org.wso2.das.integration.common.utils.DASIntegrationTest;
 import org.wso2.das.integration.common.utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Tests related to the message console functionality.
@@ -71,7 +63,7 @@ public class MessageConsoleTestCase extends DASIntegrationTest {
         this.webServiceClient = new AnalyticsWebServiceClient(this.backendURL, session);
         this.persistenceClient = new EventStreamPersistenceClient(this.backendURL, session);
         this.eventReceiverClient = new EventReceiverClient(this.backendURL, session);
-        String apiConf = new File(this.getClass().getClassLoader().getResource("dasconfig" + File.separator + "api" + 
+        String apiConf = new File(this.getClass().getClassLoader().getResource("dasconfig" + File.separator + "api" +
                 File.separator + "analytics-data-config.xml").toURI()).getAbsolutePath();
         this.analyticsDataAPI = new CarbonAnalyticsAPI(apiConf);
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, GenericUtils.streamToTableName(TABLE1));
@@ -96,7 +88,7 @@ public class MessageConsoleTestCase extends DASIntegrationTest {
         List<Event> events = new ArrayList<>(100);
         for (int i = 0; i < 100; i++) {
             Event event = new Event(null, System.currentTimeMillis(),
-                    new Object[0], new Object[0], new Object[] { (long) i, String.valueOf(i) });
+                    new Object[0], new Object[0], new Object[]{(long) i, String.valueOf(i)});
             events.add(event);
         }
         this.dataPublisherClient.publish(TABLE1, STREAM_VERSION_1, events);
@@ -167,12 +159,12 @@ public class MessageConsoleTestCase extends DASIntegrationTest {
 
     private void deployEventReceivers() throws Exception {
         boolean status = this.eventReceiverClient.addOrUpdateEventReceiver("messageconsole.table1", getResourceContent(
-                MessageConsoleTestCase.class, "messageconsole" + File.separator +  "messageconsole.table1.xml"));
+                MessageConsoleTestCase.class, "messageconsole" + File.separator + "messageconsole.table1.xml"));
         Assert.assertTrue(status);
     }
-    
+
     private void undeployEventReceivers() throws Exception {
         this.eventReceiverClient.undeployEventReceiver("messageconsole.table1");
     }
-    
+
 }

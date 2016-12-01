@@ -164,13 +164,13 @@
         <!--messageFormatter contentType="application/json"
                           class="org.apache.axis2.json.JSONMessageFormatter"/-->
         <messageFormatter contentType="application/json"
-                                  class="org.apache.axis2.json.gson.JsonFormatter" />
+                          class="org.apache.axis2.json.gson.JsonFormatter"/>
         <messageFormatter contentType="application/json/badgerfish"
                           class="org.apache.axis2.json.JSONBadgerfishMessageFormatter"/>
         <!--messageFormatter contentType="text/javascript"
                           class="org.apache.axis2.json.JSONMessageFormatter"/-->
         <messageFormatter contentType="text/javascript"
-                                  class="org.apache.axis2.json.gson.JsonFormatter" />
+                          class="org.apache.axis2.json.gson.JsonFormatter"/>
 
         <!--messageFormatter contentType="application/x-www-form-urlencoded"
                         class="org.wso2.carbon.relay.ExpandingMessageFormatter"/-->
@@ -200,13 +200,13 @@
         <!--messageBuilder contentType="application/json"
                         class="org.apache.axis2.json.JSONOMBuilder"/-->
         <messageBuilder contentType="application/json"
-                                class="org.apache.axis2.json.gson.JsonBuilder" />
+                        class="org.apache.axis2.json.gson.JsonBuilder"/>
         <messageBuilder contentType="application/json/badgerfish"
                         class="org.apache.axis2.json.JSONBadgerfishOMBuilder"/>
         <!--messageBuilder contentType="text/javascript"
                         class="org.apache.axis2.json.JSONOMBuilder"/-->
         <messageBuilder contentType="text/javascript"
-                                class="org.apache.axis2.json.gson.JsonBuilder" />
+                        class="org.apache.axis2.json.gson.JsonBuilder"/>
 
         <!--messageBuilder contentType="application/xml"
      		        class="org.wso2.carbon.relay.BinaryRelayBuilder"/-->
@@ -472,9 +472,9 @@
                 <order phase="Transport"/>
             </handler>
             <handler name="RequestURIOperationDispatcher"
-                     class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher" />
+                     class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher"/>
             <handler name="JSONMessageHandler"
-                     class="org.apache.axis2.json.gson.JSONMessageHandler" />
+                     class="org.apache.axis2.json.gson.JSONMessageHandler"/>
         </phase>
         <phase name="Addressing">
             <handler name="AddressingBasedDispatcher"
@@ -589,7 +589,7 @@
         <phase name="PolicyDetermination"/>
         <phase name="MessageOut"/>
         <phase name="Security"/>
-	<phase name="Transport"/>
+        <phase name="Transport"/>
         <!--
            The MsgOutObservation phase is used to observe messages just before the
            responses are sent out. In this phase, we could do some things such as SOAP message
@@ -706,14 +706,14 @@
         -->
         <members>
             [[[members]]]
-<!--            <member>
-                <hostName>192.168.1.5</hostName>
-                <port>4000</port>
-            </member>
-            <member>
-                <hostName>192.168.1.5</hostName>
-                <port>4001</port>
-            </member>-->
+            <!--            <member>
+                            <hostName>192.168.1.5</hostName>
+                            <port>4000</port>
+                        </member>
+                        <member>
+                            <hostName>192.168.1.5</hostName>
+                            <port>4001</port>
+                        </member>-->
         </members>
 
         <!--

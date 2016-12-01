@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "columnType")
 @XmlEnum
-public enum  ColumnTypeBean {
+public enum ColumnTypeBean {
 
     @XmlEnumValue("STRING")
     STRING,

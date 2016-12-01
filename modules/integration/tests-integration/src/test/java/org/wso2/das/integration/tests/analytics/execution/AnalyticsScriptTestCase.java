@@ -57,13 +57,61 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
     private static final String SCRIPT_RESOURCE_DIR = "analytics" + File.separator + "scripts";
     private static final String ANALYTICS_SERVICE_NAME = "AnalyticsProcessorAdminService";
     private static final String ANALYTICS_SCRIPT_WITH_TASK = "AddNewScriptTestWithTask";
-    private static final String ANALYTICS_SCRIPT_WITHOUT_TASK  = "AddNewScriptTestWithouTask";
-    private static final String UDAF_TEST_TABLE  = "udafTest";
+    private static final String ANALYTICS_SCRIPT_WITHOUT_TASK = "AddNewScriptTestWithouTask";
+    private static final String UDAF_TEST_TABLE = "udafTest";
 
 
     private AnalyticsProcessorAdminServiceStub analyticsStub;
-    
+
     private AnalyticsDataAPI analyticsDataAPI;
+
+    //use this method since HttpRequestUtils.doGet does not support HTTPS.
+    private static HttpResponse doGet(String endpoint, Map<String, String> headers) throws
+            IOException {
+        HttpResponse httpResponse;
+        URL url = new URL(endpoint);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setDoOutput(true);
+        conn.setReadTimeout(30000);
+        //setting headers
+        if (headers != null && headers.size() > 0) {
+            for (String key : headers.keySet()) {
+                if (key != null) {
+                    conn.setRequestProperty(key, headers.get(key));
+                }
+            }
+            for (String key : headers.keySet()) {
+                conn.setRequestProperty(key, headers.get(key));
+            }
+        }
+        conn.connect();
+        // Get the response
+        StringBuilder sb = new StringBuilder();
+        BufferedReader rd = null;
+        try {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
+            httpResponse.setResponseMessage(conn.getResponseMessage());
+        } catch (IOException ignored) {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
+            httpResponse.setResponseMessage(conn.getResponseMessage());
+        } finally {
+            if (rd != null) {
+                rd.close();
+            }
+        }
+        return httpResponse;
+    }
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
@@ -76,7 +124,7 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
         deleteIfExists(ANALYTICS_SCRIPT_WITH_TASK);
         deleteIfExists(ANALYTICS_SCRIPT_WITHOUT_TASK);
     }
-    
+
     private void initializeSampleData() throws Exception {
         log.info("Deleting table: " + TABLE_NAME + " for Analytics Scripts TestCase (if exists)");
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, TABLE_NAME);
@@ -98,7 +146,7 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
         }
         this.analyticsDataAPI.put(recordList);
     }
-    
+
     private void initializeStub() throws Exception {
         ConfigurationContext configContext = ConfigurationContextFactory.
                 createConfigurationContextFromFileSystem(null);
@@ -115,9 +163,9 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
     private void deleteIfExists(String scriptName) throws RemoteException,
             AnalyticsProcessorAdminServiceAnalyticsProcessorAdminExceptionException {
         AnalyticsProcessorAdminServiceStub.AnalyticsScriptDto[] scriptDtos = analyticsStub.getAllScripts();
-        if (scriptDtos != null){
-            for (AnalyticsProcessorAdminServiceStub.AnalyticsScriptDto scriptDto: scriptDtos){
-                if (scriptDto.getName().equalsIgnoreCase(scriptName)){
+        if (scriptDtos != null) {
+            for (AnalyticsProcessorAdminServiceStub.AnalyticsScriptDto scriptDto : scriptDtos) {
+                if (scriptDto.getName().equalsIgnoreCase(scriptName)) {
                     analyticsStub.deleteScript(scriptDto.getName());
                 }
             }
@@ -229,7 +277,7 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.bam", description = "Executing the script", dependsOnMethods = "deleteScriptTask")
-    public void executeScript() throws Exception{
+    public void executeScript() throws Exception {
         analyticsStub.executeScript(ANALYTICS_SCRIPT_WITHOUT_TASK);
     }
 
@@ -239,7 +287,7 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
                 getAnalyticsScriptResourcePath("TestScript.ql"));
         analyticsStub.execute(scriptContent);
     }
-    
+
     @Test(groups = "wso2.bam", description = "Executing script content with Global Tenant Access", dependsOnMethods = "executeScriptContent")
     public void executeScriptGlobalTenantAccess() throws Exception {
         log.info("Deleting table: " + GTA_STATS_TABLE + ", " + GTA_STATS_SUMMARY_TABLE + " for GTA TestCase (if exists)");
@@ -249,11 +297,11 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, GTA_STATS_SUMMARY_TABLE);
         this.analyticsDataAPI.deleteTable(1, GTA_STATS_SUMMARY_TABLE);
         this.analyticsDataAPI.deleteTable(2, GTA_STATS_SUMMARY_TABLE);
-        
+
         String scriptContent = getResourceContent(AnalyticsScriptTestCase.class, getAnalyticsScriptResourcePath("GTATestScript.ql"));
         AnalyticsQueryResultDto[] resultArr = this.analyticsStub.execute(scriptContent);
         AnalyticsQueryResultDto result = resultArr[resultArr.length - 1];
-        
+
         List<Record> resp1 = AnalyticsDataServiceUtils.listRecords(this.analyticsDataAPI, this.analyticsDataAPI.get(1, GTA_STATS_TABLE, 1, null, Long.MIN_VALUE, Long.MAX_VALUE, 0, -1));
         List<Record> resp2 = AnalyticsDataServiceUtils.listRecords(this.analyticsDataAPI, this.analyticsDataAPI.get(2, GTA_STATS_TABLE, 1, null, Long.MIN_VALUE, Long.MAX_VALUE, 0, -1));
         List<Record> resp3 = AnalyticsDataServiceUtils.listRecords(this.analyticsDataAPI, this.analyticsDataAPI.get(1, GTA_STATS_SUMMARY_TABLE, 1, null, Long.MIN_VALUE, Long.MAX_VALUE, 0, -1));
@@ -262,11 +310,11 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
         Assert.assertEquals(resp2.size(), 4);
         Assert.assertEquals(resp3.size(), 2);
         Assert.assertEquals(resp4.size(), 2);
-        
+
         Assert.assertEquals(new HashSet<>(Arrays.asList(result.getColumnNames())), new HashSet<>(Arrays.asList("name", "cnt", "_tenantId")));
         AnalyticsRowResultDto[] rows = result.getRowsResults();
         Assert.assertEquals(rows.length, 4);
-        
+
         log.info("Deleting table: " + GTA_STATS_TABLE + ", " + GTA_STATS_SUMMARY_TABLE + " for GTA TestCase (cleanup)");
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, GTA_STATS_TABLE);
         this.analyticsDataAPI.deleteTable(1, GTA_STATS_TABLE);
@@ -294,55 +342,7 @@ public class AnalyticsScriptTestCase extends DASIntegrationTest {
         this.analyticsDataAPI.deleteTable(MultitenantConstants.SUPER_TENANT_ID, UDAF_TEST_TABLE);
     }
 
-    private String getAnalyticsScriptResourcePath(String scriptName){
+    private String getAnalyticsScriptResourcePath(String scriptName) {
         return SCRIPT_RESOURCE_DIR + File.separator + scriptName;
-    }
-
-    //use this method since HttpRequestUtils.doGet does not support HTTPS.
-    private static HttpResponse doGet(String endpoint, Map<String, String> headers) throws
-                                                                                   IOException {
-        HttpResponse httpResponse;
-        URL url = new URL(endpoint);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setDoOutput(true);
-        conn.setReadTimeout(30000);
-        //setting headers
-        if (headers != null && headers.size() > 0) {
-            for (String key : headers.keySet()) {
-                if (key != null) {
-                    conn.setRequestProperty(key, headers.get(key));
-                }
-            }
-            for (String key : headers.keySet()) {
-                conn.setRequestProperty(key, headers.get(key));
-            }
-        }
-        conn.connect();
-        // Get the response
-        StringBuilder sb = new StringBuilder();
-        BufferedReader rd = null;
-        try {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
-            httpResponse.setResponseMessage(conn.getResponseMessage());
-        } catch (IOException ignored) {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
-            httpResponse.setResponseMessage(conn.getResponseMessage());
-        } finally {
-            if (rd != null) {
-                rd.close();
-            }
-        }
-        return httpResponse;
     }
 }

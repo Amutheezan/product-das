@@ -42,12 +42,12 @@ import java.util.*;
 public class GetSelectedColumnsRestAPITestCase extends DASIntegrationTest {
     private static final Log log = LogFactory.getLog(GetSelectedColumnsRestAPITestCase.class);
     private static final String TABLE_NAME = "Person";
+    AnalyticsDataAPI analyticsDataAPI;
     private Map<String, String> headers;
     private Map<String, Object> valueSet1;
     private Map<String, Object> valueSet2;
     private RecordBean record1;
     private RecordBean record2;
-    AnalyticsDataAPI analyticsDataAPI;
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {

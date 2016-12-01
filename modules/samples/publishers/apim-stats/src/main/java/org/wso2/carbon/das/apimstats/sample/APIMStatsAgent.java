@@ -28,7 +28,6 @@ import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.*;
 import java.util.Enumeration;
 import java.util.Random;
 

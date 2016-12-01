@@ -28,11 +28,6 @@ public abstract class FileReplacementInformation {
 
     private URL sourceURL;
     private String destination;
-
-    public void setCarbonHome(String carbonHome) {
-        this.carbonHome = carbonHome;
-    }
-
     private String carbonHome;
 
     public FileReplacementInformation(URL sourceURL, String destination, String carbonHome) {
@@ -51,6 +46,10 @@ public abstract class FileReplacementInformation {
 
     public String getCarbonHome() {
         return carbonHome;
+    }
+
+    public void setCarbonHome(String carbonHome) {
+        this.carbonHome = carbonHome;
     }
 
     public abstract Map<String, String> getPlaceHolderMap(String initialCarbonHome, String localhostIP);

@@ -80,7 +80,7 @@ public class LoginPage {
         } else {
             driver.findElement(
                     By.className(UIElementMapper.getInstance()
-                                         .getElement("login.sign.in.button"))).click();
+                            .getElement("login.sign.in.button"))).click();
             return new HomePage(isTenant, driver);
         }
     }

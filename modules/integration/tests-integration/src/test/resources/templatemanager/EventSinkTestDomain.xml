@@ -19,7 +19,8 @@
     <description>This Domain is used for Event Sink Template Deployer test cases</description>
     <scenarios>
         <scenario type="scenario1">
-            <description>According to the test-scenario, this scenario is supposed to be deployed successfully.</description>
+            <description>According to the test-scenario, this scenario is supposed to be deployed successfully.
+            </description>
             <templates>
                 <template type="eventsink">
                     <![CDATA[
@@ -67,7 +68,8 @@
         </scenario>
         <scenario type="scenario2">
             <description>According to the test-scenario, this scenario too is supposed to be deployed successfully;
-                as this does not overwrite the previous schema.</description>
+                as this does not overwrite the previous schema.
+            </description>
             <templates>
                 <template type="eventsink">
                     <![CDATA[
@@ -114,7 +116,8 @@
         </scenario>
         <scenario type="scenario3">
             <description>According to the test-scenario, this scenario is not supposed to be deployed;
-                as overwrites the previous schema.</description>
+                as overwrites the previous schema.
+            </description>
             <templates>
                 <template type="eventsink">
                     <![CDATA[

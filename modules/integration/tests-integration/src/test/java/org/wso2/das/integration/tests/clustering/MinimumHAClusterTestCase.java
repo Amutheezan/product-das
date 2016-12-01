@@ -49,19 +49,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.ANALYTICS_DATASOURCES_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.AXIS2_XML_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.CARBON_XML_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.MASTER_DATASOURCES_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.REGISTRY_XML_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.SPARK_DEFAULTS_CONF_PATH;
-import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.TASKS_CONFIG_XML_PATH;
+import static org.wso2.das.integration.tests.clustering.DASClusteredTestServerManagerConstants.*;
 
 /**
  * This class runs the analytics script test case in a clustered environment.
@@ -104,7 +94,7 @@ public class MinimumHAClusterTestCase {
             int portOffset = instanceNames.get(instanceName);
             AutomationContext context = new AutomationContext(groupName, instanceName, testUserMode);
             DASClusteredTestServerManager serverManager = new DASClusteredTestServerManager(context, portOffset,
-                                                                                            createFileReplacementInformationList(firstCarbonHome, portOffset));
+                    createFileReplacementInformationList(firstCarbonHome, portOffset));
             this.dasServerManagers.put(instanceName, serverManager);
 
             if (i == 0) {
@@ -124,12 +114,12 @@ public class MinimumHAClusterTestCase {
         ConfigurationContext configContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null);
         String loggedInSessionCookie = new LoginLogoutClient(context).login();
         AnalyticsProcessorAdminServiceStub analyticsStub = new AnalyticsProcessorAdminServiceStub(configContext,
-                                                                                                  context.getContextUrls().getBackEndUrl() + "/services/" + ANALYTICS_SERVICE_NAME);
+                context.getContextUrls().getBackEndUrl() + "/services/" + ANALYTICS_SERVICE_NAME);
         ServiceClient client = analyticsStub._getServiceClient();
         Options option = client.getOptions();
         option.setManageSession(true);
         option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,
-                           loggedInSessionCookie);
+                loggedInSessionCookie);
         this.analyticsStubs.put(instanceName, analyticsStub);
 
         return carbonHome;
@@ -173,17 +163,17 @@ public class MinimumHAClusterTestCase {
         String apiConf =
                 new File(this.getClass().getClassLoader().
                         getResource("clustering" + File.separator + "dasconfig" + File.separator + "api" + File.separator
-                                    + "analytics-data-config-" + instanceName + ".xml").toURI())
+                                + "analytics-data-config-" + instanceName + ".xml").toURI())
                         .getAbsolutePath();
         AnalyticsDataAPI analyticsDataAPI = new CarbonAnalyticsAPI(apiConf);
 
         Assert.assertTrue(analyticsDataAPI.tableExists(MultitenantConstants.SUPER_TENANT_ID, TABLE_NAME),
-                          "Table " + TABLE_NAME + " does not exists!");
+                "Table " + TABLE_NAME + " does not exists!");
         Assert.assertTrue(analyticsDataAPI.tableExists(MultitenantConstants.SUPER_TENANT_ID, TABLE_NAME2),
-                          "Table " + TABLE_NAME2 + " does not exists!");
+                "Table " + TABLE_NAME2 + " does not exists!");
 
         AnalyticsDataResponse response = analyticsDataAPI.get(MultitenantConstants.SUPER_TENANT_ID, TABLE_NAME2, 1,
-                                                              null, Long.MIN_VALUE, Long.MAX_VALUE, 0, -1);
+                null, Long.MIN_VALUE, Long.MAX_VALUE, 0, -1);
         Assert.assertNotNull(response, "Response received is null");
     }
 
@@ -284,7 +274,7 @@ public class MinimumHAClusterTestCase {
         String apiConf =
                 new File(this.getClass().getClassLoader().
                         getResource("clustering" + File.separator + "dasconfig" + File.separator + "api" + File.separator
-                                    + "analytics-data-config-" + instanceName + ".xml").toURI())
+                                + "analytics-data-config-" + instanceName + ".xml").toURI())
                         .getAbsolutePath();
         AnalyticsDataAPI analyticsDataAPI = new CarbonAnalyticsAPI(apiConf);
         //Creating sample tables used to test scripts.
@@ -301,7 +291,7 @@ public class MinimumHAClusterTestCase {
         columnDefinitions.add(new ColumnDefinition("summary", AnalyticsSchema.ColumnType.STRING, true, false));
 
         analyticsDataAPI.setTableSchema(MultitenantConstants.SUPER_TENANT_ID, TABLE_NAME,
-                                        new AnalyticsSchema(columnDefinitions, new ArrayList<String>(0)));
+                new AnalyticsSchema(columnDefinitions, new ArrayList<String>(0)));
 
         //Push some events to the table
         log.info("Inserting some events for the table : " + TABLE_NAME);
@@ -344,8 +334,8 @@ public class MinimumHAClusterTestCase {
         String xmlElm = "";
         for (int i = 0; i < memberCount; i++) {
             xmlElm = xmlElm + "<member>\n" +
-                     "<hostName>" + localhostIP + "</hostName>\n" +
-                     "<port>" + String.valueOf(4000 + HA_CLUSTER_PORT_OFFSET + i) + "</port>\n";
+                    "<hostName>" + localhostIP + "</hostName>\n" +
+                    "<port>" + String.valueOf(4000 + HA_CLUSTER_PORT_OFFSET + i) + "</port>\n";
             xmlElm = xmlElm + "</member>\n";
         }
         return xmlElm;
@@ -355,16 +345,16 @@ public class MinimumHAClusterTestCase {
 
 class DASClusteredTestServerManagerConstants {
     static final String ANALYTICS_DATASOURCES_PATH = "repository" + File.separator + "conf" + File.separator
-                                                     + "datasources" + File.separator + "analytics-datasources.xml";
+            + "datasources" + File.separator + "analytics-datasources.xml";
     static final String MASTER_DATASOURCES_PATH = "repository" + File.separator + "conf" + File.separator
-                                                  + "datasources" + File.separator + "master-datasources.xml";
+            + "datasources" + File.separator + "master-datasources.xml";
     static final String SPARK_DEFAULTS_CONF_PATH = "repository" + File.separator + "conf" + File.separator +
-                                                   "analytics" + File.separator + "spark" + File.separator +
-                                                   "spark-defaults.conf";
+            "analytics" + File.separator + "spark" + File.separator +
+            "spark-defaults.conf";
     static final String CARBON_XML_PATH = "repository" + File.separator + "conf" + File.separator + "carbon.xml";
     static final String REGISTRY_XML_PATH = "repository" + File.separator + "conf" + File.separator + "registry.xml";
     static final String AXIS2_XML_PATH = "repository" + File.separator + "conf" + File.separator + "axis2" +
-                                         File.separator + "axis2.xml";
-    static final String TASKS_CONFIG_XML_PATH = "repository" + File.separator + "conf" + File.separator+ "etc" +
-                                                File.separator+ "tasks-config.xml";
+            File.separator + "axis2.xml";
+    static final String TASKS_CONFIG_XML_PATH = "repository" + File.separator + "conf" + File.separator + "etc" +
+            File.separator + "tasks-config.xml";
 }

@@ -36,13 +36,13 @@ import java.io.File;
 import java.util.*;
 
 public class AnalyticsAPIUserTestCase extends DASIntegrationTest {
-    private AnalyticsDataAPI analyticsDataAPI;
     private static final String CREATE_TABLE_NAME = "LogApiUserTable";
     private static final String DELETE_TABLE_NAME = "LogApiUserDeleteTable";
     private static final String LOG_FIELD = "log";
     private static final String IP_FIELD = "ip";
     private static final String LOG_TIMESTAMP = "logTimeStamp";
     private static final String USERNAME = "admin";
+    private AnalyticsDataAPI analyticsDataAPI;
     private List<String> recordIds;
 
 

@@ -42,7 +42,6 @@ import java.util.List;
 
 public class GlobalPurgingTestCase extends DASIntegrationTest {
 
-    private static final String STREAM_VERSION_1 = "1.0.0";
     public static final String SOMETABLE_PATTERN1_TABLE1 = "sometable.pattern1.table1";
     public static final String SOMETABLE_PATTERN1_TABLE2 = "sometable.pattern1.table2";
     public static final String PREFIX_TABLE_1 = "prefix_table1";
@@ -50,6 +49,7 @@ public class GlobalPurgingTestCase extends DASIntegrationTest {
     public static final String DAS_PREFIX_TABLE_1 = "DAS_prefix_table1";
     public static final String RANDOM_TABLE_1 = "random_table1";
     public static final String RANDOM_TABLE_2 = "random_table2";
+    private static final String STREAM_VERSION_1 = "1.0.0";
     private AnalyticsWebServiceClient webServiceClient;
     private EventStreamPersistenceClient persistenceClient;
     private ServerConfigurationManager serverManager;

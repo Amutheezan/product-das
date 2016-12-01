@@ -42,7 +42,7 @@ public class DrillDownRequestBean {
     @XmlElement(name = "recordCount")
     private int recordCount;
     @XmlElement(name = "recordStart")
-    private  int recordStart;
+    private int recordStart;
     @XmlElement(name = "ranges", required = false)
     private List<DrillDownRangeBean> ranges;
     @XmlElement(name = "rangeField", required = false)
@@ -56,6 +56,10 @@ public class DrillDownRequestBean {
         return tableName;
     }
 
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     public List<DrillDownPathBean> getCategories() {
         if (categories == null) {
             return new ArrayList<>();
@@ -63,20 +67,40 @@ public class DrillDownRequestBean {
         return categories;
     }
 
+    public void setCategories(List<DrillDownPathBean> categories) {
+        this.categories = categories;
+    }
+
     public String getQuery() {
         return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public String getScoreFunction() {
         return scoreFunction;
     }
 
+    public void setScoreFunction(String scoreFunction) {
+        this.scoreFunction = scoreFunction;
+    }
+
     public int getRecordCount() {
         return recordCount;
     }
 
+    public void setRecordCount(int recordCount) {
+        this.recordCount = recordCount;
+    }
+
     public int getRecordStart() {
         return recordStart;
+    }
+
+    public void setRecordStart(int recordStart) {
+        this.recordStart = recordStart;
     }
 
     public List<DrillDownRangeBean> getRanges() {
@@ -86,40 +110,16 @@ public class DrillDownRequestBean {
         return ranges;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public void setCategories(List<DrillDownPathBean> categories) {
-        this.categories = categories;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public void setScoreFunction(String scoreFunction) {
-        this.scoreFunction = scoreFunction;
-    }
-
-    public void setRecordCount(int recordCount) {
-        this.recordCount = recordCount;
-    }
-
-    public void setRecordStart(int recordStart) {
-        this.recordStart = recordStart;
-    }
-
     public void setRanges(List<DrillDownRangeBean> ranges) {
         this.ranges = ranges;
     }
 
-    public void setRangeField(String rangeField) {
-        this.rangeField = rangeField;
-    }
-
     public String getRangeField() {
         return rangeField;
+    }
+
+    public void setRangeField(String rangeField) {
+        this.rangeField = rangeField;
     }
 
     public List<String> getColumns() {

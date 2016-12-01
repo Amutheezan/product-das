@@ -1,5 +1,5 @@
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="automation_mapping.xsd"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified"
+           targetNamespace="automation_mapping.xsd">
     <xs:element name="automation">
         <xs:complexType>
             <xs:sequence>
@@ -386,7 +386,8 @@
                                                     <xs:element name="properties">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="property" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="property" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
@@ -404,7 +405,8 @@
                                                 </xs:sequence>
                                                 <xs:attribute type="xs:string" name="name" use="required"/>
                                                 <xs:attribute type="xs:string" name="type" use="required"/>
-                                                <xs:attribute type="xs:boolean" name="nonBlockingTransportEnabled" use="required"/>
+                                                <xs:attribute type="xs:boolean" name="nonBlockingTransportEnabled"
+                                                              use="required"/>
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:choice>
@@ -429,12 +431,17 @@
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element type="xs:string" name="name"/>
-                                                                <xs:element name="parameter" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="parameter" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
-                                                                                <xs:attribute type="xs:string" name="name" use="required"/>
-                                                                                <xs:attribute type="xs:string" name="value" use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="name"
+                                                                                              use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="value"
+                                                                                              use="required"/>
                                                                             </xs:extension>
                                                                         </xs:simpleContent>
                                                                     </xs:complexType>
@@ -458,12 +465,17 @@
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element type="xs:string" name="name"/>
-                                                                <xs:element name="parameter" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="parameter" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
-                                                                                <xs:attribute type="xs:string" name="name" use="required"/>
-                                                                                <xs:attribute type="xs:string" name="value" use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="name"
+                                                                                              use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="value"
+                                                                                              use="required"/>
                                                                             </xs:extension>
                                                                         </xs:simpleContent>
                                                                     </xs:complexType>
@@ -487,12 +499,17 @@
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element type="xs:string" name="name"/>
-                                                                <xs:element name="parameter" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="parameter" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
-                                                                                <xs:attribute type="xs:string" name="name" use="required"/>
-                                                                                <xs:attribute type="xs:string" name="value" use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="name"
+                                                                                              use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="value"
+                                                                                              use="required"/>
                                                                             </xs:extension>
                                                                         </xs:simpleContent>
                                                                     </xs:complexType>
@@ -516,12 +533,17 @@
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element type="xs:string" name="name"/>
-                                                                <xs:element name="parameter" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="parameter" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
-                                                                                <xs:attribute type="xs:string" name="name" use="required"/>
-                                                                                <xs:attribute type="xs:string" name="value" use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="name"
+                                                                                              use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="value"
+                                                                                              use="required"/>
                                                                             </xs:extension>
                                                                         </xs:simpleContent>
                                                                     </xs:complexType>
@@ -545,12 +567,17 @@
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element type="xs:string" name="name"/>
-                                                                <xs:element name="parameter" maxOccurs="unbounded" minOccurs="0">
+                                                                <xs:element name="parameter" maxOccurs="unbounded"
+                                                                            minOccurs="0">
                                                                     <xs:complexType>
                                                                         <xs:simpleContent>
                                                                             <xs:extension base="xs:string">
-                                                                                <xs:attribute type="xs:string" name="name" use="required"/>
-                                                                                <xs:attribute type="xs:string" name="value" use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="name"
+                                                                                              use="required"/>
+                                                                                <xs:attribute type="xs:string"
+                                                                                              name="value"
+                                                                                              use="required"/>
                                                                             </xs:extension>
                                                                         </xs:simpleContent>
                                                                     </xs:complexType>

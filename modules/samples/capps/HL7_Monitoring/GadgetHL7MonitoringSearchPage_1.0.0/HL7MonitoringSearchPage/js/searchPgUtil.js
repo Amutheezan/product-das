@@ -22,12 +22,8 @@ function getAttrType(attrValue){
 }
 function LuceneFy(operValue,attrValue,equaValue,value){
   var formattedEqua;
-  if(typeof value === "undefined" ){
-    formattedEqua="Error";
-  }else if(value === null ){
-    formattedEqua="Error";
-  }else if(value === "" ){
-    formattedEqua="Error";
+  if(isNull(value)){
+    formattedEqua="";
   }
   else{
     formattedEqua=operValue+" "+ attrValue+" : ";
@@ -93,6 +89,14 @@ function LuceneFy(operValue,attrValue,equaValue,value){
     }
   }
   return formattedEqua
+}
+
+function isNull(value){
+  var isNull=false;
+  if(typeof value === "undefined" || value === null || value === "" ){
+    isNull=true;
+  }
+  return isNull;
 }
 
 function createRowOfContents(){

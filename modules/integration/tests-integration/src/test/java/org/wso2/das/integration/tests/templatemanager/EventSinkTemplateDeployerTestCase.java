@@ -191,9 +191,8 @@ public class EventSinkTemplateDeployerTestCase extends DASIntegrationTest {
     }
 
     /**
-     *
      * @param streamIdCount
-     * @param sleepTime Better to have about 3 to 5 sec @param sleepTime because after each wake up, an unmarshalling operation will happen.
+     * @param sleepTime     Better to have about 3 to 5 sec @param sleepTime because after each wake up, an unmarshalling operation will happen.
      * @param timeout
      * @throws JAXBException
      * @throws InterruptedException

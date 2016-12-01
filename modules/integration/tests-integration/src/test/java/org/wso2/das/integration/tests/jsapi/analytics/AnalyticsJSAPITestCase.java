@@ -26,11 +26,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.analytics.jsservice.beans.AnalyticsSchemaBean;
-import org.wso2.carbon.analytics.jsservice.beans.EventBean;
+import org.wso2.carbon.analytics.jsservice.beans.*;
 import org.wso2.carbon.analytics.jsservice.beans.RecordBean;
 import org.wso2.carbon.analytics.jsservice.beans.ResponseBean;
-import org.wso2.carbon.analytics.jsservice.beans.StreamDefinitionBean;
-import org.wso2.carbon.analytics.jsservice.beans.StreamDefinitionQueryBean;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTable;
 import org.wso2.carbon.analytics.stream.persistence.stub.dto.AnalyticsTableRecord;
 import org.wso2.carbon.automation.test.utils.http.client.HttpRequestUtil;
@@ -41,7 +39,7 @@ import org.wso2.das.analytics.rest.beans.CategoryDrillDownRequestBean;
 import org.wso2.das.analytics.rest.beans.DrillDownPathBean;
 import org.wso2.das.analytics.rest.beans.DrillDownRangeBean;
 import org.wso2.das.analytics.rest.beans.DrillDownRequestBean;
-import org.wso2.das.analytics.rest.beans.JSDrillDownRangeBean;
+import org.wso2.das.analytics.rest.beans.*;
 import org.wso2.das.analytics.rest.beans.QueryBean;
 import org.wso2.das.analytics.rest.beans.SortByFieldBean;
 import org.wso2.das.analytics.rest.beans.SubCategoriesBean;
@@ -52,24 +50,16 @@ import org.wso2.das.integration.common.utils.Utils;
 
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class contains integration tests for Javascript analytics API
  */
 public class AnalyticsJSAPITestCase extends DASIntegrationTest {
-    private static final int ONE_HOUR_IN_MILLISECONDS = 3600000;
-    private Log log = LogFactory.getLog(AnalyticsJSAPITestCase.class);
     public static final String STREAM_NAME = "superTenantSampleStream";
+    private static final int ONE_HOUR_IN_MILLISECONDS = 3600000;
     private static final String STREAM_VERSION = "1.0.0";
     private static final String STREAM_DESCRIPTION = "Sample Description";
-    private Gson gson;
-    private Map<String, String> httpHeaders;
-    private static LogViewerClient logViewerClient;
     private static final int TYPE_CLEAR_INDEX_DATA = 1;
     //    public static final int TYPE_CREATE_TABLE = 2;
 //    public static final int TYPE_DELETE_BY_ID = 3;
@@ -95,6 +85,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     private static final int TYPE_ADD_STREAM_DEFINITION = 22;
     private static final int TYPE_GET_STREAM_DEFINITION = 23;
     private static final int TYPE_PUBLISH_EVENT = 24;
+    private static LogViewerClient logViewerClient;
+    private Log log = LogFactory.getLog(AnalyticsJSAPITestCase.class);
+    private Gson gson;
+    private Map<String, String> httpHeaders;
 
     @BeforeClass(alwaysRun = true)
     protected void init() throws Exception {
@@ -128,9 +122,9 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
         streamDefinitionBean.setCorrelationData(correlationData);
 
         String url = TestConstants.ANALYTICS_JS_ENDPOINT +
-                     "?type=" + TYPE_ADD_STREAM_DEFINITION;
+                "?type=" + TYPE_ADD_STREAM_DEFINITION;
         URL jsapiURL = new URL(url);
-        HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(streamDefinitionBean),httpHeaders);
+        HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(streamDefinitionBean), httpHeaders);
         log.info("response: " + response.getData());
         Assert.assertEquals(response.getResponseCode(), 201, "response code is different");
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -159,6 +153,7 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
             count++;
         }
     }
+
     private AnalyticsTable getAnalyticsTable() {
         AnalyticsTable table = new AnalyticsTable();
         table.setPersist(true);
@@ -317,10 +312,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Check if the table exists or not", dependsOnMethods = "addStreamDefinition")
-    public void tableExists() throws Exception{
+    public void tableExists() throws Exception {
         log.info("Executing JSAPI.tableExists");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_TABLE_EXISTS +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -328,11 +323,11 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by range info", dependsOnMethods = "publishEvent3")
-    public void getByRangeWithoutOptionalParams() throws Exception{
+    public void getByRangeWithoutOptionalParams() throws Exception {
         Thread.sleep(15000);
         log.info("Executing JSAPI.getRecordsByRange - without optional params");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_RANGE +
-                     "&tableName=" + STREAM_NAME + "&timeFrom=undefined&timeTo=undefined&start=undefined&count=undefined";
+                "&tableName=" + STREAM_NAME + "&timeFrom=undefined&timeTo=undefined&start=undefined&count=undefined";
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -340,15 +335,15 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by range info", dependsOnMethods = "getByRangeWithoutOptionalParams")
-    public void getByRangeWithOptionalParams() throws Exception{
+    public void getByRangeWithOptionalParams() throws Exception {
         log.info("Executing JSAPI.getRecordsByRange - With optional params");
         int start = 0;
         int count = 10;
         long from = System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS;
         long to = System.currentTimeMillis() + ONE_HOUR_IN_MILLISECONDS;
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_RANGE +
-                     "&tableName=" + STREAM_NAME + "&timeFrom=" + from + "&timeTo=" + to +
-                     "&start=" + start + "&count=" + count;
+                "&tableName=" + STREAM_NAME + "&timeFrom=" + from + "&timeTo=" + to +
+                "&start=" + start + "&count=" + count;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -356,10 +351,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records by id info", dependsOnMethods = "getByRangeWithOptionalParams", enabled = false)
-    public void getByIds() throws Exception{
+    public void getByIds() throws Exception {
         log.info("Executing JSAPI.getRecordsByIds");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_BY_ID +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         String[] ids = new String[]{"001", "002", "003"};
         HttpResponse response = HttpRequestUtil.doPost(jsapiURL, gson.toJson(ids), httpHeaders);
@@ -372,7 +367,7 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     public void getRecordCount() throws Exception {
         log.info("Executing JSAPI.getRecordsCount");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_RECORD_COUNT +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -384,10 +379,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the search count", dependsOnMethods = "getRecordCount")
-    public void searchCount() throws Exception{
+    public void searchCount() throws Exception {
         log.info("Executing JSAPI.searchCount");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_SEARCH_COUNT +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         QueryBean bean = new QueryBean();
         bean.setQuery("name : AAA");
@@ -410,10 +405,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records which match the search query", dependsOnMethods = "searchCount")
-    public void search() throws Exception{
+    public void search() throws Exception {
         log.info("Executing JSAPI.search");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_SEARCH +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         QueryBean bean = new QueryBean();
         bean.setQuery("name : BBB");
@@ -425,10 +420,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Drilldown records", dependsOnMethods = "search")
-    public void drillDownSearch() throws Exception{
+    public void drillDownSearch() throws Exception {
         log.info("Executing JSAPI.drilldownSearch");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_DRILLDOWN_SEARCH +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         DrillDownRequestBean request = new DrillDownRequestBean();
         List<DrillDownPathBean> paths = new ArrayList<>();
@@ -459,10 +454,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Drilldown records", dependsOnMethods = "drillDownSearch")
-    public void drillDownCategories() throws Exception{
+    public void drillDownCategories() throws Exception {
         log.info("Executing JSAPI.drilldownCategories");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_DRILLDOWN_CATEGORIES +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         CategoryDrillDownRequestBean request = new CategoryDrillDownRequestBean();
         request.setQuery("*:*");
@@ -482,10 +477,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Drilldown records", dependsOnMethods = "drillDownCategories")
-    public void drillDownRanges() throws Exception{
+    public void drillDownRanges() throws Exception {
         log.info("Executing JSAPI.drilldownRanges");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_DRILLDOWN_RANGE_COUNT +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         DrillDownRequestBean request = new DrillDownRequestBean();
         DrillDownRangeBean bean1 = new DrillDownRangeBean();
@@ -508,7 +503,8 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
         Assert.assertEquals(response.getResponseCode(), 200, "Status code is different");
         log.info("Response: " + response.getData());
         Assert.assertFalse(response.getData().contains("[]"));
-        Type rangeListType = new TypeToken<List<JSDrillDownRangeBean>>(){}.getType();
+        Type rangeListType = new TypeToken<List<JSDrillDownRangeBean>>() {
+        }.getType();
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
         List<JSDrillDownRangeBean> rangeBeanList = gson.fromJson(responseBean.getMessage(), rangeListType);
         Assert.assertEquals(rangeBeanList.get(0).getCount(), (double) 2);
@@ -516,10 +512,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the record count", dependsOnMethods = "drillDownRanges")
-    public void getSchema() throws Exception{
+    public void getSchema() throws Exception {
         log.info("Executing JSAPI.getSchema");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_GET_SCHEMA +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         HttpResponse response = Utils.doGet(url, httpHeaders);
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
@@ -530,10 +526,10 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
     }
 
     @Test(groups = "wso2.das", description = "Get the records which match the search query sorted ASC", dependsOnMethods = "getSchema")
-    public void searchWithSortingASC() throws Exception{
+    public void searchWithSortingASC() throws Exception {
         log.info("Executing JSAPI.searchWithSorting");
         String url = TestConstants.ANALYTICS_JS_ENDPOINT + "?type=" + TYPE_SEARCH +
-                     "&tableName=" + STREAM_NAME;
+                "&tableName=" + STREAM_NAME;
         URL jsapiURL = new URL(url);
         QueryBean bean = new QueryBean();
         bean.setQuery("*:*");
@@ -546,8 +542,9 @@ public class AnalyticsJSAPITestCase extends DASIntegrationTest {
         log.info("Response: " + response.getData());
         ResponseBean responseBean = gson.fromJson(response.getData(), ResponseBean.class);
         Assert.assertTrue(responseBean.getStatus().equals("success"));
-        Type listType = new TypeToken<List<RecordBean>>(){}.getType();
-        List< RecordBean> recordList = gson.fromJson(responseBean.getMessage(), listType);
+        Type listType = new TypeToken<List<RecordBean>>() {
+        }.getType();
+        List<RecordBean> recordList = gson.fromJson(responseBean.getMessage(), listType);
         Assert.assertTrue(recordList.get(0).getValue("age").equals(new Double(25)));
         Assert.assertTrue(recordList.get(recordList.size() - 1).getValue("age").equals(new Double(45)));
     }

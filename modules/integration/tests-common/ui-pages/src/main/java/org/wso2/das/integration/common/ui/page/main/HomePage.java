@@ -82,7 +82,7 @@ public class HomePage {
         return new LoginPage(driver, isCloudEnvironment);
     }
 
-    private int findMenuItem(int startIndex, String name, List<WebElement> menuItems){
+    private int findMenuItem(int startIndex, String name, List<WebElement> menuItems) {
         for (int i = startIndex; i < menuItems.size(); i++) {
             WebElement item = menuItems.get(i);
             if (name.equals(item.getText())) {

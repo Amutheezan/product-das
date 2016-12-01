@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class IPCountryCodeUDF {
 
-    public String toCountryCode(String ip){
+    public String toCountryCode(String ip) {
         try {
             String e = System.getProperty("file.separator");
             String dir = System.getProperty("user.dir");
@@ -39,7 +39,7 @@ public class IPCountryCodeUDF {
             return countryCode;
         } catch (IOException exception) {
             exception.printStackTrace();
-           return null;
+            return null;
         }
     }
 }

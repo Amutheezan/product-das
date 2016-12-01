@@ -39,6 +39,7 @@ public class SubCategoriesBean {
     public SubCategoriesBean() {
 
     }
+
     public SubCategoriesBean(String[] path,
                              Map<String, Double> categories) {
         this.categoryPath = path;
@@ -50,14 +51,6 @@ public class SubCategoriesBean {
         this.categoryPath = categoryPath;
         this.categoryCount = categoryCount;
         this.categories = categories;
-    }
-
-    public void setCategories(Map<String, Double> categories) {
-        this.categories = categories;
-    }
-
-    public void setCategoryPath(String[] categoryPath) {
-        this.categoryPath = categoryPath;
     }
 
     public int getCategoryCount() {
@@ -72,7 +65,15 @@ public class SubCategoriesBean {
         return categoryPath;
     }
 
+    public void setCategoryPath(String[] categoryPath) {
+        this.categoryPath = categoryPath;
+    }
+
     public Map<String, Double> getCategories() {
         return categories;
+    }
+
+    public void setCategories(Map<String, Double> categories) {
+        this.categories = categories;
     }
 }

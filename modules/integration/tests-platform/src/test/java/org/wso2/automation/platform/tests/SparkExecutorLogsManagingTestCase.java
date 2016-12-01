@@ -39,8 +39,8 @@ public class SparkExecutorLogsManagingTestCase extends DASIntegrationTest {
     public void checkOutputLog() throws Exception {
 
         String artifactsLocation = FrameworkPathUtil.getSystemResourceLocation() + File.separator
-                                   + "clustering" + File.separator + "logging" +
-                                   File.separator + "log4j.properties";
+                + "clustering" + File.separator + "logging" +
+                File.separator + "log4j.properties";
 
         String dataserviceConfigLocation =
                 FrameworkPathUtil.getCarbonHome() + File.separator + "repository" + File.separator + "conf" + File
@@ -57,7 +57,7 @@ public class SparkExecutorLogsManagingTestCase extends DASIntegrationTest {
         File[] executorDirs = workDir.listFiles();
         assert executorDirs != null;
         File file = new File(executorDirs[executorDirs.length - 1].getAbsolutePath() + File.separator
-                             + "sout");
+                + "sout");
         boolean result = true;
 
         Scanner scanner = new Scanner(file);
@@ -70,7 +70,7 @@ public class SparkExecutorLogsManagingTestCase extends DASIntegrationTest {
         }
 
         Assert.assertTrue(result, "Log output contains org.apache.spark INFO logs, hence " +
-                                  "failing the test");
+                "failing the test");
 
     }
 }

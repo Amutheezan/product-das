@@ -38,7 +38,7 @@ public class AnalyticsSchemaBean {
     @XmlElement(name = "primaryKeys", required = true)
     private List<String> primaryKeys;
 
-    public AnalyticsSchemaBean(){
+    public AnalyticsSchemaBean() {
 
     }
 

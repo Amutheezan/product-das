@@ -21,16 +21,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.webservice.stub.AnalyticsWebServiceStub;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsAggregateRequest;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsDrillDownRequestBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.AnalyticsSchemaBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.CategoryDrillDownRequestBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.EventBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.RecordBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.SortByFieldBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.StreamDefinitionBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.SubCategoriesBean;
-import org.wso2.carbon.analytics.webservice.stub.beans.ValuesBatchBean;
+import org.wso2.carbon.analytics.webservice.stub.beans.*;
 
 public class AnalyticsWebServiceClient {
 
@@ -139,7 +130,7 @@ public class AnalyticsWebServiceClient {
     }
 
     public RecordBean[] search(String tableName, String query, int start, int count, String[] columns, SortByFieldBean[] fieldBeans) throws Exception {
-        RecordBean[] result = webServiceStub.searchWithSorting(tableName, query, start, count, columns, fieldBeans );
+        RecordBean[] result = webServiceStub.searchWithSorting(tableName, query, start, count, columns, fieldBeans);
         if (result == null) {
             return new RecordBean[0];
         }
@@ -192,5 +183,5 @@ public class AnalyticsWebServiceClient {
     public boolean isPaginationSupported(String tableName) throws Exception {
         return webServiceStub.isPaginationSupported(webServiceStub.getRecordStoreNameByTable(tableName));
     }
-    
+
 }

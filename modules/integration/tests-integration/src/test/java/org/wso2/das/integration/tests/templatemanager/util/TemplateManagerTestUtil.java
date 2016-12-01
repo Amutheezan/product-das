@@ -18,7 +18,6 @@ package org.wso2.das.integration.tests.templatemanager.util;
 
 import org.wso2.carbon.analytics.eventsink.AnalyticsEventStore;
 import org.wso2.carbon.integration.common.utils.mgt.ServerConfigurationManager;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

@@ -97,7 +97,7 @@ public class WebAppListPage {
 
                 Assert.assertEquals(driver.findElement(By.id("messagebox-info")).getText()
                         , "Successfully deleted selected applications", "Web Application deletion failed" +
-                        ". Message box content mis matched");
+                                ". Message box content mis matched");
                 driver.findElement(By.xpath("/html/body/div[3]/div[2]/button")).click();
                 return true;
             }

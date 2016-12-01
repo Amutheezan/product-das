@@ -17,7 +17,8 @@
 */
 package org.wso2.das.integration.tests.remoteapi;
 
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.Test;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.integration.common.utils.mgt.ServerConfigurationManager;

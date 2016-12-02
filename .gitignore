@@ -8,3 +8,4 @@ target
 *.ipr
 .idea
 .DS_Store
+.gitignore

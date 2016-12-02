@@ -1,0 +1,118 @@
+<%
+(function () {
+	var TYPE = "type";
+	var CONTENT_TYPE_JSON = "application/json";
+	var AUTHORIZATION_HEADER = "Authorization";
+	var USER_TOKEN = "user";
+	var USERNAME = "username";
+	var DOMAIN = "domain";
+	var HTTP_USER_NOT_AUTHENTICATED = 403;
+	var HTTP_INTERNAL_ERROR = 500;
+	var log = new Log();
+	var carbon = require('carbon');
+	var configs = require('/configs/designer.json');
+	var utils = require('/modules/utils.js');
+	var server = new carbon.server.Server();
+	var timeRangeUtil = Packages.org.wso2.analytics.esb.util.TimeRangeUtils;
+	var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
+	var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
+	var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
+	var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
+	var EventPublisherConstants = Packages.org.wso2.carbon.event.publisher.core.config.EventPublisherConstants;
+	var eventPublisherService = carbon.server.osgiService('org.wso2.carbon.event.publisher.core.EventPublisherService');
+  var eventStreamService = carbon.server.osgiService('org.wso2.carbon.event.stream.core.EventStreamService');
+
+	var cacheTimeoutSeconds = 5;
+	var loggedInUser = null;
+	var tenantId = -1;
+	var superTenantId = -1234;
+
+	if (configs.cacheTimeoutSeconds) {
+		cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
+	}
+	var cacheSizeBytes = 1024 * 1024 * 1024;
+	if (configs.cacheSizeBytes) {
+		cacheSizeBytes = parseInt(configs.cacheSizeBytes);
+	}
+
+	response.contentType = CONTENT_TYPE_JSON;
+
+	var authParam = request.getHeader(AUTHORIZATION_HEADER);
+	if (authParam != null) {
+		credentials = JSUtils.authenticate(authParam);
+		loggedInUser = credentials[0];
+	} else {
+		var token = session.get(USER_TOKEN);
+		if (token != null) {
+			loggedInUser = token[USERNAME] + "@" + token[DOMAIN] ;
+		} else {
+			log.error("user is not authenticated!");
+			response.status = HTTP_USER_NOT_AUTHENTICATED;
+			print('{ "status": "Failed", "message": "User is not authenticated." }');
+			return;
+		}
+	}
+	var user = carbon.server.tenantUser(loggedInUser);
+	tenantId = user.tenantId;
+
+	var cache = application.get("AnalyticsWebServiceCache");
+	if (cache == null) {
+		cache = new AnalyticsCache(cacheTimeoutSeconds, cacheSizeBytes);
+		application.put("AnalyticsWebServiceCache", cache);
+	}
+
+	var connector = new AnalyticsCachedJSServiceConnector(cache);
+
+	var type = 0;
+	var typeParam = request.getParameter(TYPE);
+	log.info(typeParam);
+	if (typeParam != null) {
+		type = parseInt(typeParam);
+	}
+	if (type == 0) {
+		log.error("operation type is not specified!");
+		response.status = HTTP_INTERNAL_ERROR;
+		print('{ "status": "Failed", "message": "Operation type is not specified" }');
+		return;
+	}
+
+	var content = request.getContent();
+	if (content != '' && content != null) {
+		if (log.isDebugEnabled()) {
+			log.debug("value of content: " + stringify(contentAsString));
+		}
+	}
+	if (connector != null && loggedInUser != null) {
+	var result = [];
+	var temp=[];
+
+
+
+
+
+
+
+
+
+
+	
+	if (result != null) {
+	if (log.isDebugEnabled()) {
+		log.debug("value of result: " + result);
+	}
+
+
+
+
+		var finalResult = {
+			status: "success",
+			message: result
+		}
+	print(finalResult);
+	}
+	}
+
+
+
+}());
+%>

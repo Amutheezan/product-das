@@ -8,7 +8,9 @@
                     serverRole="DataAnalyticsServer"/>
         <dependency artifact="EventstreamWaitTimeOutputStream" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>
-        <dependency artifact="Eventstore" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventstoreHL7" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventstoreDiseaseAlerting" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="EventstoreWaitTimeAlerting" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="EventpublisherDiseaseAlert" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>

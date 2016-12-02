@@ -1,0 +1,318 @@
+<%
+(function () {
+	var TYPE = "type";
+	var CONTENT_TYPE_JSON = "application/json";
+	var AUTHORIZATION_HEADER = "Authorization";
+	var USER_TOKEN = "user";
+	var USERNAME = "username";
+	var DOMAIN = "domain";
+	var HTTP_USER_NOT_AUTHENTICATED = 403;
+	var HTTP_INTERNAL_ERROR = 500;
+	var log = new Log();
+	var carbon = require('carbon');
+	var configs = require('/configs/designer.json');
+	var utils = require('/modules/utils.js');
+	var server = new carbon.server.Server();
+	var timeRangeUtil = Packages.org.wso2.analytics.esb.util.TimeRangeUtils;
+	var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
+	var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
+	var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
+	var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
+	var cacheTimeoutSeconds = 5;
+	var loggedInUser = null;
+	var tenantId = -1;
+	var superTenantId = -1234;
+
+
+	var SUMMARY_CHART=1;
+	var SEARCH_TABLE=2;
+	var SEARCH_SPECIFIC_MESSAGE=20;
+	var NOTIFY_DISEASE=3;
+	var NOTIFY_WAIT_TIME=30;
+
+	if (configs.cacheTimeoutSeconds) {
+		cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
+	}
+	var cacheSizeBytes = 1024 * 1024 * 1024;
+	if (configs.cacheSizeBytes) {
+		cacheSizeBytes = parseInt(configs.cacheSizeBytes);
+	}
+
+	response.contentType = CONTENT_TYPE_JSON;
+
+	var authParam = request.getHeader(AUTHORIZATION_HEADER);
+	if (authParam != null) {
+		credentials = JSUtils.authenticate(authParam);
+		loggedInUser = credentials[0];
+	} else {
+		var token = session.get(USER_TOKEN);
+		if (token != null) {
+			loggedInUser = token[USERNAME] + "@" + token[DOMAIN] ;
+		} else {
+			log.error("user is not authenticated!");
+			response.status = HTTP_USER_NOT_AUTHENTICATED;
+			print('{ "status": "Failed", "message": "User is not authenticated." }');
+			return;
+		}
+	}
+	var user = carbon.server.tenantUser(loggedInUser);
+	tenantId = user.tenantId;
+
+	var cache = application.get("AnalyticsWebServiceCache");
+	if (cache == null) {
+		cache = new AnalyticsCache(cacheTimeoutSeconds, cacheSizeBytes);
+		application.put("AnalyticsWebServiceCache", cache);
+	}
+
+	var connector = new AnalyticsCachedJSServiceConnector(cache);
+
+	var type = 0;
+	var typeParam = request.getParameter(TYPE);
+	log.info(typeParam);
+	if (typeParam != null) {
+		type = parseInt(typeParam);
+	}
+	if (type == 0) {
+		log.error("operation type is not specified!");
+		response.status = HTTP_INTERNAL_ERROR;
+		print('{ "status": "Failed", "message": "Operation type is not specified" }');
+		return;
+	}
+
+	var content = request.getContent();
+	if (content != '' && content != null) {
+		if (log.isDebugEnabled()) {
+			log.debug("value of content: " + stringify(contentAsString));
+		}
+	}
+	
+	if (connector != null && loggedInUser != null) {
+	var result = [];
+	var temp=[];
+	var query = null;
+	var resp = null;
+		switch(type){
+			case SUMMARY_CHART:
+			{
+				var timeFrom = request.getParameter("timeFrom");
+				var timeTo = request.getParameter("timeTo");
+				var msgType = request.getParameter("msgType");
+				var tableSuffix = request.getParameter("suf");
+				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+				if(tableSuffix == null){
+					tableSuffix="";
+				}
+				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE_PER" + timeUnit + tableSuffix;
+				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
+				query = stringify({
+					query: "Type:" + msgType + " AND timestamp : [" + timeFrom + " TO " + timeTo + "]",
+					"start": 0, 
+					"count": 200
+				});
+				resp = connector.search(superTenantId, tableName, query);
+
+					var dataPoints = [];
+					try {
+						dataPoints = JSON.parse(resp.getMessage());
+					} catch (error) {
+						log.error(error);
+					}
+
+					for (var i = 0; i < dataPoints.length; i++) {
+						var obj = dataPoints[i];
+						if (obj != null && obj.values != null) {
+							if (obj != null) {
+								result.push({
+									"timestamp": obj.values.timestamp,
+									"msgCount": obj.values.msgCount,
+									"SubType" : obj.values.SubType
+
+								});
+							}
+						}
+					}
+
+		break;
+			 }
+
+			case SEARCH_TABLE:
+			{
+				var timeFrom = request.getParameter("timeFrom");
+				var timeTo = request.getParameter("timeTo");
+				var querytxt = request.getParameter("query");
+				var maxrows = request.getParameter("maxRows");
+				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE";
+				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
+				query = stringify({
+					query: "timestamp : [" + timeFrom + " TO " + timeTo + "] " + querytxt,
+					"start": 0, 
+					"count": maxrows
+				});
+				resp = connector.search(superTenantId, tableName, query);
+    				var count = connector.searchCount(superTenantId,  tableName, query);
+    				var limit = count.getMessage();
+
+
+					var dataPoints = [];
+					try {
+						dataPoints = JSON.parse(resp.getMessage());
+						log.info(dataPoints);
+					} catch (error) {
+						log.error(error);
+					}
+					for (var i = 0; i < dataPoints.length; i++) {
+						var obj = dataPoints[i];
+						log.info(obj);
+						if (obj != null && obj.values != null) {
+							if (obj != null) {
+								temp.push(obj.values);
+							}
+						}
+					}
+					result.push({"draw" : 1,
+					"recordsFiltered" : limit,
+     		  					"recordsTotal" : limit,
+     		  					"data" : temp});
+					
+
+					break;
+			 }
+			 case SEARCH_SPECIFIC_MESSAGE:
+			{
+				var timeFrom = request.getParameter("timeFrom");
+				var timeTo = request.getParameter("timeTo");
+				var querytxt = request.getParameter("query");
+				var correlation_activity_id = request.getParameter("correlation_activity_id");
+				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE";
+				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
+				query = stringify({
+					query: "timestamp : [" + timeFrom + " TO " + timeTo + "] " + querytxt + "AND correlation_activity_id : " + correlation_activity_id,
+					"start": 0, 
+					"count": 1000
+				});
+				resp = connector.search(superTenantId, tableName, query);
+
+
+
+					var dataPoints = [];
+					try {
+						dataPoints = JSON.parse(resp.getMessage());
+						log.info(dataPoints);
+					} catch (error) {
+						log.error(error);
+					}
+					for (var i = 0; i < dataPoints.length; i++) {
+						var obj = dataPoints[i];
+						log.info(obj);
+						if (obj != null && obj.values != null) {
+							if (obj != null) {
+								result.push(obj.values);
+							}
+						}
+					}
+					break;
+			 }
+			 
+			 			case NOTIFY_DISEASE:
+			{
+			
+				var tableName = "DISEASEALERTING";
+				query = stringify({
+					query: "",
+					"start": 0, 
+					"count": 100
+				});
+				resp = connector.search(superTenantId, tableName, query);
+    				var count = connector.searchCount(superTenantId,  tableName, query);
+    				var limit = count.getMessage();
+
+
+					var dataPoints = [];
+					try {
+						dataPoints = JSON.parse(resp.getMessage());
+						log.info(dataPoints);
+					} catch (error) {
+						log.error(error);
+					}
+					for (var i = 0; i < dataPoints.length; i++) {
+						var obj = dataPoints[i];
+						log.info(obj);
+						if (obj != null && obj.values != null) {
+							if (obj != null) {
+								temp.push(obj.values);
+							}
+						}
+					}
+					result.push({"draw" : 1,
+					"recordsFiltered" : limit,
+     		  					"recordsTotal" : limit,
+     		  					"data" : temp});
+					
+
+					break;
+			 }
+			 case NOTIFY_WAIT_TIME:
+			{
+			
+				var tableName = "WAITTIMESALERTING";
+				query = stringify({
+					query: "",
+					"start": 0, 
+					"count": 100
+				});
+				resp = connector.search(superTenantId, tableName, query);
+    				var count = connector.searchCount(superTenantId,  tableName, query);
+    				var limit = count.getMessage();
+
+
+					var dataPoints = [];
+					try {
+						dataPoints = JSON.parse(resp.getMessage());
+						log.info(dataPoints);
+					} catch (error) {
+						log.error(error);
+					}
+					for (var i = 0; i < dataPoints.length; i++) {
+						var obj = dataPoints[i];
+						log.info(obj);
+						if (obj != null && obj.values != null) {
+							if (obj != null) {
+								temp.push(obj.values);
+							}
+						}
+					}
+					result.push({"draw" : 1,
+					"recordsFiltered" : limit,
+     		  					"recordsTotal" : limit,
+     		  					"data" : temp});
+					
+
+					break;
+			 }
+			 
+			default :
+			{
+				result = '{ "status": "Failed", "message": "Unidentified operation" }';
+				break;
+			}
+		     }
+			       
+			if (result != null) {
+			if (log.isDebugEnabled()) {
+				log.debug("value of result: " + result);
+			}
+
+				var finalResult = {
+					status: "success",
+					message: result
+				}
+			print(finalResult);
+			}
+
+		}
+}());
+
+
+%>

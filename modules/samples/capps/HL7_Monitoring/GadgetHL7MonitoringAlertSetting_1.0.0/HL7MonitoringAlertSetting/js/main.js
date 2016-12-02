@@ -1,4 +1,5 @@
-var CONTEXT = "/portal/apis/notificationSetting";
+var gadgetLocation = "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon";
+var CONTEXT = gadgetLocation + "/jaggery-api/notificationSetting.jag";
 var DEFAULT_DISEASE_ALERT_LIMIT=1000;
 var DEFAULT_WAITINGTIME_ALERT_LIMIT=1000;
 var TYPE_ALERT_SET=1;

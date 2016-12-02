@@ -17,8 +17,8 @@
 /**
  * This Javascript module groups utility methods that are being used by all the gadgets
  */
-
-var CONTEXT = "/portal/apis/hl7";
+var gadgetLocation = "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon";
+var CONTEXT = gadgetLocation + "/jaggery-api/hl7.jag";
 var DASHBOARD_NAME = parent.ues.global.dashboard.id;
 //console.log(DASHBOARD_NAME);
 var BASE_URL = getDashboardBaseUrl();

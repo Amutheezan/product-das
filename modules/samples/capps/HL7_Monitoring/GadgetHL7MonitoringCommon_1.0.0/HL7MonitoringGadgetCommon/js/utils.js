@@ -12,8 +12,10 @@ function getQueryString() {
 }
 
 function fetchData(params, callback, error) {
+var gadgetLocation = "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon";
+var CONTEXT = gadgetLocation + "/jaggery-api/hl7.jag";
     $.ajax({
-        url: "/portal/apis/hl7?msgType=" + params.msgType + "&timeFrom=" + params.timeFrom + "&timeTo=" + params.timeTo,
+        url: CONTEXT+"?msgType=" + params.msgType + "&timeFrom=" + params.timeFrom + "&timeTo=" + params.timeTo,
         type: "GET",
         success: function(data) {
             callback(data);

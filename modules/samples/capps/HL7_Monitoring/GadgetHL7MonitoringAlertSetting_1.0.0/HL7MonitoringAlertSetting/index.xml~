@@ -25,11 +25,11 @@
         <body>
           <div class="form-group col-xs-4">
     <label for="diseaseAlert">Disease Alert Limit:</label>
-    <input type="text" class="form-control input-sm" id="diseaseAlert" value="1000">
+    <input type="text" class="form-control input-sm" id="diseaseAlert">
   </div>
   <div class="form-group col-xs-4">
     <label for="waitTimeAlert">Wait Time Alert Limit:</label>
-    <input type="text" class="form-control input-sm" id="waitTimeAlert" value="1000">
+    <input type="text" class="form-control input-sm" id="waitTimeAlert">
   </div><div class="form-group col-xs-4 add-padding-2x">    <button id="update" class="btn btn-primary btn-lg">Update Setting</button> </div>
 </div>
 

@@ -1,41 +1,58 @@
-var gadgetLocation = "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon";
-var CONTEXT = gadgetLocation + "/jaggery-api/notificationSetting.jag";
+var TYPE_ALERT_LIMIT_UPDATE=31;
+var TYPE_GET_CURRENT_EXECUTION_PLAN=32
 var DEFAULT_DISEASE_ALERT_LIMIT=1000;
 var DEFAULT_WAITINGTIME_ALERT_LIMIT=1000;
-var TYPE_ALERT_SET=1;
-var TYPE_ALERT_UNSET=2;
-
-var diseaseAlertLimit=0;
-var waitingTimeAlertLimit=0;
-$(function(){
+var url= "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon/jaggery-api/hl7.jag";
 var type=null;
-$("#set").click(function(){
-type=TYPE_ALERT_SET;
-diseaseAlertLimit=$('#diseaseAlert').val()
-waitingTimeAlertLimit=$('#waitingTimeAlert').val();
-if(isNull(diseaseAlertLimit)){
-  diseaseAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
-}
-if(isNull(waitingTimeAlertLimit)){
-  waitingTimeAlertLimit=DEFAULT_WAITINGTIME_ALERT_LIMIT;
-}
-var params={ type:type,
-  diseaseAlertLimit:diseaseAlertLimit,
-        waitingTimeAlertLimit:waitingTimeAlertLimit
-      }
-      fetchData(CONTEXT,params,onData,onError);
+var diseaseAlertLimit=0;
+var waitTimeAlertLimit=0;
+
+$(function(){
+type=TYPE_GET_CURRENT_EXECUTION_PLAN;
+$.ajax({
+    url: url +"?type=" + type,
+    type: "GET",
+    success: function(data) {
+    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
+    $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]);
+
+    },
+    error: function(data){
+    }
+
 });
 
-$("#clear").click(function(){
-  type=TYPE_ALERT_UNSET;
-  var params={ type:type
+$("#update").click(function(){
+  diseaseAlertLimit=$('#diseaseAlert').val()
+  waitTimeAlertLimit=$('#waitTimeAlert').val();
+  createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit);
+});
+
+
+});
+
+function createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit){
+  type=TYPE_ALERT_LIMIT_UPDATE;
+  if(isNull(diseaseAlertLimit)){
+    diseaseAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
+  }
+  if(isNull(waitTimeAlertLimit)){
+    waitTimeAlertLimit=DEFAULT_WAITINGTIME_ALERT_LIMIT;
+  }
+    var params={ type:type,
+    diseaseAlertLimit:diseaseAlertLimit,
+          waitTimeAlertLimit:waitTimeAlertLimit
         }
-        fetchData(CONTEXT,params,onData,onError);
+      $.ajax({
+          url: url +"?type=" + params.type + "&diseaseAlertLimit=" + params.diseaseAlertLimit + "&waitTimeAlertLimit=" + params.waitTimeAlertLimit,
+          type: "GET",
+      });
 
-});
+}
 
-
-});
+function setValues(data){
+  console.log(data+" is the data");
+}
 
 function isNull(value){
   var isNull=false;
@@ -43,28 +60,4 @@ function isNull(value){
     isNull=true;
   }
   return isNull;
-}
-
-function fetchData(context,params, callback, error) {
-  var url = "?";
-  for (var param in params) {
-      url = url + param + "=" + params[param] + "&";
-  }
-  $.ajax({
-      url: context + url,
-      type: "GET",
-      success: function(data) {
-          callback(data);
-      },
-      error: function(msg) {
-          error(msg);
-      }
-  });
-
-}
-
-function onData(data){
-}
-
-function onError(data){
 }

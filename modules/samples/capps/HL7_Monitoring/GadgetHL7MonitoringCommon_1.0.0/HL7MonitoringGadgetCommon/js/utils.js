@@ -26,3 +26,10 @@ var CONTEXT = gadgetLocation + "/jaggery-api/hl7.jag";
     });
 
 }
+function isNull(value){
+  var isNull=false;
+  if(typeof value === "undefined" || value === null || value === "" ){
+    isNull=true;
+  }
+  return isNull;
+}

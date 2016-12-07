@@ -35,6 +35,7 @@
                     serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetHL7MonitoringAlertTable" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ExecutionPlan" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="DataPurging" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>

@@ -370,7 +370,7 @@ function getExecutionPlan(){
 	+"convert(esbAnalytics:getSecondStartingTime(timestamp), 'long') as timestamp"+"\n"
 	+"group by City,Province,Country,Disease"+"\n"
 	+"insert into diseaseAlertTemp;"+"\n"
-	+"from diseaseAlertTemp[msgCount > $diseaseAlertLimit  " + "]"+"\n"
+	+"from diseaseAlertTemp[msgCount > $diseaseAlertLimit  " + " ]"+"\n"
 	+"select City,Province,Country,Disease,timestamp"+"\n"
 	+"insert into diseaseAlerting;"+"\n"
 	return temp;

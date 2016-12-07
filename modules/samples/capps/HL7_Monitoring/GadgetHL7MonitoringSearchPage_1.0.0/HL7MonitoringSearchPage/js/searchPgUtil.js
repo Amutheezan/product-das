@@ -90,7 +90,6 @@ function LuceneFy(operValue,attrValue,equaValue,value){
   }
   return formattedEqua
 }
-
 function isNull(value){
   var isNull=false;
   if(typeof value === "undefined" || value === null || value === "" ){
@@ -98,9 +97,7 @@ function isNull(value){
   }
   return isNull;
 }
-
 function createRowOfContents(){
-  if(COUNTER < 600){
     $('#addAttri').append('<div id="subAttri_0'+COUNTER+'" class="col-xs-12 add-padding-1x search-if-row"></div>');
     generateDynamicCombo(OPER_TYPES,COUNTER,"type-oper",1,1);
     generateDynamicCombo(ATTR_TYPES,COUNTER,"type-attr",2,5);
@@ -108,10 +105,6 @@ function createRowOfContents(){
     generateDynamicTextBox(COUNTER);
     generateDynamicButton(COUNTER);
      COUNTER++;
-  }
-}
-function deleteRowOfContents(){
-// ACTION NEEDS TO PERFORM
 }
 
 function getComboList(Content,href,role){

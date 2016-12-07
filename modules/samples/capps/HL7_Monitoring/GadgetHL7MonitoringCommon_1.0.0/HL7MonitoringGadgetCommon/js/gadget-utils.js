@@ -20,9 +20,7 @@
 var gadgetLocation = "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon";
 var CONTEXT = gadgetLocation + "/jaggery-api/hl7.jag";
 var DASHBOARD_NAME = parent.ues.global.dashboard.id;
-//console.log(DASHBOARD_NAME);
 var BASE_URL = getDashboardBaseUrl();
-//console.log(BASE_URL);
 
 var TYPE_LANDING = "landing";
 var TYPE_SUMMARY="summary";
@@ -68,6 +66,7 @@ var COLOR_ORANGE="#FF8C00";
 var COLOR_OLIVE="#808000";
 var COLOR_CYAN="#008B8B";
 var COLOR_MAROON="#800000";
+
 
 var PARENT_WINDOW = window.parent.document;
 function getDashboardBaseUrl() {
@@ -157,7 +156,6 @@ function GadgetUtil() {
         if (qs.timeFrom != null) {
             timeFrom = qs.timeFrom;
         }
-      //  console.log(timeFrom);
         return timeFrom;
     };
 
@@ -167,7 +165,6 @@ function GadgetUtil() {
         if (qs.timeTo != null) {
             timeTo = qs.timeTo;
         }
-      //  console.log(timeTo);
         return timeTo;
     };
 
@@ -332,11 +329,9 @@ function GadgetUtil() {
                 return decodeURIComponent(s.replace(pl, " "));
             },
             query = this.getUrlParameters(),
-            //console.log(query);
             urlParams = {};
         while (match = search.exec(query))
             urlParams[decode(match[1])] = decode(match[2]).split(',');
-        //console.log(urlParams);
         return urlParams;
     }
 }
@@ -372,6 +367,15 @@ function getDropDownMenu(Content,href,role){
   }
   return dropDownListTemp;
 };
+
+function isNull(value){
+  var isNull=false;
+  if(typeof value === "undefined" || value === null || value === "" ){
+    isNull=true;
+  }
+  return isNull;
+}
+
 
 $(document).ready(function() {
     if(typeof $.fn.nanoScroller == 'function'){

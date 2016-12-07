@@ -97,21 +97,6 @@ if(type == TYPE_NOTIFY_DISEASE){
     }
     });
 
-    $('#tblMessages').on('click', 'tbody tr', function() {
-        var id = $(this).find("td:first").html();
-        if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-        } else {
-            oTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
-        var baseUrl = NOTIFY_URL;
-        if (gadgetUtil.isSharedDashboard()) {
-            baseUrl += SHARED_PARAM;
-        } else {
-            baseUrl += "?";
-        }
-        parent.window.location =  baseUrl + PARAM_ID + "=" + id;
-    });
+  
 
 });

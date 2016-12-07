@@ -1,5 +1,3 @@
-var CONTEXT = "/portal/apis/data";
-
 function getQueryString() {
     var queryStringKeyValue = window.parent.location.search.replace('?', '').split('&');
     var qsJsonObject = {};

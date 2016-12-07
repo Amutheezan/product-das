@@ -105,7 +105,7 @@ if(type == TYPE_NOTIFY_DISEASE){
             oTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
-        var baseUrl = MESSAGE_PAGE_URL;
+        var baseUrl = NOTIFY_URL;
         if (gadgetUtil.isSharedDashboard()) {
             baseUrl += SHARED_PARAM;
         } else {

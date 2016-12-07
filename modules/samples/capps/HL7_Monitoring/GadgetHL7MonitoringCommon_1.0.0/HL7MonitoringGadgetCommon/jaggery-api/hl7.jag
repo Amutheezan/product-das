@@ -297,9 +297,11 @@
 			 var setDiseaseAlert=false;
 			 var diseaseAlertLimit=1000;
 			 var waitTimeAlertLimit=1000;
+			 var initialize="Update Setting"
 				try{
 				 		tempExecutionPlan=eventProcessorService.getActiveExecutionPlan("hl7alerts")
 				}catch(e){
+				    initialize="Initialize Setting"
 						log.error(e.message);
 				}
 				if(isNull(tempExecutionPlan)== false){
@@ -315,7 +317,7 @@
 					 		 }
 			 		 }
 				}
-				result.push({"diseaseAlertLimit": diseaseAlertLimit, "waitTimeAlertLimit": waitTimeAlertLimit});
+				result.push({"diseaseAlertLimit": diseaseAlertLimit, "waitTimeAlertLimit": waitTimeAlertLimit,"initialize":initialize});
 				break;
 			 }
 

@@ -15,6 +15,7 @@ $.ajax({
     success: function(data) {
     $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
     $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]);
+    $("#update").html(data.message[0]["initialize"]);
 
     },
     error: function(data){

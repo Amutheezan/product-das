@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<eventPublisher name="WaitingTimeAlertPublisher" statistics="enable"
-                trace="enable" xmlns="http://wso2.org/carbon/eventpublisher">
-    <from streamName="waitTimeAlerting" version="1.0.0"/>
-    <mapping customMapping="disable" type="text"/>
-    <to eventAdapterType="logger">
-        <property name="uniqueId">WaitTimeAlerting</property>
-    </to>
-</eventPublisher>

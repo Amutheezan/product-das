@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<artifact name="GadgetHL7MonitoringDynamicDropDownMenu" version="1.0.0" type="dashboards/gadget"
-          serverRole="DataAnalyticsServer">
-    <file>HL7MonitoringDynamicDropDownMenu</file>
-</artifact>
-

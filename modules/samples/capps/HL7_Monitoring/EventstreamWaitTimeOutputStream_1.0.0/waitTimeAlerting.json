@@ -1,0 +1,19 @@
+{
+  "streamId": "waitTimeAlerting:1.0.0",
+  "name": "waitTimeAlerting",
+  "version": "1.0.0",
+  "nickName": "",
+  "description": "",
+  "metaData": [],
+  "correlationData": [],
+  "payloadData": [
+    {
+      "name": "waitingTime",
+      "type": "LONG"
+    },
+    {
+      "name": "registeredTime",
+      "type": "LONG"
+    }
+  ]
+}

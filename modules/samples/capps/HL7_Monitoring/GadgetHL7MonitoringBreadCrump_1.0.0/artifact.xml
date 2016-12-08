@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<artifact name="GadgetHL7MonitoringBreadCrump" version="1.0.0" type="dashboards/gadget"
+          serverRole="DataAnalyticsServer">
+    <file>HL7MonitoringBreadCrump</file>
+</artifact>
+

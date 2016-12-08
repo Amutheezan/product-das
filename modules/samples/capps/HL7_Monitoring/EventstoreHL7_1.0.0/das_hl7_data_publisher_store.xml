@@ -1986,12 +1986,12 @@
             <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>_MSH.Date/TimeOfMessage</Name>
+            <Name>_MSH.Date/TimeofMessage</Name>
             <IsFacet>false</IsFacet>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>LONG</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>_MSH.EncodingCharacters</Name>

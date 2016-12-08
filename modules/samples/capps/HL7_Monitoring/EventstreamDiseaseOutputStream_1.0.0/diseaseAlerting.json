@@ -6,13 +6,21 @@
   "description": "",
   "metaData": [],
   "correlationData": [],
-  "payloadData": [
+    "payloadData": [
+    {
+      "name": "Address",
+      "type": "STRING"
+    },
     {
       "name": "City",
       "type": "STRING"
     },
     {
-      "name": "Province",
+      "name": "State",
+      "type": "STRING"
+    },
+    {
+      "name": "ZipCode",
       "type": "STRING"
     },
     {
@@ -22,6 +30,10 @@
     {
       "name": "Disease",
       "type": "STRING"
+    },
+    {
+      "name": "msgCount",
+      "type": "LONG"
     },
     {
       "name": "timestamp",

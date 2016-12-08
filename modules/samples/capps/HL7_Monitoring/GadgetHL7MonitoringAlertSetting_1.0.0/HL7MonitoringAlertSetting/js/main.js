@@ -13,7 +13,7 @@ $.ajax({
     url: url +"?type=" + type,
     type: "GET",
     success: function(data) {
-    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
+    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]/1000);
     $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]);
     $("#update").html(data.message[0]["initialize"]);
 
@@ -34,11 +34,13 @@ $("#update").click(function(){
 
 function createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit){
   type=TYPE_ALERT_LIMIT_UPDATE;
-  if(isNull(diseaseAlertLimit)){
+  if(isNull(diseaseAlertLimit) || diseaseAlertLimit <= 0){
     diseaseAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
+    $("#diseaseAlert").val(DEFAULT_DISEASE_ALERT_LIMIT);
   }
-  if(isNull(waitTimeAlertLimit)){
+  if(isNull(waitTimeAlertLimit || waitTimeAlertLimit <= 0)){
     waitTimeAlertLimit=DEFAULT_WAITINGTIME_ALERT_LIMIT;
+    $("#waitTimeAlert").val(DEFAULT_WAITINGTIME_ALERT_LIMIT);
   }
     var params={ type:type,
     diseaseAlertLimit:diseaseAlertLimit,
@@ -47,6 +49,14 @@ function createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit){
       $.ajax({
           url: url +"?type=" + params.type + "&diseaseAlertLimit=" + params.diseaseAlertLimit + "&waitTimeAlertLimit=" + params.waitTimeAlertLimit,
           type: "GET",
+ 	 success: function(data) {
+    $("#update").html(data.message[0]["initialize"]);
+
+    },
+    error: function(data){
+    }
+
+          
       });
 
 }

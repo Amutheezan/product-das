@@ -1,0 +1,14 @@
+{
+  "id": "map",
+  "title": "map",
+  "type": "gadget",
+  "category": "Widgets",
+  "thumbnail": "gadget/map/index.png",
+  "data": {
+    "url": "gadget/map/index.xml"
+  },
+  "styles": {
+    "borders": false,
+    "title": false
+  }
+}

@@ -19,10 +19,6 @@
       "name": "formattedAddress",
       "type": "STRING"
     },
-      {
-      "name": "Disease",
-      "type": "STRING"
-    },
     {
       "name": "msgCount",
       "type": "LONG"

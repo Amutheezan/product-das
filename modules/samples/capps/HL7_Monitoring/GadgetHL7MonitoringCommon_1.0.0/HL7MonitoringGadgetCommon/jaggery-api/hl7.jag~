@@ -382,7 +382,7 @@ function getExecutionPlan(){
 	+"insert into diseaseAlertTemp;"+"\n"+"\n"
 +"from diseaseAlertTemp[msgCount > $diseaseAlertLimit "+" ]"+"\n"
 +"select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp"+"\n"
-+"insert into diseaseLocalAlertTemp;"+"\n"+"\n"
++"insert into diseaseLocalAlertTemp;"+"\n"
 +"from diseaseLocalAlertTemp#geo:geocode(location)"+"\n"
 +"select latitude, longitude,formattedAddress,Disease, msgCount,timestamp"+"\n"
 

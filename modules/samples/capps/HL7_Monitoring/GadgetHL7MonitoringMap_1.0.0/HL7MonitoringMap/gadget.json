@@ -1,0 +1,14 @@
+{
+  "id": "HL7MonitoringMap",
+  "title": "map",
+  "type": "gadget",
+  "category": "Widgets",
+  "thumbnail": "gadget/HL7MonitoringMap/index.png",
+  "data": {
+    "url": "gadget/HL7MonitoringMap/index.xml"
+  },
+  "styles": {
+    "borders": false,
+    "title": false
+  }
+}

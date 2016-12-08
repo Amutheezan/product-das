@@ -26,14 +26,6 @@
             <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>Disease</Name>
-            <IsFacet>false</IsFacet>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>false</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>msgCount</Name>
             <IsFacet>false</IsFacet>
             <EnableIndexing>true</EnableIndexing>

@@ -39,10 +39,10 @@ function createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit){
     $("#diseaseAlert").val(DEFAULT_DISEASE_ALERT_LIMIT);
   }else {
   if(diseaseAlertLimit === parseInt(diseaseAlertLimit, 10)){
-   diseaseAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
-    $("#diseaseAlert").val(DEFAULT_DISEASE_ALERT_LIMIT);
+  
   } else{
-     
+      diseaseAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
+    $("#diseaseAlert").val(DEFAULT_DISEASE_ALERT_LIMIT);
   }
   }
   if(isNull(waitTimeAlertLimit || waitTimeAlertLimit <= 0)){
@@ -50,10 +50,10 @@ function createExecutionPlan(diseaseAlertLimit,waitTimeAlertLimit){
     $("#waitTimeAlert").val(DEFAULT_WAITINGTIME_ALERT_LIMIT);
    }else {
   if(waitTimeAlertLimit === parseInt(waitTimeAlertLimit, 10)){
-        waitTimeAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
-    $("#waitTimeAlert").val(DEFAULT_WAITINGTIME_ALERT_LIMIT);
+  
   } else{
-
+      waitTimeAlertLimit=DEFAULT_DISEASE_ALERT_LIMIT;
+    $("#waitTimeAlert").val(DEFAULT_WAITINGTIME_ALERT_LIMIT);
   }
   }
     var params={ type:type,

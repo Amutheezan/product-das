@@ -39,7 +39,7 @@ $.ajax({
 }
 setTimeout( function() {
 
-mymap = L.map('mapid').setView([45, -180], 1);
+mymap = L.map('mapid').setView([45, -180], 2);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -53,10 +53,8 @@ function onData(data){
 var result=data.message[0].data;
 for(var i=0;i<result.length;i++){
 if(isNull(result[i]["latitude"])){
-console.log("latitude is null");
 }else if( isNull(result[i]["longitude"])){
 }else{
-console.log("success");
 var marker = L.marker([result[i]["latitude"], result[i]["longitude"]]).addTo(mymap);
 
 }

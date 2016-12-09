@@ -8,7 +8,7 @@
   },
   "listen": {
     "subscriber": {
-      "type": "date-range",
+      "type": "type-common",
       "description": "This notifies message generated in publisher"
     }
   },

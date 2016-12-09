@@ -3,7 +3,7 @@
   "name": "waitTimeAlerting",
   "version": "1.0.0",
   "nickName": "",
-  "description": "",
+  "description": "This will store the details of Wait Time Over flow Alerts",
   "metaData": [],
   "correlationData": [],
   "payloadData": [

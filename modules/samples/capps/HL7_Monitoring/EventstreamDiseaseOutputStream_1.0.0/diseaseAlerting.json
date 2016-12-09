@@ -3,7 +3,7 @@
   "name": "diseaseAlerting",
   "version": "1.0.0",
   "nickName": "",
-  "description": "",
+  "description": "This stream will store the Disease Alert",
   "metaData": [],
   "correlationData": [],
     "payloadData": [

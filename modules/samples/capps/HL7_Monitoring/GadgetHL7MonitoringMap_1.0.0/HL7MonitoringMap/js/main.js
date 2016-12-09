@@ -53,9 +53,13 @@ function onData(data){
 var result=data.message[0].data;
 for(var i=0;i<result.length;i++){
 if(isNull(result[i]["latitude"])){
+console.log("latitude is null");
 }else if( isNull(result[i]["longitude"])){
 }else{
-var marker = L.marker([result[i]["latitude"], result[i]["longitude"]]).addTo(mymap);
+console.log("success");
+var marker = L.marker([result[i]["latitude"], result[i]["longitude"]])
+.bindPopup("<b>Info</b><br> Address : "+ result[i]["formattedAddress"]+"<br> Disease : "+ result[i]["Disease"]+"<br> Occurances : "+ result[i]["msgCount"])
+.addTo(mymap);
 
 }
 }

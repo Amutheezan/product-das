@@ -1,11 +1,17 @@
 {
   "id": "HL7MonitoringMap",
-  "title": "map",
+  "title": "World Map",
   "type": "gadget",
   "category": "Widgets",
   "thumbnail": "gadget/HL7MonitoringMap/index.png",
   "data": {
     "url": "gadget/HL7MonitoringMap/index.xml"
+  },
+  "listen": {
+    "subscriber": {
+      "type": "type-common",
+      "description": "this listen to the messages from publishing agents"
+    }
   },
   "styles": {
     "borders": false,

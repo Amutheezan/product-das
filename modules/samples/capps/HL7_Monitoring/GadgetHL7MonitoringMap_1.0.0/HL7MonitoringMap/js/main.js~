@@ -51,6 +51,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 function onData(data){
 
 var result=data.message[0].data;
+console.log(result);
 for(var i=0;i<result.length;i++){
 if(isNull(result[i]["latitude"])){
 console.log("latitude is null");

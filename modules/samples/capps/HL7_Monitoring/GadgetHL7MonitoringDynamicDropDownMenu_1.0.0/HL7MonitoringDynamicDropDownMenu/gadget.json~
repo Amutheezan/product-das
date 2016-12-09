@@ -13,7 +13,7 @@
   },
   "notify": {
     "type-selected": {
-      "type": "type-common",
+      "type": "date-range",
       "description": "This notifies selected state"
     }
   },

@@ -212,12 +212,29 @@
 			 			case NOTIFY_DISEASE:
 			{
 
+                                var diseaseType=request.getParameter("diseaseType");
+                   
 				var tableName = "DISEASEALERTING";
+				if (isNull(diseaseType)){
 				query = stringify({
 					query: "*:*",
 					"start": 0,
 					"count": 100
 				});
+				}else if (diseaseType == "ALL"){
+				query = stringify({
+					query: "*:*",
+					"start": 0,
+					"count": 100
+				});
+				}else{
+				query = stringify({
+					query: "_DiagnosisDescription : " + diseaseType,
+					"start": 0,
+					"count": 100
+				});
+				}
+				
 				resp = connector.search(superTenantId, tableName, query);
     				var count = connector.searchCount(superTenantId,  tableName, query);
     				var limit = count.getMessage();

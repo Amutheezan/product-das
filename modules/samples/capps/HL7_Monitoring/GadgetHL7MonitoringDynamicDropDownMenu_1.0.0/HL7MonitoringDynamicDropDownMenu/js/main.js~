@@ -85,6 +85,7 @@ if(type==TYPE_SUMMARY){
 		message={
 		diseaseType:diseaseType
 		}
+		console.log(message);
         }
 
           gadgets.Hub.publish(TOPIC, message);

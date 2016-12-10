@@ -1,4 +1,5 @@
 <%
+
 (function () {
 	var TYPE = "type";
 	var CONTENT_TYPE_JSON = "application/json";
@@ -12,6 +13,7 @@
 	var carbon = require('carbon');
 	var configs = require('/configs/designer.json');
 	var utils = require('/modules/utils.js');
+	var hl7Utils=require('hl7-utils.jag');
 	var server = new carbon.server.Server();
 	var timeRangeUtil = Packages.org.wso2.analytics.esb.util.TimeRangeUtils;
 	var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
@@ -19,7 +21,7 @@
 	var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
 	var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
 	var eventProcessorService = carbon.server.osgiService('org.wso2.carbon.event.processor.core.EventProcessorService');
-
+	var eventPublisherService = carbon.server.osgiService('org.wso2.carbon.event.publisher.core.EventPublisherService')
 	var cacheTimeoutSeconds = 5;
 	var loggedInUser = null;
 	var tenantId = -1;
@@ -31,8 +33,9 @@
 	var SEARCH_SPECIFIC_MESSAGE=20;
 	var NOTIFY_DISEASE=3;
 	var NOTIFY_WAIT_TIME=30;
-  	var DEPLOY_EXECUTION_PLAN=31;
-	var CURRENT_EXECUTION_PLAN=32;
+  var UPDATE_ALERT=31;
+
+
 
 	if (configs.cacheTimeoutSeconds) {
 		cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
@@ -213,9 +216,9 @@
 			{
 
                                 var diseaseType=request.getParameter("diseaseType");
-                   
+
 				var tableName = "DISEASEALERTING";
-				if (isNull(diseaseType)){
+				if (hl7Utils.isNull(diseaseType)){
 				query = stringify({
 					query: "*:*",
 					"start": 0,
@@ -234,7 +237,7 @@
 					"count": 100
 				});
 				}
-				
+
 				resp = connector.search(superTenantId, tableName, query);
     				var count = connector.searchCount(superTenantId,  tableName, query);
     				var limit = count.getMessage();
@@ -292,54 +295,57 @@
 
 					break;
 			 }
-			 case DEPLOY_EXECUTION_PLAN:
+			 case UPDATE_ALERT:
 			 {
-			  var initialize="Update Setting";
-			 		try{
-						eventProcessorService.undeployActiveExecutionPlan("hl7alerts");
+				   var initialize="Update";
+				   var alertType=request.getParameter("AlertType");
+					 var AlertLimit=request.getParameter("AlertLimit");
+					 var EmailAddress=request.getParameter("EmailAddress");
+					 var PhoneNo=request.getParameter("PhoneNo");
+					 var executionPlanName=alertType+"Alerts";
+					 var smsAlertName="sms"+alertType;
+					 var emailAlertName="email"+alertType;
+					try{
+						eventProcessorService.undeployActiveExecutionPlan(executionPlanName);
+						initialize="Update"
 					}catch(e){
-						initialize="Initialize Setting"
+						initialize="Initialize"
 						log.error(e.message);
 					}
-			     var diseaseAlertLimit=request.getParameter("diseaseAlertLimit");
-			     var waitTimeAlertLimit=request.getParameter("waitTimeAlertLimit");
-			     var executionPlan=getExecutionPlan();
-					 executionPlan=executionPlan.replace("$diseaseAlertLimit", diseaseAlertLimit);
-					 executionPlan=executionPlan.replace("$waitTimeAlertLimit",waitTimeAlertLimit)
-				   eventProcessorService.deployExecutionPlan(executionPlan);
-				   result.push({"initialize":initialize});
-				   break;
+
+					 var executionPlan=hl7Utils.getExecutionPlan(alertType);
+					 executionPlan=executionPlan.replace("$AlertLimit", AlertLimit);
+					 eventProcessorService.deployExecutionPlan(executionPlan);
+           if(hl7Utils.isNull(PhoneNo)==false){
+									 try{
+									 eventPublisherService.undeployActiveEventPublisherConfiguration(smsAlertName);
+									 initialize="Update"
+								 }catch(e){
+									 initialize="Initialize"
+									 log.error(e.message);
+								 }
+						var smsPublisher=hl7Utils.getSmsPublisher(alertType);
+
+						smsPublisher=smsPublisher.replace("$PhoneNo",PhoneNo);
+						eventPublisherService.deployEventPublisherConfiguration(smsPublisher);
+					 }
+					 if(hl7Utils.isNull(EmailAddress)==false){
+									try{
+									eventPublisherService.undeployActiveEventPublisherConfiguration(emailAlertName);
+									initialize="Update"
+								}catch(e){
+									initialize="Initialize"
+									log.error(e.message);
+								}
+					 var emailPublisher=hl7Utils.getEmailPublisher(alertType);
+					 emailPublisher=emailPublisher.replace("$EmailAddress",EmailAddress);
+					 eventPublisherService.deployEventPublisherConfiguration(emailPublisher);
+					}
+					 result.push({"initialize":initialize});
+					 break;
 
 			 }
-			 case CURRENT_EXECUTION_PLAN :
-			 {
-			 var tempExecutionPlan=null;
-			 var setDiseaseAlert=false;
-			 var diseaseAlertLimit=1000;
-			 var waitTimeAlertLimit=1000;
-			 var initialize="Update Setting"
-				try{
-				 		tempExecutionPlan=eventProcessorService.getActiveExecutionPlan("hl7alerts")
-				}catch(e){
-				    initialize="Initialize Setting"
-						log.error(e.message);
-				}
-				if(isNull(tempExecutionPlan)== false){
-					 tempExecutionPlan=tempExecutionPlan.split(" ");
-			 		 for(var i=0;i< tempExecutionPlan.length;i++){
-					 		 if(tempExecutionPlan[i]== ">"){
-						 		 if(setDiseaseAlert==true){
-								 		 waitTimeAlertLimit = tempExecutionPlan[i+1];
-						 		 }else{
-								 		 diseaseAlertLimit = tempExecutionPlan[i+1];
-								 		 setDiseaseAlert = true;
-						 		 }
-					 		 }
-			 		 }
-				}
-				result.push({"diseaseAlertLimit": diseaseAlertLimit, "waitTimeAlertLimit": waitTimeAlertLimit,"initialize":initialize});
-				break;
-			 }
+
 
 			default :
 			{
@@ -361,84 +367,6 @@
 					}
 		}
 }());
-function getExecutionPlan(){
-	var temp="@Plan:name('hl7alerts')" +"\n"+"\n"
-	+"@Plan:description('Disease Alerting and Wait Time Alerting')"+"\n"+"\n"
-	+"@Plan:statistics('true')"+"\n"+"\n"
-	+"@Plan:trace('true')"+"\n"+"\n"
-	+"@Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')"+"\n"
-	+"define stream dashl7msg (meta_host string, meta_server_name string,"+"\n"
-	+"correlation_activity_id string,"+"\n"
-	+"content string, type string, timestamp long, message_direction string,"+"\n"
-	+"service_name string, operation_name string, status string, arbitraryDataMap object);"+"\n"+"\n"
-	+"@Export('diseaseAlerting:1.0.0')"+"\n"
-	+"define stream diseaseAlerting (latitude double,longitude double,formattedAddress string, Disease string,msgCount long, timestamp long);"+"\n"+"\n"
-	+"@Export('waitTimeAlerting:1.0.0')"+"\n"
-	+"define stream waitTimeAlerting (waitingTime long, registeredTime long);"+"\n"+"\n"
-	+"from dashl7msg"+"\n"
-	+"[(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') != 'ACK') AND"+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') is null))  AND"+"\n"
-		+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') is null))  AND"+"\n"
-			+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') is null))  AND"+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[4]'), 'string') is null)) AND"+"\n"
-	+"(NOT (cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') is null)) AND"+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') is null)) AND"+"\n"
-		+"(NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]"+"\n"
-		
-	+"select cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') as Address,"+"\n"
-		+"cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') as City,"+"\n"
-	+"cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as State,"+"\n"
-		+"cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as ZipCode,"+"\n"
-	+"cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as Country,"+"\n"
-	+"cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as Disease ,"+"\n"
-+"time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp" + "\n"
-	+"insert into diseaseAlert;"+"\n"+"\n"
-	+"from diseaseAlert#window.time(1 day)"+"\n"
-	+"select Address,City,State,ZipCode,Country,Disease, count(*) as msgCount,timestamp"+"\n"
-	+"group by Address,City,State,ZipCode,Country,Disease"+"\n"
-	+"insert into diseaseAlertTemp;"+"\n"+"\n"
-+"from diseaseAlertTemp[msgCount > $diseaseAlertLimit "+" ]"+"\n"
-+"select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp"+"\n"
-+"insert into diseaseLocalAlertTemp;"+"\n"+"\n"
-+"from diseaseLocalAlertTemp#geo:geocode(location)"+"\n"
-+"select latitude, longitude,formattedAddress,Disease, msgCount,timestamp"+"\n"
 
-+"insert into diseaseAlerting;"+"\n"+"\n"
-	+"from dashl7msg"+"\n"
-	+"[(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND "+"\n"
-	+"(cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A01') AND "+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND "+"\n"
-	 +"(NOT(cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'), 'string') is null)) AND "+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]"+"\n"
-	+"select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID, "+"\n"
-	+"cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,"+"\n"
-	+"time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp" + "\n"
-	+"insert into admissionRecords;"+"\n"+"\n"
-	+"from dashl7msg"+"\n"
-	+"[(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND "+"\n"
-	+"(cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A04') AND "+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND "+"\n"
-	 +"(NOT(cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'), 'string') is null)) AND "+"\n"
-	+"(NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]"+"\n"
-	+"select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID,"+"\n"
-	+"cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,"+"\n"
-	+"time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp"+"\n"
-	+"insert into registerRecords;"+"\n"+"\n"
-	+"from admissionRecords#window.length(1000) as ar join registerRecords as rr on"+"\n"
-	+"((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))"+"\n"
-	+"select rr.timestamp-ar.timestamp as waitingTime, rr.timestamp as registeredTime"+"\n"
-	+"insert into waitTimeAlert;"+"\n"+"\n"
-	+"from waitTimeAlert[waitingTime > $waitTimeAlertLimit"+"000 "+ "]"+"\n"
-	+"select waitingTime, registeredTime"+"\n"
-	+"insert into waitTimeAlerting;"
-	return temp;
-}
-function isNull(value){
-  var isNull=false;
-  if(typeof value === "undefined" || value === null || value === "" ){
-    isNull=true;
-  }
-  return isNull;
-}
 
 %>

@@ -23,15 +23,37 @@
 
         </head>
         <body>
-          <div class="form-group col-xs-4">
+  <div class="form-group col-xs-3">
     <label for="diseaseAlert">Disease Alert Limit:</label>
     <input type="text" class="form-control input-sm" id="diseaseAlert" value="1000">
   </div>
+  <div class="form-group col-xs-3">
+    <label for="diseaseEmail">Email Addresss</label>
+    <input type="text" class="form-control input-sm" id="diseaseEmail" placeholder="sample@email.com">
+  </div>
   <div class="form-group col-xs-4">
-    <label for="waitTimeAlert">Wait Time Alert Limit(in seconds):</label>
-    <input type="text" class="form-control input-sm" id="waitTimeAlert" value="1000">
-  </div><div class="form-group col-xs-4 add-padding-2x">    <button id="update" class="btn btn-primary btn-lg">Update Setting</button> </div>
-</div>
+    <label for="diseasePhoneNo">Phone Number(with Country Code)</label>
+    <input type="text" class="form-control input-sm" id="diseasePhoneNo" placeholder="+9477777777">
+  </div>
+  <div class="form-group col-xs-2 add-padding-2x">
+     <button id="diseaseupdate" class="btn btn-primary btn-lg">Update</button>
+   </div>
+   <div class="form-group col-xs-3">
+     <label for="waitTimeAlert">Wait Time Alert Limit:</label>
+     <input type="text" class="form-control input-sm" id="waitTimeAlert" value="1000">
+   </div>
+   <div class="form-group col-xs-3">
+     <label for="waitTimeEmail">Email Addresss</label>
+     <input type="text" class="form-control input-sm" id="waitTimeEmail" placeholder="sample@email.com">
+   </div>
+   <div class="form-group col-xs-4">
+     <label for="waitTimePhoneNo">Phone Number(with Country Code)</label>
+     <input type="text" class="form-control input-sm" id="waitTimePhoneNo" placeholder="+9477777777">
+   </div>
+   <div class="form-group col-xs-2 add-padding-2x">
+      <button id="waitTimeupdate" class="btn btn-primary btn-lg">Update</button>
+    </div>
+
 
         </body>
         ]]>

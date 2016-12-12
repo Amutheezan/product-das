@@ -43,7 +43,7 @@
                 <label for="diseasePhoneNo">Phone Number : </label>
                 <input type="tel" class="form-control input-sm" id="diseasePhoneNo" placeholder="+94767711924"/>
               </div>
-              <div class="form-group col-xs-2 add-padding-1x">
+              <div class="form-group col-xs-2 add-padding-2x">
                  <button id="diseaseupdate" class="btn btn-primary btn-lg">Update</button>
                </div>
              </div>
@@ -64,7 +64,7 @@
                <label for="waitTimePhoneNo">Phone Number : </label>
                <input type="tel" class="form-control input-sm" id="waitTimePhoneNo" placeholder="+94767711924"/>
              </div>
-             <div class="form-group col-xs-2 add-padding-1x">
+             <div class="form-group col-xs-2 add-padding-2x">
                 <button id="waitTimeupdate" class="btn btn-primary btn-lg">Update</button>
               </div>
 

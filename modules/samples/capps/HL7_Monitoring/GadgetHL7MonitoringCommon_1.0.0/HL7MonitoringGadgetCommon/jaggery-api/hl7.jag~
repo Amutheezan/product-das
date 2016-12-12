@@ -295,7 +295,7 @@
 				   var alertType=request.getParameter("AlertType");
 					 var AlertLimit=request.getParameter("AlertLimit");
 					 var EmailAddress=request.getParameter("EmailAddress");
-					 var PhoneNo="+"+request.getParameter("PhoneNo");
+					 var PhoneNo=request.getParameter("PhoneNo");
 					 var executionPlanName=alertType+"Alerts";
 					 var smsAlertName="sms"+alertType;
 					 var emailAlertName="email"+alertType;

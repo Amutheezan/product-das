@@ -65,6 +65,7 @@ $.ajax({
         EmailAddress:EmailAddress,
         PhoneNo:PhoneNo
           }
+          console.log(params);
         $.ajax({
             url: url +"?type=" + params.type + "&AlertType=" + params.AlertType + "&AlertLimit=" + params.AlertLimit + "&EmailAddress=" + params.EmailAddress + "&PhoneNo=" + params.PhoneNo,
             type: "GET",

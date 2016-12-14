@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<domain name="HL7Analytics">
+    <description>Domain for HL7 Analytics</description>
+    <scenarios>
+        <scenario type="HL7Analytics">
+            <description>Configure a hl7 analytics scenario to display statistics for a given stream of your choice
+            </description>
+            <templates>
+              <template name="smsPublisher">
+                <![CDATA[
+                <?xml version="1.0" encoding="UTF-8"?>
+            <eventPublisher name="smswaitTime" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+              <from streamName="$AlertTypeAlerting" version="1.0.0"/>
+              <mapping customMapping="disable" type="text"/>
+              <to eventAdapterType="sms">
+                <property name="sms.no"> $PhoneNo </property>
+              </to>
+            </eventPublisher>
+                ]]>
+              </template>
+              <template name="emailPublisher">
+                <![CDATA[
+                <?xml version="1.0" encoding="UTF-8"?>
+            <eventPublisher name="email$AlertType" statistics="disable"
+              trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+              <from streamName="$AlertTypeAlerting" version="1.0.0"/>
+              <mapping customMapping="disable" type="text"/>
+              <to eventAdapterType="email">
+                <property name="email.subject">$AlertTypeAlerting</property>
+                <property name="email.address"> $EmailAddress </property>
+                <property name="email.type">text/plain</property>
+              </to>
+            </eventPublisher>
+                ]]>
+              </template>
+              <template name="diseaseExecutionPlan">
+            <![CDATA[
+
+            @Plan:name('diseaseAlerts')
+
+            @Plan:description('Disease Alerting')
+
+            @Plan:statistics('true')
+
+            @Plan:trace('true')
+
+            @Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')
+            define stream dashl7msg (meta_host string, meta_server_name string,
+            correlation_activity_id string,
+            content string, type string, timestamp long, message_direction string,
+            service_name string, operation_name string, status string, arbitraryDataMap object);
+
+            @Export('diseaseAlerting:1.0.0')
+            define stream diseaseAlerting (latitude double,longitude double,formattedAddress string, Disease string,msgCount long, timestamp long);
+
+            from dashl7msg
+            [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') != 'ACK') AND
+            (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') is null))  AND
+            (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') is null))  AND
+            (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') is null))  AND
+            (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[4]'), 'string') is null)) AND
+            (NOT (cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') is null)) AND
+            (NOT(cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') is null)) AND
+            (NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]
+            select cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') as Address,
+            cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') as City,
+            cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as State,
+            cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as ZipCode,
+            cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as Country,
+            cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as Disease ,
+            time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
+            insert into diseaseAlert;
+
+            from diseaseAlert#window.time(1 day)
+            select Address,City,State,ZipCode,Country,Disease, count(*) as msgCount,timestamp
+            group by Address,City,State,ZipCode,Country,Disease
+            insert into diseaseAlertTemp;
+
+            from diseaseAlertTemp[msgCount > $AlertLimit  ]
+            select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp
+            insert into diseaseLocalAlertTemp;
+
+            from diseaseLocalAlertTemp#geo:geocode(location)
+            select latitude, longitude,formattedAddress,Disease, msgCount,timestamp
+            insert into diseaseAlerting;
+
+             ]]>
+              </template>
+              <template name="waitTimeExecutionPlan">
+                <![CDATA[
+                @Plan:name('waitTimeAlerts')
+
+                @Plan:description('Wait Time Alerting')
+
+                @Plan:statistics('true')
+
+                @Plan:trace('true')
+
+                @Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')
+                define stream dashl7msg (meta_host string, meta_server_name string,
+                correlation_activity_id string,
+                content string, type string, timestamp long, message_direction string,
+                service_name string, operation_name string, status string, arbitraryDataMap object);
+
+                @Export('waitTimeAlerting:1.0.0')
+                define stream waitTimeAlerting (waitingTime long, registeredTime long);
+
+                from dashl7msg
+                [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND
+                (cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A01') AND
+                (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND
+                (NOT(cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'), 'string') is null)) AND
+                (NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]
+                select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID,
+                cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,
+                time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
+                insert into admissionRecords;
+
+                from dashl7msg
+                [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND
+                (cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A04') AND
+                (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND
+                (NOT(cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'), 'string') is null)) AND
+                (NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]
+                select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID,
+                cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,
+                time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
+                insert into registerRecords;
+
+                from admissionRecords#window.length(1000) as ar join registerRecords as rr on
+                ((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))
+                select rr.timestamp-ar.timestamp as waitingTime, rr.timestamp as registeredTime
+                insert into waitTimeAlert;
+
+                from waitTimeAlert[waitingTime > $$AlertLimit000 ]
+                select waitingTime, registeredTime
+                insert into waitTimeAlerting;
+
+                ]]>
+              </template>
+
+            </templates>
+          </scenario>
+</scenarios>
+</domain>

@@ -230,7 +230,7 @@
 				});
 				}else{
 				query = stringify({
-					query: "_DG1.DiagnosisDescription : " + diseaseType,
+					query: "Disease : " + diseaseType,
 					"start": 0,
 					"count": 100
 				});

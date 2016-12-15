@@ -1,21 +1,9 @@
 var url= "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon/jaggery-api/hl7.jag";
 var mymap;
+var markers = new L.LayerGroup();
+
+
 var TOPIC="subscriber";
-window.onload=function(){
-$.ajax({
-    url: url +"?type=3",
-    type: "GET",
-    success: function(data) {
-       onData(data);
-
-    },
-    error: function(data){
-    }
-
-});
-}
-
-
 gadgets.HubSettings.onConnect = function() {
     gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
         onDataChanged(data);
@@ -26,7 +14,7 @@ gadgets.HubSettings.onConnect = function() {
 function onDataChanged(data){
 var diseaseType=data.diseaseType;
 $.ajax({
-    url: url +"?type=3&disease="+diseaseType,
+    url: url +"?type=3&diseaseType="+diseaseType,
     type: "GET",
     success: function(data) {
        onData(data);
@@ -46,30 +34,47 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     id: 'mapbox.satellite',
     accessToken: 'pk.eyJ1IjoiYW11dGhlZXphbjkzIiwiYSI6ImNpd2dlOHQyOTAxNzUydG1tMGV4Z21jZnQifQ.Vyh1OXwNBgFz1nMVjSe41A'
 }).addTo(mymap);
+
+$.ajax({
+    url: url +"?type=3diseaseType=ALL",
+    type: "GET",
+    success: function(data) {
+       onData(data);
+
+    },
+    error: function(data){
+    }
+
+});
+
 }, 10);
 
 function onData(data){
-
+markers.clearLayers();
 var result=data.message[0].data;
 for(var i=0;i<result.length;i++){
-if(isNull(result[i]["latitude"])){
-console.log("latitude is null");
-}else if( isNull(result[i]["longitude"])){
-}else{
-console.log("success");
-var marker = L.marker([result[i]["latitude"], result[i]["longitude"]])
-.bindPopup("<b>Info</b><br> Address : "+ result[i]["formattedAddress"]+"<br> Disease : "+ result[i]["Disease"]+"<br> Occurances : "+ result[i]["msgCount"])
-.addTo(mymap);
-
+  if(isNull(result[i]["latitude"])){
+  }else if( isNull(result[i]["longitude"])){
+  }else{
+    var popUp="<b>Info</b><br> Address : "  + result[i]["formattedAddress"]+
+     "<br> Disease : "+ result[i]["Disease"]+
+     "<br> Occurances : "+ result[i]["msgCount"];
+    var marker = L.marker([result[i]["latitude"], result[i]["longitude"]])
+    .bindPopup(popUp);
+    markers.addLayer(marker);
+  }
 }
-}
+mymap.addLayer(markers)
 
 }
 
 function isNull(value){
   var isNull=false;
-  if(typeof value === "undefined" || value === null || value === "" ){
+  if(typeof value === "undefined" || value === null || value === "" || value ==="null" ){
     isNull=true;
   }
+  if(typeof value == "undefined" || value == null || value == "" || value =="null"){
+      isNull=true;
+    }
   return isNull;
 }

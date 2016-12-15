@@ -307,10 +307,10 @@
  				log.error(e.message);
  			 }
  			 var executionPlan=hl7Utils.createExecutionPlan(alertType);
- 			 //executionPlan=executionPlan.replace("$limit", limit);
- 			 //eventProcessorService.deployExecutionPlan(executionPlan);
+ 			 executionPlan=executionPlan.replace("$limit", limit);
+ 			 eventProcessorService.deployExecutionPlan(executionPlan);
 
-			 if(hl7Utils.isNull(phoneno) == false){
+			      if(hl7Utils.isNull(phoneno) == false){
 					try{
 					eventPublisherService.undeployActiveEventPublisherConfiguration(smsAlertName);
 					initialize="Update"
@@ -318,8 +318,9 @@
 					initialize="Initialize"
 					log.error(e.message);
 				}
-				 var smsPublisher=hl7Utils.createPublisher(alertType,"sms");
-				 smsPublisher=smsPublisher.replace("$phoneno",phoneno);
+				 var smsPublisher=hl7Utils.createPublisher("sms");
+				 smsPublisher=smsPublisher.split("$AlertType").join(alertType);
+				 smsPublisher=smsPublisher.replace("$phoneno","+"+phoneno);
 				 eventPublisherService.deployEventPublisherConfiguration(smsPublisher);
 				 }
 				 if(hl7Utils.isNull(email) == false){
@@ -330,7 +331,8 @@
 						initialize="Initialize"
 						log.error(e.message);
 					}
-					 var emailPublisher=hl7Utils.createPublisher(alertType,"email");
+					 var emailPublisher=hl7Utils.createPublisher("email");
+					 emailPublisher=emailPublisher.split("$AlertType").join(alertType);
 					 emailPublisher=emailPublisher.replace("$email",email);
 					 eventPublisherService.deployEventPublisherConfiguration(emailPublisher);
 					 }

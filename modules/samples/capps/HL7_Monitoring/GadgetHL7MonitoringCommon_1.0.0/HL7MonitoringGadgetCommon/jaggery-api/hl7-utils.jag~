@@ -26,12 +26,11 @@ function getAlertLimit(executionPlan){
 function getPhoneNo(smsPublisher){
 	var phoneNo;
 	if(isNull(smsPublisher) == false ){
-    log.info(smsPublisher);
     var regexGetPhoneNo=/<property name="sms.no">(.*?)<\/property>/g;
 		phoneNo=smsPublisher.match(regexGetPhoneNo).map(function(val){
       val = val.replace('<property name="sms.no">','');
       val = val.replace('</property>','');
-      val = val.replace(' ','');
+      val = val.split(' ').join('');
       return val
     })
 	}
@@ -45,7 +44,7 @@ function getEmailAddress(emailPublisher){
       Email=emailPublisher.match(regexGetEmail).map(function(val){
       val = val.replace('<property name="email.address">','');
       val = val.replace('</property>','');
-      val = val.replace(' ','');
+      val = val.split(' ').join('');
         return val
       })
 	}
@@ -58,6 +57,7 @@ function getFile(path){
   var message = "";
   message = file.readAll();
   file.close();
+  log.info(message);
   return message;
 }
 
@@ -67,29 +67,28 @@ function createExecutionPlan(AlertType){
 
   }else{
     if(AlertType == "disease"){
-		  ExecutionPlan=getFile("executionPlans/waitTimeAlerts.siddhiql");
+	 ExecutionPlan=getFile("templates/executionPlans/diseaseAlerts.siddhiql");
     }else if(AlertType == "waitTime"){
-      ExecutionPlan=getFile(diseaseAlerts.siddhiql);
+       ExecutionPlan=getFile("templates/executionPlans/waitTimeAlerts.siddhiql");
     }
-		  log.info(ExecutionPlan + " is the executionplan");
   }
-	return ExecutionPlan;
+  return ExecutionPlan;
+
 }
 
-function createPublisher(AlertType,PublisherType){
+function createPublisher(PublisherType){
   var publisher,file;
   if(PublisherType != "sms" && PublisherType != "email"){
 
   }else{
 
     if(PublisherType == "sms"){
-        publisher=getFile("smsPublisher.xml");
+        publisher=getFile("templates/publishers/smsPublisher.xml");
     }else if (PublisherType == "email"){
-       publisher=getFile("emailPublisher.xml");
+       publisher=getFile("templates/publishers/emailPublisher.xml");
     }
-    publisher = publisher.replace('$AlertType',AlertType);
-  }
 
+  }
 	return publisher
 }
 

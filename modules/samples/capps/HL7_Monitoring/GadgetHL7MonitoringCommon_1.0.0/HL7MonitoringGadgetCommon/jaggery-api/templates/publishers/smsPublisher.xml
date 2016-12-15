@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eventPublisher name="smswaitTime" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+<eventPublisher name="sms$AlertType" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
 <from streamName="$AlertTypeAlerting" version="1.0.0"/>
 <mapping customMapping="disable" type="text"/>
 <to eventAdapterType="sms">

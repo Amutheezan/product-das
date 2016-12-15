@@ -307,8 +307,8 @@
  				log.error(e.message);
  			 }
  			 var executionPlan=hl7Utils.createExecutionPlan(alertType);
- 			 executionPlan=executionPlan.replace("$limit", limit);
- 			 eventProcessorService.deployExecutionPlan(executionPlan);
+ 			 //executionPlan=executionPlan.replace("$limit", limit);
+ 			 //eventProcessorService.deployExecutionPlan(executionPlan);
 
 			 if(hl7Utils.isNull(phoneno) == false){
 					try{
@@ -334,6 +334,8 @@
 					 emailPublisher=emailPublisher.replace("$email",email);
 					 eventPublisherService.deployEventPublisherConfiguration(emailPublisher);
 					 }
+					 result.push({ initialize : initialize});
+
 					 break;
 					}
 			 case CURRENT_SETTING:

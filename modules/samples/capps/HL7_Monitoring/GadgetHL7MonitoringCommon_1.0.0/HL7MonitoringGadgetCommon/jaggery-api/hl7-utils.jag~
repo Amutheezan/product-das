@@ -67,9 +67,9 @@ function createExecutionPlan(AlertType){
 
   }else{
     if(AlertType == "disease"){
-	 ExecutionPlan=getFile("executionPlans/waitTimeAlerts.siddhiql");
+		  ExecutionPlan=getFile("executionPlans/waitTimeAlerts.siddhiql");
     }else if(AlertType == "waitTime"){
-      ExecutionPlan=getFile("executionPlans/diseaseAlerts.siddhiql");
+      ExecutionPlan=getFile(diseaseAlerts.siddhiql);
     }
 		  log.info(ExecutionPlan + " is the executionplan");
   }
@@ -83,9 +83,9 @@ function createPublisher(AlertType,PublisherType){
   }else{
 
     if(PublisherType == "sms"){
-        publisher=getFile("publishers/smsPublisher.xml");
+        publisher=getFile("smsPublisher.xml");
     }else if (PublisherType == "email"){
-       publisher=getFile("publishers/emailPublisher.xml");
+       publisher=getFile("emailPublisher.xml");
     }
     publisher = publisher.replace('$AlertType',AlertType);
   }

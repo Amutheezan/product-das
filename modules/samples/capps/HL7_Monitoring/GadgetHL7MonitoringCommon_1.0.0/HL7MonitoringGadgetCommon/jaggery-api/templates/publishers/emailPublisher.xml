@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventPublisher name="email$AlertType" statistics="disable"
+trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+<from streamName="$AlertTypeAlerting" version="1.0.0"/>
+<mapping customMapping="disable" type="text"/>
+<to eventAdapterType="email">
+<property name="email.subject">$AlertTypeAlerting</property>
+<property name="email.address"> $email </property>
+<property name="email.type">text/plain</property>
+</to>
+</eventPublisher>

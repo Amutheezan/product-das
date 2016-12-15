@@ -1,0 +1,47 @@
+@Plan:name('diseaseAlerts')
+
+@Plan:description('Disease Alerting')
+
+@Plan:statistics('true')
+
+@Plan:trace('true')
+
+@Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')
+define stream dashl7msg (meta_host string, meta_server_name string,
+correlation_activity_id string,
+content string, type string, timestamp long, message_direction string,
+service_name string, operation_name string, status string, arbitraryDataMap object);
+
+@Export('diseaseAlerting:1.0.0')
+define stream diseaseAlerting (latitude double,longitude double,formattedAddress string, Disease string,msgCount long, timestamp long);
+
+from dashl7msg
+[(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') != 'ACK') AND
+(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') is null))  AND
+(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') is null))  AND
+(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') is null))  AND
+(NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[4]'), 'string') is null)) AND
+(NOT (cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') is null)) AND
+(NOT(cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') is null)) AND
+(NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]
+select cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') as Address,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') as City,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as State,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as ZipCode,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as Country,
+cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as Disease ,
+time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
+insert into diseaseAlert;
+
+from diseaseAlert#window.time(1 day)
+select Address,City,State,ZipCode,Country,Disease, count(*) as msgCount,timestamp
+group by Address,City,State,ZipCode,Country,Disease
+insert into diseaseAlertTemp;
+
+from diseaseAlertTemp[msgCount > $limit  ]
+select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp
+insert into diseaseLocalAlertTemp;
+
+from diseaseLocalAlertTemp#geo:geocode(location)
+select latitude, longitude,formattedAddress,Disease, msgCount,timestamp
+insert into diseaseAlerting;

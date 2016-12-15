@@ -31,7 +31,7 @@
               <from streamName="$AlertTypeAlerting" version="1.0.0"/>
               <mapping customMapping="disable" type="text"/>
               <to eventAdapterType="sms">
-                <property name="sms.no"> $PhoneNo </property>
+                <property name="sms.no"> $phoneno </property>
               </to>
             </eventPublisher>
                 ]]>
@@ -45,7 +45,7 @@
               <mapping customMapping="disable" type="text"/>
               <to eventAdapterType="email">
                 <property name="email.subject">$AlertTypeAlerting</property>
-                <property name="email.address"> $EmailAddress </property>
+                <property name="email.address"> $email </property>
                 <property name="email.type">text/plain</property>
               </to>
             </eventPublisher>
@@ -94,7 +94,7 @@
             group by Address,City,State,ZipCode,Country,Disease
             insert into diseaseAlertTemp;
 
-            from diseaseAlertTemp[msgCount > $AlertLimit  ]
+            from diseaseAlertTemp[msgCount > $limit  ]
             select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp
             insert into diseaseLocalAlertTemp;
 
@@ -150,7 +150,7 @@
                 select rr.timestamp-ar.timestamp as waitingTime, rr.timestamp as registeredTime
                 insert into waitTimeAlert;
 
-                from waitTimeAlert[waitingTime > $$AlertLimit000 ]
+                from waitTimeAlert[waitingTime > $limit000 ]
                 select waitingTime, registeredTime
                 insert into waitTimeAlerting;
 
@@ -158,6 +158,7 @@
               </template>
 
             </templates>
+
           </scenario>
 </scenarios>
 </domain>

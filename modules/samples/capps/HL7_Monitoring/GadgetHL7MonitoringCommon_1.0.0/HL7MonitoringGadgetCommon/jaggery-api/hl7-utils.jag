@@ -1,147 +1,118 @@
 <%
-var eventProcessorService = carbon.server.osgiService('org.wso2.carbon.event.processor.core.EventProcessorService');
-var eventPublisherService = carbon.server.osgiService('org.wso2.carbon.event.publisher.core.EventPublisherService')
-
-function getExecutionPlan(alertType){
-}
-
-function getSmsPublisher(alertType){
-}
-
-function getEmailPublisher(alertType){
-}
-function getDiseaseExecutionPlan(){
-}
-
-function getWaitTimeExecutionPlan(){
-}
-
-function getCurrentSetting(){
-		var result=[];
-		var tempExecutionPlanDiseaseAlert, tempExecutionPlanWaitTimeAlert=null;
-		var tempPublisherSmsDisease, tempPublisherSmsWaitTime,tempPublisherEmailDisease, tempPublisherEmailWaitTime=null;
-		var diseaseAlertLimit=1000;
-		var waitTimeAlertLimit=1000;
-		var initializeDisease="Update";
-		var initializeWaitTime="Update";
-		var emailDisease;
-		var emailWaitTime;
-		var smsDisease;
-		var smsWaitTime;
-
-		 try{
-				 tempExecutionPlanDiseaseAlert=eventProcessorService.getActiveExecutionPlan("diseaseAlerts")
-		 }catch(e){
-				 initializeDisease="Initialize"
-				 log.error(e.message);
-		 }
-		 if(isNull(tempExecutionPlanDiseaseAlert)== false){
-				diseaseAlertLimit=getValue(tempExecutionPlanDiseaseAlert,"AlertLimit");
-		 }
-
-		 try{
-				 tempExecutionPlanWaitTimeAlert=eventProcessorService.getActiveExecutionPlan("waitTimeAlerts")
-		 }catch(e){
-				 initializeWaitTime="Initialize"
-				 log.error(e.message);
-		 }
-
-		if(isNull(tempExecutionPlanWaitTimeAlert)== false){
-			waitTimeAlertLimit=getValue(tempExecutionPlanWaitTimeAlert,"AlertLimit");
-		}
-		 try{
-			 tempPublisherSmsDisease=eventPublisherService.getActiveEventPublisherConfigurationContent("smsdisease")
-		 }catch(e){
-				 log.error(e.message);
-		 }
-		 if(isNull(tempPublisherSmsDisease)== false){
-		   smsDisease=getValue(tempPublisherSmsDisease,"sms");
-		 }
-		 try{
-			 tempPublisherSmsWaitTime=eventPublisherService.getActiveEventPublisherConfigurationContent("smswaitTime")
-		 }catch(e){
-				 log.error(e.message);
-		 }
-		 if(isNull(tempPublisherSmsWaitTime)== false){
-				smsWaitTime=getValue(tempPublisherSmsWaitTime,"sms");
-		 }
-		 try{
-			 tempPublisherEmailDisease=eventPublisherService.getActiveEventPublisherConfigurationContent("emaildisease")
-		 }catch(e){
-				 log.error(e.message);
-		 }
-		 if(isNull(tempPublisherEmailDisease)== false){
-				emailDisease=getValue(tempPublisherEmailDisease,"email");
-		 }
-		 try{
-			 tempPublisherEmailWaitTime=eventPublisherService.getActiveEventPublisherConfigurationContent("emailwaitTime")
-		 }catch(e){
-				 log.error(e.message);
-		 }
-		 if(isNull(tempPublisherEmailWaitTime)== false){
-				emailWaitTime=getValue(tempPublisherEmailWaitTime,"email");
-		 }
-
-		if(emailDisease == "null"){
-		 emailDisease="";
-		}
-		if(emailWaitTime == "null"){
-		 emailWaitTime="";
-		}
-		if(smsDisease == "null"){
-		 smsDisease="";
-		}
-		if(smsWaitTime == "null"){
-		 smsWaitTime="";
-		}
-
- result.push({"diseaseAlertLimit": diseaseAlertLimit,
-						 "waitTimeAlertLimit": waitTimeAlertLimit,
-						 "initializeDisease": initializeDisease,
-						 "initializeWaitTime": initializeWaitTime,
-						 "emailDisease":emailDisease,
-						 "emailWaitTime":emailWaitTime,
-						 "smsDisease":smsDisease,
-						 "smsWaitTime":smsWaitTime
-						 });
-	 return result;
-}
-
-function getValue(content,requiredParameter){
-var result;
-	if(requiredParameter == "sms"){
-		result = content.match(/<parameter name="sms.no">(.*?)<\/parameter>/g).map(function(val){
-		   val= val.replace(/<\/?parameter>/g,'');
-			 val=val.replace(/<\/?parameter name="sms.no">/g,'');
-			 val=val.replace(' ','');
-			 return val
-		});
-	}else if(requiredParameter == "email"){
-		result = content.match(/<parameter name="email.address">(.*?)<\/parameter>/g).map(function(val){
-			 val= val.replace(/<\/?parameter>/g,'');
-			 val=val.replace(/<\/?parameter name="email.address">/g,'');
-			 val=val.replace(' ','');
-			 return val
-		});
-	}else if(requiredParameter == "AlertLimit"){
-			content=content.split(" ");
-			for(var i=0;i<content.length;i++){
-			 if(content[i]==">"{
-			 		result=content[i+1];
-			 })
-			}
-	}
-return result;
-}
 function isNull(value){
   var isNull=false;
   if(typeof value === "undefined" || value === null || value === "" || value === "null"){
     isNull=true;
   }
-	if(typeof value === "undefined" || value === null || value === "" || value === "null"){
+	if(typeof value == "undefined" || value == null || value == "" || value == "null"){
 		isNull=true;
 	}
   return isNull;
 }
 
+function getAlertLimit(executionPlan){
+	var alertLimit;
+	if(isNull(executionPlan) == false ){
+    executionPlan=executionPlan.split(" ");
+    for(var i=0;i<executionPlan.length;i++){
+      if(executionPlan[i] == ">"){
+        alertLimit= executionPlan[i+1];
+      }
+    }
+	}
+	return alertLimit[0];
+}
+
+function getPhoneNo(smsPublisher){
+	var phoneNo;
+	if(isNull(smsPublisher) == false ){
+    log.info(smsPublisher);
+    var regexGetPhoneNo=/<property name="sms.no">(.*?)<\/property>/g;
+		phoneNo=smsPublisher.match(regexGetPhoneNo).map(function(val){
+      val = val.replace('<property name="sms.no">','');
+      val = val.replace('<property>','');
+      val = val.replace(' ','');
+      return val
+    })
+	}
+	return phoneNo[0];
+}
+
+function getEmailAddress(emailPublisher){
+	var Email;
+	if(isNull(emailPublisher) == false ){
+      var regexGetEmail=/<property name="email.address">(.*?)<\/property>/g;
+      Email=emailPublisher.match(regexGetEmail).map(function(val){
+      val = val.replace('<property name="email.address">','');
+      val = val.replace('<property>','');
+      val = val.replace(' ','');
+        return val
+      })
+	}
+	return Email[0];
+}
+
+function getTemplate(){
+  var path = "hl7Alerts.xml";
+  var file = new File(path);
+  file.open("r");
+  var message = "";
+  message = file.readAll();
+  file.close();
+  return message;
+}
+
+function createExecutionPlan(AlertType){
+  var ExecutionPlan,template;
+  if(AlertType != "disease" && AlertType != "waitTime"){
+
+  }else{
+    template=getTemplate();
+    if(AlertType == "disease"){
+      var regex=/<template name="diseaseExecutionPlan">(.*?)<\/template>/g;
+      var header='<template name="diseaseExecutionPlan">';
+    }else if(AlertType == "waitTime"){
+      template=getTemplate();
+      var regex=/<template name="waitTimeExecutionPlan">(.*?)<\/template>/g;
+      var header='<template name="waitTimeExecutionPlan">';
+    }
+  var footer="<template>"
+  ExecutionPlan=getContent(regex,header,footer,template);
+  log.info(ExecutionPlan + " is the executionplan");
+  }
+	return ExecutionPlan;
+}
+
+function createPublisher(AlertType,PublisherType){
+  var publisher,template;
+  if(PublisherType != "sms" && PublisherType != "email"){
+
+  }else{
+    template=getTemplate();
+    if(PublisherType == "sms"){
+        var regex=/<template name="smsPublisher">(.*?)<\/template>/g;
+        var header='<template name="smsPublisher">';
+    }else if (PublisherType == "email"){
+        var regexGetPublisher=/<template name="emailPublisher">(.*?)<\/template>/g;
+        var header='<template name="emailPublisher">';
+    }
+    var footer="<template>"
+    publisher=getContent(regex,header,footer,template);
+    publisher = publisher.replace('$AlertType',AlertType);
+  }
+
+	return publisher
+}
+
+function getContent(regex,header,footer,template){
+    log.info(template);
+    var val=regex.exec(template);
+    log.info(val);
+    val = val.replace(header,'');
+    val = val.replace(footer,'');
+    val = val.replace('<![CDATA[','');
+    val = val.replace(']]>','');
+    val = val.replace(' ','');
+    return val
+}
 %>

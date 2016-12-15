@@ -13,8 +13,10 @@
 	var carbon = require('carbon');
 	var configs = require('/configs/designer.json');
 	var utils = require('/modules/utils.js');
-	var hl7Utils=require('hl7-utils.jag');
 	var server = new carbon.server.Server();
+	var eventProcessorService = carbon.server.osgiService('org.wso2.carbon.event.processor.core.EventProcessorService');
+	var eventPublisherService = carbon.server.osgiService('org.wso2.carbon.event.publisher.core.EventPublisherService');
+	var hl7Utils=require('hl7-utils.jag');
 	var timeRangeUtil = Packages.org.wso2.analytics.esb.util.TimeRangeUtils;
 	var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
 	var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
@@ -31,7 +33,7 @@
 	var SEARCH_SPECIFIC_MESSAGE=20;
 	var NOTIFY_DISEASE=3;
 	var NOTIFY_WAIT_TIME=30;
-    	var UPDATE_ALERT=31;
+  var UPDATE_ALERT=31;
 	var CURRENT_SETTING=32;
 
 
@@ -212,23 +214,23 @@
 
 			case NOTIFY_DISEASE:
 			{
-                var diseaseType=request.getParameter("diseaseType");
+        var diseaseType=request.getParameter("diseaseType");
 				var tableName = "DISEASEALERTING";
 				if (hl7Utils.isNull(diseaseType)){
 				query = stringify({
-					query: "*:*",
+					query: "",
 					"start": 0,
 					"count": 100
 				});
 				}else if (diseaseType == "ALL"){
 				query = stringify({
-					query: "*:*",
+					query: "",
 					"start": 0,
 					"count": 100
 				});
 				}else{
 				query = stringify({
-					query: "_DiagnosisDescription : " + diseaseType,
+					query: "_DG1.DiagnosisDescription : " + diseaseType,
 					"start": 0,
 					"count": 100
 				});
@@ -289,58 +291,144 @@
 			 }
 			 case UPDATE_ALERT:
 			 {
-				   var initialize="Update";
-				   var alertType=request.getParameter("AlertType");
-					 var AlertLimit=request.getParameter("AlertLimit");
-					 var EmailAddress=request.getParameter("EmailAddress");
-					 var PhoneNo=request.getParameter("PhoneNo");
-					 var executionPlanName=alertType+"Alerts";
-					 var smsAlertName="sms"+alertType;
-					 var emailAlertName="email"+alertType;
+			 	var initialize="Update";
+			  var alertType= request.getParameter("AlertType");
+			  var limit=request.getParameter("AlertLimit");
+				var email=request.getParameter("EmailAddress");
+				var phoneno=request.getParameter("PhoneNo");
+				var executionPlanName=alertType+"Alerts";
+ 			 	var smsAlertName="sms"+alertType;
+ 			 	var emailAlertName="email"+alertType;
+ 			 try{
+ 				eventProcessorService.undeployActiveExecutionPlan(executionPlanName);
+ 				initialize="Update"
+ 			 }catch(e){
+ 				initialize="Initialize"
+ 				log.error(e.message);
+ 			 }
+ 			 var executionPlan=hl7Utils.createExecutionPlan(alertType);
+ 			 executionPlan=executionPlan.replace("$limit", limit);
+ 			 eventProcessorService.deployExecutionPlan(executionPlan);
+
+			 if(hl7Utils.isNull(phoneno) == false){
 					try{
-						eventProcessorService.undeployActiveExecutionPlan(executionPlanName);
+					eventPublisherService.undeployActiveEventPublisherConfiguration(smsAlertName);
+					initialize="Update"
+				}catch(e){
+					initialize="Initialize"
+					log.error(e.message);
+				}
+				 var smsPublisher=hl7Utils.createPublisher(alertType,"sms");
+				 smsPublisher=smsPublisher.replace("$phoneno",phoneno);
+				 eventPublisherService.deployEventPublisherConfiguration(smsPublisher);
+				 }
+				 if(hl7Utils.isNull(email) == false){
+						try{
+						eventPublisherService.undeployActiveEventPublisherConfiguration(emailAlertName);
 						initialize="Update"
 					}catch(e){
 						initialize="Initialize"
 						log.error(e.message);
 					}
-
-					 var executionPlan=hl7Utils.getExecutionPlan(alertType);
-					 executionPlan=executionPlan.replace("$AlertLimit", AlertLimit);
-					 eventProcessorService.deployExecutionPlan(executionPlan);
-                     if(hl7Utils.isNull(PhoneNo) == false){
-							     try{
-									 eventPublisherService.undeployActiveEventPublisherConfiguration(smsAlertName);
-									 initialize="Update"
-								 }catch(e){
-									 initialize="Initialize"
-									 log.error(e.message);
-								 }
-						var smsPublisher=hl7Utils.getSmsPublisher(alertType);
-						smsPublisher=smsPublisher.replace("$PhoneNo",PhoneNo);
-						eventPublisherService.deployEventPublisherConfiguration(smsPublisher);
-					 }
-					 if(hl7Utils.isNull(EmailAddress) == false){
-							    try{
-									eventPublisherService.undeployActiveEventPublisherConfiguration(emailAlertName);
-									initialize="Update"
-								}catch(e){
-									initialize="Initialize"
-									log.error(e.message);
-								}
-					 var emailPublisher=hl7Utils.getEmailPublisher(alertType);
-					 emailPublisher=emailPublisher.replace("$EmailAddress",EmailAddress);
+					 var emailPublisher=hl7Utils.createPublisher(alertType,"email");
+					 emailPublisher=emailPublisher.replace("$email",email);
 					 eventPublisherService.deployEventPublisherConfiguration(emailPublisher);
-					}
-					 result.push({"initialize":initialize});
+					 }
 					 break;
+					}
+			 case CURRENT_SETTING:
+			 {
 
+
+			 var result=[];
+			 var tempExecutionPlanDiseaseAlert, tempExecutionPlanWaitTimeAlert=null;
+			 var tempPublisherSmsDisease, tempPublisherSmsWaitTime,tempPublisherEmailDisease, tempPublisherEmailWaitTime=null;
+			 var diseaseAlertLimit=1000;
+			 var waitTimeAlertLimit=1000;
+			 var initializeDisease="Update";
+			 var initializeWaitTime="Update";
+			 var emailDisease;
+			 var emailWaitTime;
+			 var smsDisease;
+			 var smsWaitTime;
+
+				try{
+						tempExecutionPlanDiseaseAlert=eventProcessorService.getActiveExecutionPlan("diseaseAlerts")
+				}catch(e){
+						initializeDisease="Initialize"
+						log.error(e.message);
+				}
+				if(hl7Utils.isNull(tempExecutionPlanDiseaseAlert)== false){
+					 diseaseAlertLimit=hl7Utils.getAlertLimit(tempExecutionPlanDiseaseAlert);
+				}
+
+				try{
+						tempExecutionPlanWaitTimeAlert=eventProcessorService.getActiveExecutionPlan("waitTimeAlerts")
+				}catch(e){
+						initializeWaitTime="Initialize"
+						log.error(e.message);
+				}
+
+			 if(hl7Utils.isNull(tempExecutionPlanWaitTimeAlert)== false){
+				 waitTimeAlertLimit=hl7Utils.getAlertLimit(tempExecutionPlanWaitTimeAlert);
 			 }
-			 case CURRENT_SETTING :
-						 {
+				try{
+					tempPublisherSmsDisease=eventPublisherService.getActiveEventPublisherConfigurationContent("smsdisease")
+				}catch(e){
+						log.error(e.message);
+				}
+				if(hl7Utils.isNull(tempPublisherSmsDisease)== false){
+					smsDisease=hl7Utils.getPhoneNo(tempPublisherSmsDisease);
+				}
+				try{
+					tempPublisherSmsWaitTime=eventPublisherService.getActiveEventPublisherConfigurationContent("smswaitTime")
+				}catch(e){
+						log.error(e.message);
+				}
+				if(hl7Utils.isNull(tempPublisherSmsWaitTime)== false){
+					 smsWaitTime=hl7Utils.getPhoneNo(tempPublisherSmsWaitTime);
+				}
+				try{
+					tempPublisherEmailDisease=eventPublisherService.getActiveEventPublisherConfigurationContent("emaildisease")
+				}catch(e){
+						log.error(e.message);
+				}
+				if(hl7Utils.isNull(tempPublisherEmailDisease)== false){
+					 emailDisease=hl7Utils.getEmailAddress(tempPublisherEmailDisease);
+				}
+				try{
+					tempPublisherEmailWaitTime=eventPublisherService.getActiveEventPublisherConfigurationContent("emailwaitTime")
+				}catch(e){
+						log.error(e.message);
+				}
+				if(hl7Utils.isNull(tempPublisherEmailWaitTime)== false){
+					 emailWaitTime=hl7Utils.getEmailAddress(tempPublisherEmailWaitTime);
+				}
 
-							break;
-						 }
+			 if(emailDisease == "null"){
+				emailDisease="";
+			 }
+			 if(emailWaitTime == "null"){
+				emailWaitTime="";
+			 }
+			 if(smsDisease == "null"){
+				smsDisease="";
+			 }
+			 if(smsWaitTime == "null"){
+				smsWaitTime="";
+			 }
+
+		result.push({"diseaseAlertLimit": diseaseAlertLimit,
+								"waitTimeAlertLimit": waitTimeAlertLimit,
+								"initializeDisease": initializeDisease,
+								"initializeWaitTime": initializeWaitTime,
+								"emailDisease":emailDisease,
+								"emailWaitTime":emailWaitTime,
+								"smsDisease":smsDisease,
+								"smsWaitTime":smsWaitTime
+								});
+				break;
+			 }
 
 			default :
 			{
@@ -362,4 +450,9 @@
 					}
 		}
 }());
+
+
+
+
+
 %>

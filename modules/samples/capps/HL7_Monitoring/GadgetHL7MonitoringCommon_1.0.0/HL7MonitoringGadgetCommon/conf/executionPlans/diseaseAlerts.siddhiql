@@ -41,7 +41,12 @@ from diseaseLocalAlertTemp#geo:geocode(location)
 select latitude, longitude,formattedAddress,Disease,timestamp
 insert into diseaseAlertingTemp;
 
-from every(old=diseaseAlertingTemp)->new=diseaseAlertingTemp[true < $distanceLimit ] within $timeLimit day 
+from every(old=diseaseAlertingTemp)->new=diseaseAlertingTemp[
+2 * math:atan(
+  math:sqrt(math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
+, math:sqrt(1-   math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
+) * 6371
+  < $distanceLimit ] within $timeLimit day 
 select old.latitude as latitude, old.longitude as longitude, old.formattedAddress as formattedAddress,old.Disease as Disease, count(new.timestamp) as msgCount,new.timestamp as timestamp
 group by old.latitude, old.longitude,old.Disease, old.formattedAddress
 insert into diseaseAlertingTemporary;

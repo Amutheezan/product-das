@@ -15,8 +15,8 @@ $.ajax({
     type: "GET",
     success: function(data) {
 	    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
-      $("#diseaseAlertArea").val(data.message[0]["distanceLimit"]);
-      $("#diseaseAlertTime").val(data.message[0]["timeLimit"]);
+      $("#diseaseAlertArea").val(data.message[0]["diseaseDistanceLimit"]);
+      $("#diseaseAlertTime").val(data.message[0]["diseaseTimeLimit"]);
 	    $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]/1000);
 	    $("#diseaseEmail").val(data.message[0]["emailDisease"]);
 	    $("#diseasePhoneNo").val(data.message[0]["smsDisease"]);

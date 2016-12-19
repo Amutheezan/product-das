@@ -36,7 +36,20 @@ if (type==TYPE_NOTIFY_WAIT_TIME){
          "dataSrc" : 'message.0.data'
        },
          "columns": [
-          { title: "WaitTime",data: "waitingTime"},
+          { title: "WaitTime",data: "waitingTime",
+          "render": function (data) {
+            var sec_num = parseInt(data, 10)/1000;
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            return hours+' hrs '+minutes+' min '+seconds + ' sec ';
+        }
+
+          },
           { title: "Date and Time",data: "registeredTime",
            "render": function (data) {
                     return new Date(data);
@@ -57,6 +70,6 @@ if (type==TYPE_NOTIFY_WAIT_TIME){
     }
     });
 
-  
+
 
 });

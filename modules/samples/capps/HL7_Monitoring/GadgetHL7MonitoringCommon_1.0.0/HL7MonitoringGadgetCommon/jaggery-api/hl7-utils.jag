@@ -29,7 +29,7 @@ function getTimeLimit(executionPlan){
     executionPlan=executionPlan.split(" ");
     for(var i=0;i<executionPlan.length;i++){
       if(executionPlan[i] == "within"){
-        timeLimit=executionPlan[i+1] + " " + executionPlan[i+2];
+        timeLimit=executionPlan[i+1] 
       }
     }
   }

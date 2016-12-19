@@ -36,7 +36,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(mymap);
 
 $.ajax({
-    url: url +"?type=3diseaseType=ALL",
+    url: url +"?type=3&diseaseType=AIDS",
     type: "GET",
     success: function(data) {
        onData(data);

@@ -6,7 +6,7 @@
   "description": "This stream will store the Disease Alert",
   "metaData": [],
   "correlationData": [],
-    "payloadData": [
+  "payloadData": [
     {
       "name": "latitude",
       "type": "DOUBLE"
@@ -19,7 +19,7 @@
       "name": "formattedAddress",
       "type": "STRING"
     },
-      {
+    {
       "name": "Disease",
       "type": "STRING"
     },

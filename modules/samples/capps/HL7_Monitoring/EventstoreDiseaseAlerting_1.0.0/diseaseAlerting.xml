@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <EventStoreConfiguration>
     <TableSchema>
-            <ColumnDefinition>
+        <ColumnDefinition>
             <Name>latitude</Name>
             <IsFacet>false</IsFacet>
             <EnableIndexing>true</EnableIndexing>

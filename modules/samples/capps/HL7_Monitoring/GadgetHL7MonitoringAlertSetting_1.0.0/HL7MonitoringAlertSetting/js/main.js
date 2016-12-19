@@ -58,7 +58,6 @@ $.ajax({
         EmailAddress=null;
       }
     }
-
       var params={ type:type,
         AlertType:AlertType,
         AlertLimit:AlertLimit,
@@ -100,7 +99,6 @@ $.ajax({
         EmailAddress=null;
       }
     }
-
       var params={ type:type,
         AlertType:AlertType,
         AlertLimit:AlertLimit,

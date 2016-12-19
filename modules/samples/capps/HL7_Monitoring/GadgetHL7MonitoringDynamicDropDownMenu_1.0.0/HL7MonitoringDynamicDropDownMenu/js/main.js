@@ -29,7 +29,7 @@ if(type==TYPE_SUMMARY){
 
 }else if(type==TYPE_NOTIFY){
   var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-      +'<span>ALL</span> <span class="caret"></span>'
+      +'<span>AIDS</span> <span class="caret"></span>'
     +'</button>'
     var role="type-update";
     var href="javascript:void";

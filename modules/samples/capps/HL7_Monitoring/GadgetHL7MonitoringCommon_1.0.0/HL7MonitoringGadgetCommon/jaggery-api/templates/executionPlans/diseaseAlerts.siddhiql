@@ -31,17 +31,21 @@ cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as ZipCode,
 cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as Country,
 cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as Disease ,
 time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
-insert into diseaseAlert;
-
-from diseaseAlert#window.time(1 day)
-select Address,City,State,ZipCode,Country,Disease, count(*) as msgCount,timestamp
-group by Address,City,State,ZipCode,Country,Disease
 insert into diseaseAlertTemp;
 
-from diseaseAlertTemp[msgCount > $limit  ]
-select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,msgCount,timestamp
+from diseaseAlertTemp
+select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,timestamp
 insert into diseaseLocalAlertTemp;
 
 from diseaseLocalAlertTemp#geo:geocode(location)
-select latitude, longitude,formattedAddress,Disease, msgCount,timestamp
+select latitude, longitude,formattedAddress,Disease,timestamp
+insert into diseaseAlertingTemp;
+
+from every(old=diseaseAlertingTemp)->new=diseaseAlertingTemp[true < $distanceLimit AND >=0] within $timeLimit
+select old.latitude as latitude, old.longitude as longitude, old.formattedAddress as formattedAddress,old.Disease as Disease, count(new.timestamp) as msgCount,new.timestamp as timestamp
+group by old.latitude, old.longitude,old.Disease, old.formattedAddress
+insert into diseaseAlertingTemporary;
+
+from diseaseAlertingTemporary[msgCount > $incidentCount]
+select latitude,longitude,formattedAddress, Disease,msgCount, timestamp
 insert into diseaseAlerting;

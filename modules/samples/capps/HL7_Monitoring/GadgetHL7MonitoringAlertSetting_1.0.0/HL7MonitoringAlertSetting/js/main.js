@@ -1,6 +1,8 @@
 var TYPE_UPDATE=31;
 var TYPE_GET_CURRENT_SETTING=32;
 var DEFAULT_ALERT_LIMIT=1000;
+var DEFAULT_DISTANCE_LIMIT=1;
+var DEFAULT_TIME_LIMIT="1 day";
 var url= "/portal/store/carbon.super/fs/gadget/HL7MonitoringGadgetCommon/jaggery-api/hl7.jag";
 var type=null;
 var AlertLimit=0;
@@ -13,6 +15,8 @@ $.ajax({
     type: "GET",
     success: function(data) {
 	    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
+      $("#diseaseAlertArea").val(data.message[0]["distanceLimit"]);
+      $("#diseaseAlertTime").val(data.message[0]["timeLimit"]);
 	    $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]/1000);
 	    $("#diseaseEmail").val(data.message[0]["emailDisease"]);
 	    $("#diseasePhoneNo").val(data.message[0]["smsDisease"]);
@@ -36,6 +40,8 @@ $.ajax({
     type=TYPE_UPDATE;
     AlertType="disease";
     AlertLimit=$("#diseaseAlert").val();
+    DistanceLimit=$("diseaseAlertArea").val();
+    TimeLimit=$("diseaseAlertTime").val();
     EmailAddress=$("#diseaseEmail").val();
     PhoneNo=$("#diseasePhoneNo").val();
     PhoneNo=PhoneNo.substring(1);
@@ -49,6 +55,21 @@ $.ajax({
     } else{
     }
     }
+    if(isNull(DistanceLimit) == true || DistanceLimit <= 0){
+      DistanceLimit=DEFAULT_DISTANCE_LIMIT;
+      $("#diseaseAlert").val(DEFAULT_DISTANCE_LIMIT);
+    }else {
+    if(DistanceLimit === parseInt(DistanceLimit, 10)){
+     DistanceLimit=DEFAULT_DISTANCE_LIMIT;
+      $("#diseaseAlertArea").val(DEFAULT_DISTANCE_LIMIT);
+    } else{
+    }
+    }
+    if(isNull(TimeLimit) == true ){
+      TimeLimit=DEFAULT_TIME_LIMIT;
+      $("#diseaseAlertTime").val(DEFAULT_TIME_LIMIT);
+    }
+
     if(isNull(EmailAddress)== true ){
     }
     else{
@@ -58,9 +79,12 @@ $.ajax({
         EmailAddress=null;
       }
     }
+
       var params={ type:type,
         AlertType:AlertType,
         AlertLimit:AlertLimit,
+        DistanceLimit:DistanceLimit,
+        TimeLimit:TimeLimit,
         EmailAddress:EmailAddress,
         PhoneNo:PhoneNo
           }
@@ -99,6 +123,7 @@ $.ajax({
         EmailAddress=null;
       }
     }
+
       var params={ type:type,
         AlertType:AlertType,
         AlertLimit:AlertLimit,

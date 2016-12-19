@@ -23,6 +23,30 @@ function getAlertLimit(executionPlan){
 	return alertLimit;
 }
 
+function getTimeLimit(executionPlan){
+  var timeLimit;
+  if(isNull(executionPlan) == false){
+    executionPlan=executionPlan.split(" ");
+    for(var i=0;i<executionPlan.length;i++){
+      if(executionPlan[i] == "within"){
+        timeLimit=executionPlan[i+1] + " " + executionPlan[i+2];
+      }
+    }
+  }
+}
+
+function getDistanceLimit(executionPlan){
+  var distanceLimit;
+  if(isNull(executionPlan) == false){
+    executionPlan=executionPlan.split(" ");
+    for(var i=0;i<executionPlan.length;i++){
+      if(executionPlan[i] == "<"){
+        distanceLimit=executionPlan[i+1];
+      }
+    }
+  }
+}
+
 function getPhoneNo(smsPublisher){
 	var phoneNo;
 	if(isNull(smsPublisher) == false ){

@@ -4,7 +4,7 @@ var charts = [{
     schema: [{
         "metadata": {
             "names": ["TIME", "COUNT","SubType"],
-            "types": ["time", "ordinal","ordinal"]
+            "types": ["time", "linear","ordinal"]
         },
         "data": []
     }],
@@ -20,7 +20,6 @@ var charts = [{
         { name: TYPE_LANDING, type: 1 }
     ],
     processData: function(data) {
-       //console.log(data);
         var result = [];
         var schema = this.schema;
         var columns = this.columns;
@@ -31,9 +30,7 @@ var charts = [{
                 record.push(value);
             });
             result.push(record);
-
         });
-            //  console.log(result);
         return result;
     }
 
@@ -43,7 +40,7 @@ var charts = [{
     schema: [{
         "metadata": {
             "names": ["TIME", "COUNT"],
-            "types": ["time", "ordinal"]
+            "types": ["time", "linear"]
         },
         "data": []
     }],
@@ -59,7 +56,6 @@ var charts = [{
         { name: TYPE_LANDING, type: 1 }
     ],
     processData: function(data) {
-       //console.log(data);
         var result = [];
         var schema = this.schema;
         var columns = this.columns;
@@ -70,9 +66,7 @@ var charts = [{
                 record.push(value);
             });
             result.push(record);
-
         });
-            //  console.log(result);
         return result;
     }
 

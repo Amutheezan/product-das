@@ -13,7 +13,7 @@ window.onload=function temp() {
 $(function() {
 if(type==TYPE_SUMMARY){
   var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-      +'<span>ADT</span> <span class="caret"></span>'
+      +'<span>ADT : Admission Discharge Transfer</span> <span class="caret"></span>'
     +'</button>'
     var role="type-update";
     var href="javascript:void";
@@ -71,7 +71,12 @@ if(type==TYPE_SUMMARY){
             var timeFrom= new Date(moment().subtract(29, 'days')).getTime();
             var timeTo = new Date(moment()).getTime();
           }
-          var msgType=$(this).data('value');
+          for(var i=0;i<MSG_TYPES.length;i++){
+            if($(this).data('value') === MSG_TYPES[i]){
+              msgType=MSG_TYPES_SHORT[i];
+            }
+          }
+
           message = {
               timeFrom: timeFrom,
               timeTo: timeTo,

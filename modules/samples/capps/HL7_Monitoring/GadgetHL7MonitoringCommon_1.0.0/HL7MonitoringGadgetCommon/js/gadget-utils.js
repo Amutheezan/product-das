@@ -37,7 +37,9 @@ var MSG_TYPE_ORM="ORM";
 var MSG_TYPE_ORU="ORU";
 var MSG_TYPE_DFT="DFT";
 
-var MSG_TYPES=[MSG_TYPE_ADT + " : Admission Discharge Transfer",MSG_TYPE_ORU +" : Request Message",MSG_TYPE_ORM +" : Order Message",MSG_TYPE_DFT+" :Finance Related Message"];
+var MSG_TYPES=[MSG_TYPE_ADT + " : Admission Discharge Transfer",MSG_TYPE_ORU +" : Observation Result Message",MSG_TYPE_ORM +" : Order Message",MSG_TYPE_DFT+" : Detailed Finance Transaction"];
+var MSG_TYPES_SHORT=[MSG_TYPE_ADT,MSG_TYPE_ORU ,MSG_TYPE_ORM,MSG_TYPE_DFT];
+
 var DSE_TYPES=["AIDS","EBOLA","CANCER"];
 
 var ROLE_SEARCH="search";

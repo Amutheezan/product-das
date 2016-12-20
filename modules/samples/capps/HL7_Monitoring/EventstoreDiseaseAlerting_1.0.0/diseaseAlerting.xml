@@ -23,7 +23,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>DOUBLE</Type>
+            <Type>LONG</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>formattedAddress</Name>

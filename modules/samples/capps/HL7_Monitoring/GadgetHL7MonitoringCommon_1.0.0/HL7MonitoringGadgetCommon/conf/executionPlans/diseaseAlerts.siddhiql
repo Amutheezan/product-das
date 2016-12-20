@@ -13,7 +13,7 @@ content string, type string, timestamp long, message_direction string,
 service_name string, operation_name string, status string, arbitraryDataMap object);
 
 @Export('diseaseAlerting:1.0.0')
-define stream diseaseAlerting (latitude double,longitude double, radius double
+define stream diseaseAlerting (latitude double,longitude double, radius long,
 formattedAddress string,Disease string,msgCount long, timestamp long);
 
 from dashl7msg
@@ -53,5 +53,5 @@ group by old.latitude, old.longitude,old.Disease, old.formattedAddress
 insert into diseaseAlertingTemporary;
 
 from diseaseAlertingTemporary[msgCount > $limit ]
-select latitude,longitude, $distanceLimit ,formattedAddress, Disease,msgCount, timestamp
+select latitude,longitude, $distanceLimitl  as radius ,formattedAddress, Disease,msgCount, timestamp
 insert into diseaseAlerting;

@@ -18,7 +18,7 @@ if(type==TYPE_SUMMARY){
     var role="type-update";
     var href="javascript:void";
     var dropDownMenu=getDropDownMenu(MSG_TYPES,href,role);
-       $('#dropdown-menu').append('<div class="btn-group pull-left" id="type-select">'
+       $('#dropdown-menu').append('Select Message Type : <div class="btn-group pull-left" id="type-select">'
                               +'<div class="btn-group pull-left type-shortcuts" role="group">'
                                   +dropDownSpan
                                   +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'
@@ -34,7 +34,7 @@ if(type==TYPE_SUMMARY){
     var role="type-update";
     var href="javascript:void";
     var dropDownMenu=getDropDownMenu(DSE_TYPES,href,role);
-       $('#dropdown-menu').append('<div class="btn-group pull-left" id="type-select">'
+       $('#dropdown-menu').append('Select Disease Type : <div class="btn-group pull-left" id="type-select">'
                               +'<div class="btn-group pull-left type-shortcuts" role="group">'
                                   +dropDownSpan
                                   +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'

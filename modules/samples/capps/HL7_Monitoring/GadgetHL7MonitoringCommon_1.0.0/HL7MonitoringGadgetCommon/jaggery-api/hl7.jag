@@ -287,10 +287,6 @@
 			 {
 			 	var initialize="Update";
 			  var alertType= request.getParameter("AlertType");
-				if(alertType == "disease"){
-					var distance=request.getParameter("DistanceLimit");
-					var time=request.getParameter("TimeLimit");
-				}
 			  var limit=request.getParameter("AlertLimit");
 				var email=request.getParameter("EmailAddress");
 				var phoneno=request.getParameter("PhoneNo");
@@ -306,11 +302,6 @@
  			 }
  			 var executionPlan=hl7Utils.createExecutionPlan(alertType);
  			 executionPlan=executionPlan.split("$limit").join(limit);
-			 if(alertType == "disease"){
-			 	executionPlan=executionPlan.split("$distanceLimit").join(distance);
-				executionPlan=executionPlan.split("$timeLimit").join(time);
-
-			 }
  			 eventProcessorService.deployExecutionPlan(executionPlan);
 
 			      if(hl7Utils.isNull(phoneno) == false){
@@ -352,8 +343,6 @@
 			 var tempPublisherSmsDisease, tempPublisherSmsWaitTime,tempPublisherEmailDisease, tempPublisherEmailWaitTime=null;
 			 var diseaseAlertLimit=1000;
 			 var waitTimeAlertLimit=1000;
-			 var diseaseDistanceLimit=1;
-			 var diseaseTimeLimit=1;
 			 var initializeDisease="Update";
 			 var initializeWaitTime="Update";
 			 var emailDisease;
@@ -369,10 +358,6 @@
 				}
 				if(hl7Utils.isNull(tempExecutionPlanDiseaseAlert)== false){
 					 diseaseAlertLimit=hl7Utils.getAlertLimit(tempExecutionPlanDiseaseAlert);
-					 diseaseDistanceLimit=hl7Utils.getDistanceLimit(tempExecutionPlanDiseaseAlert);
-					 log.info(diseaseDistanceLimit);
-					 diseaseTimeLimit=hl7Utils.getTimeLimit(tempExecutionPlanDiseaseAlert);
-					 log.info(diseaseTimeLimit);
 				}
 
 				try{
@@ -432,8 +417,6 @@
 			 }
 
 		result.push({"diseaseAlertLimit": diseaseAlertLimit,
-								"diseaseDistanceLimit" : diseaseDistanceLimit,
-								"diseaseTimeLimit" : diseaseTimeLimit,
 								"waitTimeAlertLimit": waitTimeAlertLimit,
 								"initializeDisease": initializeDisease,
 								"initializeWaitTime": initializeWaitTime,

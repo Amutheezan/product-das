@@ -11,6 +11,7 @@
           <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
           <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
           <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+          <link rel="stylesheet" type="text/css" href="css/dropdownmenu.css" />
           <link rel="stylesheet" type="text/css" href="../HL7MonitoringGadgetCommon/css/nanoscroller.css" />
           <link rel="stylesheet" type="text/css" href="../HL7MonitoringGadgetCommon/css/gadget.css" />
           <link rel="stylesheet" type="text/css" href="../HL7MonitoringGadgetCommon/css/dataTables.bootstrap.css">
@@ -38,15 +39,26 @@
 
 
   <!-- SEARCH SECTION -->
-
           <div id="main" style="position: relative; ">
-
-            <!-- DATE TIME PICER -->
-
             <div class="clearfix add-padding-1x"  style="position: relative; top: 10px;  ">
-               <div style="position: absolute; width:200px;" class="noOfRow">
-                  <input type="text" class="form-control input-sm" name="length" id="length" placeholder="No of Rows"/>
-               </div>
+              <!-- MSG LIMIT PICKER -->
+              <div>
+                Select the Message Limit :
+              <div class="btn-group" id="type-select">
+             <div class="btn-group date-shortcuts" role="group">
+
+             <button id="btnDropdownType" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+             <span>1000</span> <span class="caret"></span>
+             </button>
+             <ul class="dropdown-menu btn-dropdown-menu" role="menu">
+                <li><a href="javascript:void(0)" role="type-update" data-value="1000">1000</a></li>
+                <li><a href="javascript:void(0)" role="type-update" data-value="10000">10000</a></li>
+                <li><a href="javascript:void(0)" role="type-update" data-value="100000"s>100000</a></li>
+             </ul>
+           </div>
+         </div>
+       </div>
+              <!-- DATE TIME PICKER -->
                <div class="btn-group pull-right" id="date-select">
                   <div class="btn-group pull-right" role="group">
                      <button role="date-update" data-value="LastHour" type="button" class="btn btn-default hidden-xs">Last Hour</button>
@@ -59,7 +71,7 @@
                      </button>
                   </div>
                   <div class="btn-group pull-right date-shortcuts" role="group">
-                     <button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle hidden-sm hidden-md hidden-lg" data-toggle="dropdown">
+                     <button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                      <span>Last Hour</span> <span class="caret"></span>
                      </button>
                      <ul class="dropdown-menu btn-dropdown-menu pull-right" role="menu">
@@ -75,6 +87,8 @@
 <!-- SEARCH AND ADD ATTRIBUTE PANEL -->
 
             <div  style="position: relative; top: 10px; ">
+              <div id="addAttri" class="add-padding-1x">
+              </div>
              <div class="add-padding-100x" >
                 <div id="search" class="add-padding-1x">
                    <button  id="Search" type="submit" class="btn btn-primary btn-lg pull-right">
@@ -85,8 +99,6 @@
                   <button id="btnAutoGen" type="button" class="btn btn-primary btn-md pull-center">Add Attribute</button>
                   <button id="clearall" type="button" class="btn btn-primary btn-md pull-center">Clear All</button>
                 </div>
-             </div>
-             <div id="addAttri" class="add-padding-1x">
              </div>
            </div>
           </div>

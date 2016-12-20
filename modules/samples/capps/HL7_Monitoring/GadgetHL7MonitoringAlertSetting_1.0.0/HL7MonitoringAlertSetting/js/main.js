@@ -15,8 +15,6 @@ $.ajax({
     type: "GET",
     success: function(data) {
 	    $("#diseaseAlert").val(data.message[0]["diseaseAlertLimit"]);
-      $("#diseaseAlertArea").val(data.message[0]["diseaseDistanceLimit"]);
-      $("#diseaseAlertTime").val(data.message[0]["diseaseTimeLimit"]);
 	    $("#waitTimeAlert").val(data.message[0]["waitTimeAlertLimit"]/1000);
 	    $("#diseaseEmail").val(data.message[0]["emailDisease"]);
 	    $("#diseasePhoneNo").val(data.message[0]["smsDisease"]);
@@ -40,8 +38,6 @@ $.ajax({
     type=TYPE_UPDATE;
     AlertType="disease";
     AlertLimit=$("#diseaseAlert").val();
-   var  DistanceLimit=$("diseaseAlertArea").val();
-   var  TimeLimit=$("diseaseAlertTime").val();
     EmailAddress=$("#diseaseEmail").val();
     PhoneNo=$("#diseasePhoneNo").val();
     PhoneNo=PhoneNo.substring(1);
@@ -55,20 +51,7 @@ $.ajax({
     } else{
     }
     }
-    if(isNull(DistanceLimit) == true || DistanceLimit <= 0){
-      DistanceLimit=DEFAULT_DISTANCE_LIMIT;
-      $("#diseaseAlert").val(DEFAULT_DISTANCE_LIMIT);
-    }else {
-    if(DistanceLimit === parseInt(DistanceLimit, 10)){
-     DistanceLimit=DEFAULT_DISTANCE_LIMIT;
-      $("#diseaseAlertArea").val(DEFAULT_DISTANCE_LIMIT);
-    } else{
-    }
-    }
-    if(isNull(TimeLimit) == true ){
-      TimeLimit=DEFAULT_TIME_LIMIT;
-      $("#diseaseAlertTime").val(DEFAULT_TIME_LIMIT);
-    }
+
 
     if(isNull(EmailAddress)== true ){
     }
@@ -83,14 +66,12 @@ $.ajax({
       var params={ type:type,
         AlertType:AlertType,
         AlertLimit:AlertLimit,
-        DistanceLimit:DistanceLimit,
-        TimeLimit:TimeLimit,
         EmailAddress:EmailAddress,
         PhoneNo:PhoneNo
           }
         $.ajax({
             url: url +"?type=" + params.type + "&AlertType=" + params.AlertType + "&AlertLimit=" + params.AlertLimit +
-            "&DistanceLimit=" + params.DistanceLimit + "&TimeLimit=" + params.TimeLimit+ "&EmailAddress=" + params.EmailAddress + "&PhoneNo=" + params.PhoneNo,
+            "&EmailAddress=" + params.EmailAddress + "&PhoneNo=" + params.PhoneNo,
             type: "GET",
              success: function(data) {
               $("#diseaseupdate").html(data.message[0]["initialize"]);

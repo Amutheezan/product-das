@@ -37,8 +37,7 @@ cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,
 time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
 insert into registerRecords;
 
-from admissionRecords#window.length(1000) as ar join registerRecords as rr on
-((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))
+from every(ar=admissionRecords)->rr=registerRecords[((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))]
 select rr.timestamp-ar.timestamp as waitingTime, rr.timestamp as registeredTime
 insert into waitTimeAlert;
 

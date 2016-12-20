@@ -16,6 +16,10 @@
       "type": "DOUBLE"
     },
     {
+      "name" : "radius",
+      "type" : "DOUBLE"
+    },
+    {
       "name": "formattedAddress",
       "type": "STRING"
     },

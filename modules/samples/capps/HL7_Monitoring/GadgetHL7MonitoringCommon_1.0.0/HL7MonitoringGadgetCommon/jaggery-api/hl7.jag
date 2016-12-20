@@ -305,10 +305,10 @@
  				log.error(e.message);
  			 }
  			 var executionPlan=hl7Utils.createExecutionPlan(alertType);
- 			 executionPlan=executionPlan.replace("$limit", limit);
+ 			 executionPlan=executionPlan.split("$limit").join(limit);
 			 if(alertType == "disease"){
-			 	executionPlan=executionPlan.replace("$distanceLimit",distance);
-				executionPlan=executionPlan.replace("$timeLimit",time);
+			 	executionPlan=executionPlan.split("$distanceLimit").join(distance);
+				executionPlan=executionPlan.split("$timeLimit").join(time);
 
 			 }
  			 eventProcessorService.deployExecutionPlan(executionPlan);
@@ -370,7 +370,9 @@
 				if(hl7Utils.isNull(tempExecutionPlanDiseaseAlert)== false){
 					 diseaseAlertLimit=hl7Utils.getAlertLimit(tempExecutionPlanDiseaseAlert);
 					 diseaseDistanceLimit=hl7Utils.getDistanceLimit(tempExecutionPlanDiseaseAlert);
+					 log.info(diseaseDistanceLimit);
 					 diseaseTimeLimit=hl7Utils.getTimeLimit(tempExecutionPlanDiseaseAlert);
+					 log.info(diseaseTimeLimit);
 				}
 
 				try{

@@ -13,7 +13,8 @@ content string, type string, timestamp long, message_direction string,
 service_name string, operation_name string, status string, arbitraryDataMap object);
 
 @Export('diseaseAlerting:1.0.0')
-define stream diseaseAlerting (latitude double,longitude double,formattedAddress string, Disease string,msgCount long, timestamp long);
+define stream diseaseAlerting (latitude double,longitude double, radius double
+formattedAddress string,Disease string,msgCount long, timestamp long);
 
 from dashl7msg
 [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') != 'ACK') AND
@@ -46,11 +47,11 @@ from every(old=diseaseAlertingTemp)->new=diseaseAlertingTemp[
   math:sqrt(math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
 , math:sqrt(1-   math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
 ) * 6371
-  < $distanceLimit ] within $timeLimit day 
+  < $distanceLimit ] within $timeLimit day
 select old.latitude as latitude, old.longitude as longitude, old.formattedAddress as formattedAddress,old.Disease as Disease, count(new.timestamp) as msgCount,new.timestamp as timestamp
 group by old.latitude, old.longitude,old.Disease, old.formattedAddress
 insert into diseaseAlertingTemporary;
 
 from diseaseAlertingTemporary[msgCount > $limit ]
-select latitude,longitude,formattedAddress, Disease,msgCount, timestamp
+select latitude,longitude, $distanceLimit ,formattedAddress, Disease,msgCount, timestamp
 insert into diseaseAlerting;

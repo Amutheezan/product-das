@@ -18,6 +18,14 @@
             <Type>DOUBLE</Type>
         </ColumnDefinition>
         <ColumnDefinition>
+            <Name>radius</Name>
+            <IsFacet>false</IsFacet>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>DOUBLE</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
             <Name>formattedAddress</Name>
             <IsFacet>false</IsFacet>
             <EnableIndexing>true</EnableIndexing>

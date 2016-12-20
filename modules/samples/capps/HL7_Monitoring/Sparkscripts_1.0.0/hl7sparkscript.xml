@@ -54,13 +54,6 @@
         primaryKeys "year, month, day, hour, Type, SubType",
         mergeSchema "false");
 
-        CREATE TEMPORARY TABLE hl7messagePerMonthAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMonthAll",
-        schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, Type, SubType",
-        mergeSchema "false");
-
         CREATE TEMPORARY TABLE hl7messagePerDayAll USING CarbonAnalytics
         OPTIONS (tableName "das_hl7_data_publisher_store_perDayAll",
         schema "year INT -i, month INT -i, day INT -i, Type STRING -i, SubType STRING -i,
@@ -68,35 +61,16 @@
         primaryKeys "year, month, day, Type, SubType",
         mergeSchema "false");
 
-
-        CREATE TEMPORARY TABLE hl7messagePerMinuteOverAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMinuteOverAll",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, Type STRING -i,
-        SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour,minute, Type, SubType",
-        mergeSchema "false");
-
-        CREATE TEMPORARY TABLE hl7messagePerHourOverAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perHourOverAll",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour, Type, SubType",
-        mergeSchema "false");
-
-        CREATE TEMPORARY TABLE hl7messagePerMonthOverAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMonthOverAll",
+        CREATE TEMPORARY TABLE hl7messagePerMonthAll USING CarbonAnalytics
+        OPTIONS (tableName "das_hl7_data_publisher_store_perMonthAll",
         schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i,
         msgCount INT,timestamp LONG -i",
         primaryKeys "year, month, Type, SubType",
         mergeSchema "false");
 
-        CREATE TEMPORARY TABLE hl7messagePerDayOverAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perDayOverAll",
-        schema "year INT -i, month INT -i, day INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, Type, SubType",
-        mergeSchema "false");
+
+
+
 
         INSERT INTO TABLE hl7messagePerMinute
         SELECT temp.year,temp.month,temp.day, temp.hour,
@@ -118,13 +92,6 @@
         FROM hl7messagePerMinute
         GROUP BY year, month, day, hour, minute,Type) temp;
 
-        INSERT INTO TABLE hl7messagePerMinuteOverAll
-        SELECT year, month, day, hour, minute, "ALL","ALL" ,msgCount,timestamp
-        FROM
-        (SELECT year, month, day, hour, minute, sum(msgCount) as msgCount,
-        getMinuteStartingTime(year, month, day, hour, minute) as timestamp
-        FROM hl7messagePerMinute
-        GROUP BY year, month, day, hour, minute) temp;
 
 
         INSERT INTO TABLE hl7messagePerHour
@@ -144,14 +111,6 @@
         FROM hl7messagePerHour
         GROUP BY year, month, day, hour,Type) temp;
 
-        INSERT INTO TABLE hl7messagePerHourOverAll
-        SELECT year, month, day, hour, "ALL","ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, day, hour, sum(msgCount) as msgCount,
-        getHourStartingTime(year, month, day, hour) as timestamp
-        FROM hl7messagePerHour
-        GROUP BY year, month, day, hour) temp;
-
 
         INSERT INTO TABLE hl7messagePerDay
         SELECT year, month, day, Type, SubType,sum(msgCount) as msgCount,
@@ -170,14 +129,6 @@
         FROM hl7messagePerDay
         GROUP BY year, month, day,Type) temp;
 
-        INSERT INTO TABLE hl7messagePerDayOverAll
-        SELECT year, month, day, "ALL","ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, day, sum(msgCount) as msgCount,
-        getDateStartingTime(year, month, day) as timestamp
-        FROM hl7messagePerDay
-        GROUP BY year, month, day) temp;
-
 
         INSERT INTO TABLE hl7messagePerMonth
         SELECT year, month, Type, SubType,sum(msgCount) as msgCount,
@@ -195,14 +146,6 @@
         getMonthStartingTime(year, month) as timestamp
         FROM hl7messagePerMonth
         GROUP BY year, month, Type) temp;
-
-        INSERT INTO TABLE hl7messagePerMonthOverAll
-        SELECT year, month, "ALL","ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, sum(msgCount) as msgCount,
-        getMonthStartingTime(year, month) as timestamp
-        FROM hl7messagePerMonth
-        GROUP BY year, month) temp;
 
     </Script>
     <CronExpression>0 * * * * ?</CronExpression>

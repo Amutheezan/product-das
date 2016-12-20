@@ -89,7 +89,8 @@ $.ajax({
         PhoneNo:PhoneNo
           }
         $.ajax({
-            url: url +"?type=" + params.type + "&AlertType=" + params.AlertType + "&AlertLimit=" + params.AlertLimit + "&EmailAddress=" + params.EmailAddress + "&PhoneNo=" + params.PhoneNo,
+            url: url +"?type=" + params.type + "&AlertType=" + params.AlertType + "&AlertLimit=" + params.AlertLimit +
+            "&DistanceLimit=" + params.DistanceLimit + "&TimeLimit=" + params.TimeLimit+ "&EmailAddress=" + params.EmailAddress + "&PhoneNo=" + params.PhoneNo,
             type: "GET",
              success: function(data) {
               $("#diseaseupdate").html(data.message[0]["initialize"]);

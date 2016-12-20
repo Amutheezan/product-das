@@ -308,7 +308,7 @@
  			 executionPlan=executionPlan.replace("$limit", limit);
 			 if(alertType == "disease"){
 			 	executionPlan=executionPlan.replace("$distanceLimit",distance);
-				executionPlan=executionPlan.replace("$timeLimit",limit);
+				executionPlan=executionPlan.replace("$timeLimit",time);
 
 			 }
  			 eventProcessorService.deployExecutionPlan(executionPlan);
@@ -352,6 +352,8 @@
 			 var tempPublisherSmsDisease, tempPublisherSmsWaitTime,tempPublisherEmailDisease, tempPublisherEmailWaitTime=null;
 			 var diseaseAlertLimit=1000;
 			 var waitTimeAlertLimit=1000;
+			 var diseaseDistanceLimit=1;
+			 var diseaseTimeLimit=1;
 			 var initializeDisease="Update";
 			 var initializeWaitTime="Update";
 			 var emailDisease;

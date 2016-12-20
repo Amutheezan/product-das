@@ -56,10 +56,17 @@ for(var i=0;i<result.length;i++){
   if(isNull(result[i]["latitude"])){
   }else if( isNull(result[i]["longitude"])){
   }else{
-    var popUp="<b>Info</b><br> Address : "  + result[i]["formattedAddress"]+
+    var popUp="<b>Info</b>"+
      "<br> Disease : "+ result[i]["Disease"]+
      "<br> Occurances : "+ result[i]["msgCount"];
-    var marker = L.marker([result[i]["latitude"], result[i]["longitude"]])
+    var marker = L.circle([result[i]["latitude"], result[i]["longitude"]],
+    {
+    color: 'blue',
+    fillColor: '#0000FF',
+    fillOpacity: 0.5,
+    radius: 1000
+  }
+  )
     .bindPopup(popUp);
     markers.addLayer(marker);
   }

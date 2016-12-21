@@ -12,11 +12,11 @@ window.onload=function temp() {
 }
 $(function() {
 if(type==TYPE_SUMMARY){
-createDynamicDropDownMenu(MSG_TYPES,"Select Message Type : ");
+createDynamicDropDownMenu(MSG_TYPES);
 }else if(type==TYPE_SEARCH){
-createDynamicDropDownMenu(MAXROW_TYPES,"Select Row Limit : ");
+createDynamicDropDownMenu(MAXROW_TYPES);
 }else if(type==TYPE_NOTIFY){
-createDynamicDropDownMenu(DSE_TYPES,"Select diseaseType : ");
+createDynamicDropDownMenu(DSE_TYPES);
 }
     var count = 0;
     var message = {};
@@ -90,15 +90,15 @@ createDynamicDropDownMenu(DSE_TYPES,"Select diseaseType : ");
     });
 
 });
-function createDynamicDropDownMenu(types,description){
+function createDynamicDropDownMenu(types){
   var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
       +'<span>'+ types[0]+ '</span> <span class="caret"></span>'
     +'</button>'
     var role="type-update";
     var href="javascript:void";
     var dropDownMenu=getDropDownMenu(types,href,role);
-       $('#dropdown-menu').append( description + '<div class="btn-group pull-left" id="type-select">'
-                              +'<div class="btn-group pull-left type-shortcuts" role="group">'
+       $('#dropdown-menu').append( '<div class="btn-group pull-left" id="type-select">'
+                              +  '<div class="btn-group pull-left type-shortcuts" role="group">'
                                   +dropDownSpan
                                   +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'
                                     + dropDownMenu

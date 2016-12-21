@@ -31,6 +31,8 @@ $(function() {
     if (timeUnit != null) {
         $("#date-select [role=date-update][data-value=" + timeUnit + "]").addClass("active");
     } else {
+        $("#btnDropdown").addClass('active');
+        $("#btnDropdown > span:first-child").html("LastMonth");
         $("#date-select [role=date-update][data-value=LastMonth]").addClass("active");
     }
 

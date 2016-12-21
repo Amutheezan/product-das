@@ -37,7 +37,7 @@ var MSG_TYPE_ORM="ORM";
 var MSG_TYPE_ORU="ORU";
 var MSG_TYPE_DFT="DFT";
 
-var MSG_TYPES=[MSG_TYPE_ADT+ " :  Admission Discharge Transfer",MSG_TYPE_ORU+" : Observation Result",MSG_TYPE_ORM +": Order Message",MSG_TYPE_DFT+" : Detailed Financial Transcation"];
+var MSG_TYPES=[MSG_TYPE_ADT,MSG_TYPE_ORU,MSG_TYPE_ORM,MSG_TYPE_DFT];
 var MSG_TYPES_SHORT=[MSG_TYPE_ADT,MSG_TYPE_ORU,MSG_TYPE_ORM,MSG_TYPE_DFT];
 var DSE_TYPES=["AIDS","EBOLA","ALL"];
 var MAXROW_TYPES=[1000,10000,100000];

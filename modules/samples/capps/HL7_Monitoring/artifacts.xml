@@ -27,6 +27,8 @@
                     serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetHL7MonitoringBreadCrump" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetHL7MonitoringLabel" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetHL7MonitoringLineChart" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetHL7MonitoringSearchPage" version="1.0.0" include="true"
@@ -41,4 +43,3 @@
         <dependency artifact="DataPurging" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>
 </artifacts>
-

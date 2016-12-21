@@ -12,53 +12,14 @@ window.onload=function temp() {
 }
 $(function() {
 if(type==TYPE_SUMMARY){
-  var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-      +'<span>ADT : Admission Discharge Transfer</span> <span class="caret"></span>'
-    +'</button>'
-    var role="type-update";
-    var href="javascript:void";
-    var dropDownMenu=getDropDownMenu(MSG_TYPES,href,role);
-       $('#dropdown-menu').append('Select Message Type : <div class="btn-group pull-left" id="type-select">'
-                              +'<div class="btn-group pull-left type-shortcuts" role="group">'
-                                  +dropDownSpan
-                                  +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'
-                                    + dropDownMenu
-                                  + '</ul>'
-                                +'</div>'
-                              +' </div>');
-
+createDynamicDropDownMenu(MSG_TYPES,"Select Message Type : ");
+}else if(type==TYPE_SEARCH){
+createDynamicDropDownMenu(MAXROW_TYPES,"Select Row Limit : ");
 }else if(type==TYPE_NOTIFY){
-  var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-      +'<span>AIDS</span> <span class="caret"></span>'
-    +'</button>'
-    var role="type-update";
-    var href="javascript:void";
-    var dropDownMenu=getDropDownMenu(DSE_TYPES,href,role);
-       $('#dropdown-menu').append('Select Disease Type : <div class="btn-group pull-left" id="type-select">'
-                              +'<div class="btn-group pull-left type-shortcuts" role="group">'
-                                  +dropDownSpan
-                                  +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'
-                                    + dropDownMenu
-                                  + '</ul>'
-                                +'</div>'
-                              +' </div>');
-
+createDynamicDropDownMenu(DSE_TYPES,"Select diseaseType : ");
 }
-
-    var qs = gadgetUtil.getQueryString();
-    if (qs.timeFrom != null) {
-        timeFrom = parseInt(qs.timeFrom);
-    }
-    if (qs.timeTo != null) {
-        timeTo = parseInt(qs.timeTo);
-    }
-    if (qs.msgType != null){
-    	 var msgType=toString(qs.msgType);
-    }
     var count = 0;
-     var timeUnit = qs.timeUnit;
     var message = {};
-
     $("#type-select [role=type-update]").click(function(){
         $('#btnDropdown > span:first-child').html($(this).html());
         $('#btnDropdown').addClass('active');
@@ -73,7 +34,7 @@ if(type==TYPE_SUMMARY){
           }
           for(var i=0;i<MSG_TYPES.length;i++){
             if($(this).data('value') === MSG_TYPES[i]){
-              msgType=MSG_TYPES_SHORT[i];
+             var msgType=MSG_TYPES_SHORT[i];
             }
           }
 
@@ -85,11 +46,31 @@ if(type==TYPE_SUMMARY){
           gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
           gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
           gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-        }else if(type==TYPE_NOTIFY){
-        var diseaseType=$(this).data('value');
-		message={
-		diseaseType:diseaseType
-		}
+        } else if(type==TYPE_SEARCH){
+             var maxRows=$(this).data('value');
+             var ta=gadgetUtil.getURLParams();
+             try{
+               var timeFrom=ta["timeFrom"][0];
+               var timeTo=ta["timeTo"][0];
+             }catch(e){
+               var timeFrom= new Date(moment().subtract(29, 'days')).getTime();
+               var timeTo = new Date(moment()).getTime();
+             }
+
+             message = {
+                 timeFrom: timeFrom,
+                 timeTo: timeTo,
+                 maxRows:maxRows
+             };
+             gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+             gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
+             gadgetUtil.updateURLParam("maxRows", message.maxRows.toString());
+                }
+        else if(type==TYPE_NOTIFY){
+                  var diseaseType=$(this).data('value');
+              		message={
+              		diseaseType:diseaseType
+              		}
         }
 
           gadgets.Hub.publish(TOPIC, message);
@@ -109,7 +90,22 @@ if(type==TYPE_SUMMARY){
     });
 
 });
-
+function createDynamicDropDownMenu(types,description){
+  var dropDownSpan='<button id="btnDropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
+      +'<span>'+ types[0]+ '</span> <span class="caret"></span>'
+    +'</button>'
+    var role="type-update";
+    var href="javascript:void";
+    var dropDownMenu=getDropDownMenu(types,href,role);
+       $('#dropdown-menu').append( description + '<div class="btn-group pull-left" id="type-select">'
+                              +'<div class="btn-group pull-left type-shortcuts" role="group">'
+                                  +dropDownSpan
+                                  +'<ul class="dropdown-menu btn-dropdown-menu pull-left" role="menu">'
+                                    + dropDownMenu
+                                  + '</ul>'
+                                +'</div>'
+                              +' </div>');
+}
 
 $(window).resize(function() {
     if(($('body').attr('media-screen') == 'md') || ($('body').attr('media-screen') == 'lg') || ($('body').attr('media-screen') == 'sm')){

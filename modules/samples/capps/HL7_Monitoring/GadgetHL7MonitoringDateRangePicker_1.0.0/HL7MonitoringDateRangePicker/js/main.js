@@ -41,7 +41,6 @@ $(function() {
     function cb(start, end) {
         dateLabel.html(start.format('MMMM D, YYYY hh:mm A') + ' - ' + end.format('MMMM D, YYYY hh:mm A'));
         if (count != 0) {
-          if(page == TYPE_LANDING){
             var ta=gadgetUtil.getURLParams();
             var msgType=ta["msgType"][0];
               message = {
@@ -52,23 +51,9 @@ $(function() {
               };
               gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
               gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-              gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-          }
-          else if(page == TYPE_SUMMARY){
-            var ta=gadgetUtil.getURLParams();
-            var msgType=ta["msgType"][0];
-              message = {
-                  timeFrom: new Date(start).getTime(),
-                  timeTo: new Date(end).getTime(),
-                  msgType:msgType,
-                  timeUnit: "Custom"
-              };
-              gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-              gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-              gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-          }
-
-
+              if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+                gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+              }
         gadgets.Hub.publish(TOPIC, message);
         }
         count++;
@@ -125,7 +110,6 @@ $(function() {
                 }
 
 
-                if(page == TYPE_LANDING){
                   message = {
                       timeFrom: new Date(moment().subtract(1, 'hour')).getTime(),
                       timeTo: new Date(moment()).getTime(),
@@ -133,22 +117,10 @@ $(function() {
                       timeUnit: "Hour"
 
                   };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page == TYPE_SUMMARY){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'hour')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      msgType:msgType,
-                      timeUnit: "Hour"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+                gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
+                if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
                 }
                 break;
             case 'LastDay':
@@ -166,7 +138,6 @@ $(function() {
                   var msgType="ADT";
                 }
 
-                if(page == TYPE_LANDING){
                   message = {
                       timeFrom: new Date(moment().subtract(1, 'day')).getTime(),
                       timeTo: new Date(moment()).getTime(),
@@ -174,21 +145,12 @@ $(function() {
                       timeUnit: "Day"
 
                   };
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page == TYPE_SUMMARY){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'day')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      msgType:msgType,
-                      timeUnit: "Day"
+                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
+                  if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+                    gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+                  }
 
-                  };
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }
                 break;
             case 'LastMonth':
                 dateLabel.html(moment().subtract(29, 'days').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
@@ -204,7 +166,7 @@ $(function() {
                 {
                   var msgType="ADT";
                 }
-                if(page == TYPE_LANDING){
+
                   message = {
                       timeFrom: new Date(moment().subtract(1, 'month')).getTime(),
                       timeTo: new Date(moment()).getTime(),
@@ -212,22 +174,11 @@ $(function() {
                       timeUnit: "Month"
 
                   };
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page == TYPE_SUMMARY){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'month')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      msgType:msgType,
-                      timeUnit: "Month"
-
-                  };
-
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }
+                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
+                  if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+                    gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+                  }
                 break;
             case 'LastYear':
                 dateLabel.html(moment().subtract(1, 'year').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
@@ -243,7 +194,6 @@ $(function() {
                 {
                   var msgType="ADT";
                 }
-                if(page == TYPE_LANDING){
                   message = {
                       timeFrom: new Date(moment().subtract(1, 'year')).getTime(),
                       timeTo: new Date(moment()).getTime(),
@@ -251,26 +201,15 @@ $(function() {
                       timeUnit: "Year"
 
                   };
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }else if(page == TYPE_SUMMARY){
-                  message = {
-                      timeFrom: new Date(moment().subtract(1, 'year')).getTime(),
-                      timeTo: new Date(moment()).getTime(),
-                      msgType:msgType,
-                      timeUnit: "Year"
-
-                  };
-                                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
-                                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-                                  gadgetUtil.updateURLParam("msgType", message.msgType.toString());
-                }
+                  gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                  gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
+                  if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+                    gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+                  }
                 break;
             default:
                 return;
         }
-console.log(message);
         gadgets.Hub.publish(TOPIC, message);
 
         $(gadgetWrapper).removeClass('btn-dropdown-menu-open');
@@ -304,7 +243,9 @@ function onChartZoomed(data) {
     };
     gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
     gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
-    gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+    if(page == TYPE_LANDING || page == TYPE_SUMMARY){
+      gadgetUtil.updateURLParam("msgType", message.msgType.toString());
+    }
     gadgets.Hub.publish(TOPIC, message);
     var start = data.timeFrom;
     var end = data.timeTo;

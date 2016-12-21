@@ -16,8 +16,8 @@
       "type": "DOUBLE"
     },
     {
-      "name" : "radius",
-      "type" : "LONG"
+      "name": "radius",
+      "type": "LONG"
     },
     {
       "name": "formattedAddress",

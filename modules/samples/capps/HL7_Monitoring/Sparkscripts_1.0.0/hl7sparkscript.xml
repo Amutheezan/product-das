@@ -17,7 +17,8 @@
 
         CREATE TEMPORARY TABLE hl7messagePerHour USING CarbonAnalytics
         OPTIONS (tableName "das_hl7_data_publisher_store_perHour",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING -i,
+        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING
+        -i,
         msgCount INT,timestamp LONG -i",
         primaryKeys "year, month, day, hour, Type, SubType",
         incrementalParams "hl7messagePerHour, DAY",
@@ -33,7 +34,8 @@
 
         CREATE TEMPORARY TABLE hl7messagePerMonth USING CarbonAnalytics
         OPTIONS (tableName "das_hl7_data_publisher_store_perMonth",
-        schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i, msgCount INT,timestamp LONG -i",
+        schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i, msgCount INT,timestamp
+        LONG -i",
         primaryKeys "year, month, Type, SubType",
         incrementalParams "hl7messagePerMonth, YEAR",
         mergeSchema "false");;
@@ -49,7 +51,8 @@
 
         CREATE TEMPORARY TABLE hl7messagePerHourAll USING CarbonAnalytics
         OPTIONS (tableName "das_hl7_data_publisher_store_perHourAll",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING -i,
+        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING
+        -i,
         msgCount INT,timestamp LONG -i",
         primaryKeys "year, month, day, hour, Type, SubType",
         mergeSchema "false");
@@ -69,18 +72,17 @@
         mergeSchema "false");
 
 
-
-
-
         INSERT INTO TABLE hl7messagePerMinute
         SELECT temp.year,temp.month,temp.day, temp.hour,
         temp.minute,temp.`_MSH.MessageType`,temp.`_MSH.MessageType[1]`,count(*) as count,
         getMinuteStartingTime(temp.year, temp.month, temp.day, temp.hour,temp.minute) as timestamp
         FROM
-        (SELECT getYear(timestamp) as year,getMonth(timestamp) as month,getDay(timestamp) as day,getHour(timestamp) as
+        (SELECT getYear(timestamp) as year,getMonth(timestamp) as month,getDay(timestamp) as
+        day,getHour(timestamp) as
         hour,getMinute(timestamp) as minute,`_MSH.MessageType`, `_MSH.MessageType[1]`
         FROM hl7msg)temp
-        Group By temp.year,temp.month,temp.day,temp.hour,temp.minute,temp.`_MSH.MessageType`,temp.`_MSH.MessageType[1]`;
+        Group By
+        temp.year,temp.month,temp.day,temp.hour,temp.minute,temp.`_MSH.MessageType`,temp.`_MSH.MessageType[1]`;
         INCREMENTAL_TABLE_COMMIT hl7msg;
 
 
@@ -91,7 +93,6 @@
         getMinuteStartingTime(year, month, day, hour, minute) as timestamp
         FROM hl7messagePerMinute
         GROUP BY year, month, day, hour, minute,Type) temp;
-
 
 
         INSERT INTO TABLE hl7messagePerHour

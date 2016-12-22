@@ -1,153 +1,85 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Analytics>
     <Name>hl7sparkscript</Name>
-
     <Script>
-        CREATE TEMPORARY TABLE hl7msg USING CarbonAnalytics
-        OPTIONS(tableName "das_hl7_data_publisher_store",
-        incrementalParams "hl7msg, MINUTE");
+      CREATE TEMPORARY TABLE hl7msg USING CarbonAnalytics
+      OPTIONS(tableName "das_hl7_data_publisher_store",
+      incrementalParams "hl7msg, MINUTE");
 
-        CREATE TEMPORARY TABLE hl7messagePerMinute USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMinute",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i,
-        Type STRING -i, SubType STRING -i, msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour, minute, Type, SubType",
-        incrementalParams "hl7messagePerMinute, HOUR",
-        mergeSchema "false");
+      CREATE TEMPORARY TABLE hl7messagePerMinute USING CarbonAnalytics
+      OPTIONS (tableName "das_hl7_data_publisher_store_perMinute",
+      schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i,
+      type STRING -i, subType STRING -i, msgCount INT,timestamp LONG -i",
+      primaryKeys "year, month, day, hour, minute, type, subType",
+      incrementalParams "hl7messagePerMinute, HOUR",
+      mergeSchema "false");
 
-        CREATE TEMPORARY TABLE hl7messagePerHour USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perHour",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING
-        -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour, Type, SubType",
-        incrementalParams "hl7messagePerHour, DAY",
-        mergeSchema "false");
+      CREATE TEMPORARY TABLE hl7messagePerHour USING CarbonAnalytics
+      OPTIONS (tableName "das_hl7_data_publisher_store_perHour",
+      schema "year INT -i, month INT -i, day INT -i, hour INT -i, type STRING -i, subType STRING
+      -i,
+      msgCount INT,timestamp LONG -i",
+      primaryKeys "year, month, day, hour, type, subType",
+      incrementalParams "hl7messagePerHour, DAY",
+      mergeSchema "false");
 
-        CREATE TEMPORARY TABLE hl7messagePerDay USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perDay",
-        schema "year INT -i, month INT -i, day INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, Type, SubType",
-        incrementalParams "hl7messagePerDay, MONTH",
-        mergeSchema "false");
+      CREATE TEMPORARY TABLE hl7messagePerDay USING CarbonAnalytics
+      OPTIONS (tableName "das_hl7_data_publisher_store_perDay",
+      schema "year INT -i, month INT -i, day INT -i, type STRING -i, subType STRING -i,
+      msgCount INT,timestamp LONG -i",
+      primaryKeys "year, month, day, type, subType",
+      incrementalParams "hl7messagePerDay, MONTH",
+      mergeSchema "false");
 
-        CREATE TEMPORARY TABLE hl7messagePerMonth USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMonth",
-        schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i, msgCount INT,timestamp
-        LONG -i",
-        primaryKeys "year, month, Type, SubType",
-        incrementalParams "hl7messagePerMonth, YEAR",
-        mergeSchema "false");;
+      CREATE TEMPORARY TABLE hl7messagePerMonth USING CarbonAnalytics
+      OPTIONS (tableName "das_hl7_data_publisher_store_perMonth",
+      schema "year INT -i, month INT -i, type STRING -i, subType STRING -i, msgCount INT,timestamp
+      LONG -i",
+      primaryKeys "year, month, type, subType",
+      incrementalParams "hl7messagePerMonth, YEAR",
+      mergeSchema "false");;
 
+      INSERT INTO TABLE hl7messagePerMinute
+      SELECT temp.year,temp.month,temp.day, temp.hour,
+      temp.minute,temp.`_MSH.Messagetype`,temp.`_MSH.Messagetype[1]`,count(*) as count,
+      getMinuteStartingTime(temp.year, temp.month, temp.day, temp.hour,temp.minute) as timestamp
+      FROM
+      (SELECT getYear(timestamp) as year,getMonth(timestamp) as month,getDay(timestamp) as
+      day,getHour(timestamp) as
+      hour,getMinute(timestamp) as minute,`_MSH.Messagetype`, `_MSH.Messagetype[1]`
+      FROM hl7msg)temp
+      Group By
+      temp.year,temp.month,temp.day,temp.hour,temp.minute,temp.`_MSH.Messagetype`,temp.`_MSH.Messagetype[1]`;
 
-        CREATE TEMPORARY TABLE hl7messagePerMinuteAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMinuteAll",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, Type STRING -i,
-        SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour,minute, Type, SubType",
-        mergeSchema "false");
-
-        CREATE TEMPORARY TABLE hl7messagePerHourAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perHourAll",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -i, Type STRING -i, SubType STRING
-        -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, hour, Type, SubType",
-        mergeSchema "false");
-
-        CREATE TEMPORARY TABLE hl7messagePerDayAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perDayAll",
-        schema "year INT -i, month INT -i, day INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, day, Type, SubType",
-        mergeSchema "false");
-
-        CREATE TEMPORARY TABLE hl7messagePerMonthAll USING CarbonAnalytics
-        OPTIONS (tableName "das_hl7_data_publisher_store_perMonthAll",
-        schema "year INT -i, month INT -i, Type STRING -i, SubType STRING -i,
-        msgCount INT,timestamp LONG -i",
-        primaryKeys "year, month, Type, SubType",
-        mergeSchema "false");
+      INCREMENTAL_TABLE_COMMIT hl7msg;
 
 
-        INSERT INTO TABLE hl7messagePerMinute
-        SELECT temp.year,temp.month,temp.day, temp.hour,
-        temp.minute,temp.`_MSH.MessageType`,temp.`_MSH.MessageType[1]`,count(*) as count,
-        getMinuteStartingTime(temp.year, temp.month, temp.day, temp.hour,temp.minute) as timestamp
-        FROM
-        (SELECT getYear(timestamp) as year,getMonth(timestamp) as month,getDay(timestamp) as
-        day,getHour(timestamp) as
-        hour,getMinute(timestamp) as minute,`_MSH.MessageType`, `_MSH.MessageType[1]`
-        FROM hl7msg)temp
-        Group By
-        temp.year,temp.month,temp.day,temp.hour,temp.minute,temp.`_MSH.MessageType`,temp.`_MSH.MessageType[1]`;
-        INCREMENTAL_TABLE_COMMIT hl7msg;
+      INSERT INTO TABLE hl7messagePerHour
+      SELECT year, month, day, hour, type, subType,sum(msgCount) as msgCount,
+      getHourStartingTime(year, month, day, hour) as timestamp
+      FROM hl7messagePerMinute
+      GROUP BY
+      year, month, day, hour, type, subType;
 
+      INCREMENTAL_TABLE_COMMIT hl7messagePerMinute;
 
-        INSERT INTO TABLE hl7messagePerMinuteAll
-        SELECT year, month, day, hour, minute,Type,"ALL" ,msgCount,timestamp
-        FROM
-        (SELECT year, month, day, hour, minute,Type, sum(msgCount) as msgCount,
-        getMinuteStartingTime(year, month, day, hour, minute) as timestamp
-        FROM hl7messagePerMinute
-        GROUP BY year, month, day, hour, minute,Type) temp;
+      INSERT INTO TABLE hl7messagePerDay
+      SELECT year, month, day, type, subType,sum(msgCount) as msgCount,
+      getDateStartingTime(year, month, day) as timestamp
+      FROM hl7messagePerHour
+      GROUP BY
+      year, month, day, type, subType;
 
+      INCREMENTAL_TABLE_COMMIT hl7messagePerHour;
 
-        INSERT INTO TABLE hl7messagePerHour
-        SELECT year, month, day, hour, Type, SubType,sum(msgCount) as msgCount,
-        getHourStartingTime(year, month, day, hour) as timestamp
-        FROM hl7messagePerMinute
-        GROUP BY
-        year, month, day, hour, Type, SubType;
+      INSERT INTO TABLE hl7messagePerMonth
+      SELECT year, month, type, subType,sum(msgCount) as msgCount,
+      getMonthStartingTime(year, month) as timestamp
+      FROM hl7messagePerDay
+      GROUP BY
+      year, month, type, subType;
 
-        INCREMENTAL_TABLE_COMMIT hl7messagePerMinute;
-
-        INSERT INTO TABLE hl7messagePerHourAll
-        SELECT year, month, day, hour, Type,"ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, day, hour,Type, sum(msgCount) as msgCount,
-        getHourStartingTime(year, month, day, hour) as timestamp
-        FROM hl7messagePerHour
-        GROUP BY year, month, day, hour,Type) temp;
-
-
-        INSERT INTO TABLE hl7messagePerDay
-        SELECT year, month, day, Type, SubType,sum(msgCount) as msgCount,
-        getDateStartingTime(year, month, day) as timestamp
-        FROM hl7messagePerHour
-        GROUP BY
-        year, month, day, Type, SubType;
-
-        INCREMENTAL_TABLE_COMMIT hl7messagePerHour;
-
-        INSERT INTO TABLE hl7messagePerDayAll
-        SELECT year, month, day,Type ,"ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, day, Type,sum(msgCount) as msgCount,
-        getDateStartingTime(year, month, day) as timestamp
-        FROM hl7messagePerDay
-        GROUP BY year, month, day,Type) temp;
-
-
-        INSERT INTO TABLE hl7messagePerMonth
-        SELECT year, month, Type, SubType,sum(msgCount) as msgCount,
-        getMonthStartingTime(year, month) as timestamp
-        FROM hl7messagePerDay
-        GROUP BY
-        year, month, Type, SubType;
-
-        INCREMENTAL_TABLE_COMMIT hl7messagePerDay;
-
-        INSERT INTO TABLE hl7messagePerMonthAll
-        SELECT year, month, Type,"ALL", msgCount,timestamp
-        FROM
-        (SELECT year, month, Type, sum(msgCount) as msgCount,
-        getMonthStartingTime(year, month) as timestamp
-        FROM hl7messagePerMonth
-        GROUP BY year, month, Type) temp;
-
+      INCREMENTAL_TABLE_COMMIT hl7messagePerDay;
     </Script>
     <CronExpression>0 * * * * ?</CronExpression>
 </Analytics>

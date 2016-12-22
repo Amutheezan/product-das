@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <artifact name="EventstreamWaitTimeOutputStream" version="1.0.0" type="event/stream"
           serverRole="DataAnalyticsServer">
-    <file>waitTimeAlerting.json</file>
+    <file>waitTimeAlertStream.json</file>
 </artifact>

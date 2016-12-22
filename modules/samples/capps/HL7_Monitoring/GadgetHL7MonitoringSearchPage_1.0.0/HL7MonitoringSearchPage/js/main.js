@@ -50,8 +50,6 @@ $(function() {
            "data": function(d) {
                d.maxRows=maxRows;
                d.type = type;
-               d.timeFrom = timeFrom;
-               d.timeTo = timeTo;
                d.query = query;
            },
            "dataSrc" : 'message.0.data'
@@ -145,6 +143,14 @@ $(function() {
         $("#specific").hide();
         $('#tables').toggle();
         $('#main').toggle();
+        $("#query").empty();
+        var urlValues = gadgetUtil.getURLParams();
+        timeFrom = urlValues["timeFrom"];
+        timeTo = urlValues["timeTo"];
+        if(isNull(timeFrom) == false && isNull(timeTo) == false){
+          query = "timestamp : [" + timeFrom +" TO " + timeTo + "]"
+        }
+        $("#query").html(query);
     });
   var message = {};
     $('#btnAutoGen').click(function() {
@@ -154,10 +160,24 @@ $(function() {
         deleteAllRowOfContents();
     });
 
+    $('#updatedSearch').click(function() {
+        query=$('#query').val();
+        var urlValues = gadgetUtil.getURLParams();
+        try {
+            maxRows = urlValues["maxRows"][0];
+        } catch (e) {
+            maxRows = 1000;
+        }
+        type = TYPE_SEARCH_CODE;
+        oTable.clear().draw();
+        oTable.ajax.reload().draw();
+    });
 
     $('#Search').click(function() {
       $("#tables").toggle();
       $("#main").toggle();
+      $("#query").empty();
+        query="";
         selectedData="";
         queryParameters=[];
         for (var i = 0; i < COUNTER; i++) {
@@ -182,28 +202,27 @@ $(function() {
                 }
             }
         }
-        $("#query").empty();
-        if(query === null){
-        }else if(query === ""){
-        }
-        else{
-          $("#query").append("Query of Search : "+query);
-        }
-
         var urlValues = gadgetUtil.getURLParams();
-        try {
-            timeFrom = urlValues["timeFrom"][0];
-            timeTo = urlValues["timeTo"][0];
-            maxRows = urlValues["maxRows"][0];
-        } catch (e) {
-            timeFrom = new Date(moment().subtract(29, 'days')).getTime();
-            timeTo = new Date(moment()).getTime();
-            maxRows = 1000;
+        timeFrom = urlValues["timeFrom"];
+        timeTo = urlValues["timeTo"];
+        maxRows = urlValues["maxRows"]
+        if(isNull(query) == false){
+          if(isNull(timeFrom) == false && isNull(timeTo) == false){
+            query = "timestamp : [" + timeFrom +" TO " + timeTo + "]" + query;
+            $("#query").html(query);
+          }
+        }else{
+            timeFrom=new Date(moment().subtract(29, 'days')).getTime()
+            timeTo=new Date(moment()).getTime()
+            query = "timestamp : [" + timeFrom +" TO " + timeTo + "]";
+            $("#query").html(query);
         }
+        console.log(query);
         type = TYPE_SEARCH_CODE;
         oTable.clear().draw();
         oTable.ajax.reload().draw();
     });
+
 
 });
 
@@ -217,10 +236,6 @@ function onData(data){
     makeAccordionData(i);
   }
   $('.accordion-toggle').accordion();
-
-
-
-
 }
 
 function makeAccordionData(i){
@@ -259,6 +274,16 @@ function makeAccordionData(i){
 function onError(){
 }
 
+function isNull(value){
+  var isNull=false;
+  if(typeof value === "undefined" || value === null || value === ""  || value === "null" ){
+    isNull=true;
+  }
+    if(typeof value == "undefined" || value == null || value == "" || value == "null"){
+      isNull=true;
+    }
+  return isNull;
+}
 $(window).resize(function() {
     if(($('body').attr('media-screen') == 'md') || ($('body').attr('media-screen') == 'lg') || ($('body').attr('media-screen') == 'sm')){
         $(gadgetWrapper).removeClass('btn-dropdown-menu-open');

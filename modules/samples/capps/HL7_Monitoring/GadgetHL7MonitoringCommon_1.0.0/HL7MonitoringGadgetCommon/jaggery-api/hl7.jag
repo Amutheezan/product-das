@@ -106,35 +106,33 @@
 				var msgType = request.getParameter("msgType");
 				var tableSuffix = request.getParameter("suf");
 				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-				if(tableSuffix == null){
-					tableSuffix="";
-				}
-				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE_PER" + timeUnit + tableSuffix;
+				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE_PER" + timeUnit
 				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
 				query = stringify({
-					query: "Type:" + msgType + " AND timestamp : [" + timeFrom + " TO " + timeTo + "]",
+					query: "type:" + msgType + " AND timestamp : [" + timeFrom + " TO " + timeTo + "]",
 					"start": 0,
 					"count": 200
 				});
 				resp = connector.search(superTenantId, tableName, query);
-
-					var dataPoints = [];
-					try {
-						dataPoints = JSON.parse(resp.getMessage());
-					} catch (error) {
-						log.error(error);
-					}
-
+				var dataPoints = [];
+				try {
+					dataPoints = JSON.parse(resp.getMessage());
+				} catch (error) {
+					log.error(error);
+				}
+				var timestamps=[]
+				var count = 0;
 					for (var i = 0; i < dataPoints.length; i++) {
 						var obj = dataPoints[i];
 						if (obj != null && obj.values != null) {
 							if (obj != null) {
-								result.push({
-									"timestamp": obj.values.timestamp,
-									"msgCount": obj.values.msgCount,
-									"SubType" : obj.values.SubType
 
-								});
+							result.push({
+								"timestamp": obj.values.timestamp,
+								"msgCount": obj.values.msgCount,
+								"SubType" : obj.values.subType
+							});
+
 							}
 						}
 					}
@@ -143,15 +141,11 @@
 
 			case SEARCH_TABLE:
 			{
-				var timeFrom = request.getParameter("timeFrom");
-				var timeTo = request.getParameter("timeTo");
-				var querytxt = request.getParameter("query");
+				var query = request.getParameter("query");
 				var maxrows = request.getParameter("maxRows");
-				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
 				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE";
-				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
 				query = stringify({
-					query: "timestamp : [" + timeFrom + " TO " + timeTo + "] " + querytxt,
+					query: query,
 					"start": 0,
 					"count": maxrows
 				});
@@ -220,13 +214,13 @@
 				query = stringify({
 					query: "",
 					"start": 0,
-					"count": 100
+					"count": 10000
 				});
 				}else{
 				query = stringify({
 					query: "Disease : " + diseaseType,
 					"start": 0,
-					"count": 100
+					"count": 10000
 				});
 				}
 				resp = connector.search(superTenantId, tableName, query);
@@ -252,7 +246,7 @@
      		  					"data" : temp});
 					break;
 			 }
-			 case NOTIFY_WAIT_TIME:
+			case NOTIFY_WAIT_TIME:
 			{
 				var tableName = "WAITTIMEALERTING";
 				query = stringify({

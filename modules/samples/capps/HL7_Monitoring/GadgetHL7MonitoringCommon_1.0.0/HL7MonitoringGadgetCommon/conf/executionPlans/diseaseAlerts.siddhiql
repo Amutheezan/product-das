@@ -7,16 +7,17 @@
 @Plan:trace('true')
 
 @Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')
-define stream dashl7msg (meta_host string, meta_server_name string,
+define stream InputHl7Stream (meta_host string, meta_server_name string,
 correlation_activity_id string,
 content string, type string, timestamp long, message_direction string,
 service_name string, operation_name string, status string, arbitraryDataMap object);
 
-@Export('diseaseAlerting:1.0.0')
-define stream diseaseAlerting (latitude double,longitude double, radius long,
-formattedAddress string,Disease string,msgCount long, timestamp long);
+@Export('DiseaseAlertStream:1.0.0')
+define stream diseaseAlertStream (positionX long, positionY long, disease string,
+msgCount long, timestamp long);
 
-from dashl7msg
+
+from InputHl7Stream
 [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') != 'ACK') AND
 (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') is null))  AND
 (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') is null))  AND
@@ -25,33 +26,39 @@ from dashl7msg
 (NOT (cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') is null)) AND
 (NOT(cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') is null)) AND
 (NOT(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string') is null))]
-select cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') as Address,
-cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') as City,
-cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as State,
-cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as ZipCode,
-cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as Country,
-cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as Disease ,
+select cast(map:get(arbitraryDataMap, 'PID.PatientAddress'), 'string') as address,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[2]'), 'string') as city,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as state,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[3]'), 'string') as zipCode,
+cast(map:get(arbitraryDataMap, 'PID.PatientAddress[5]'), 'string') as country,
+cast(map:get(arbitraryDataMap, 'DG1.DiagnosisDescription'), 'string') as disease ,
 time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
-insert into diseaseAlertTemp;
+insert into sortedDiseaseStream;
 
-from diseaseAlertTemp
-select str:concat( Address,', ',City,', ',State,' ',ZipCode,', ',Country) as location,Disease,timestamp
-insert into diseaseLocalAlertTemp;
+/* TODO : we have to analyse the symptoms to figure out the disease  using NLP */
 
-from diseaseLocalAlertTemp#geo:geocode(location)
-select latitude, longitude,formattedAddress,Disease,timestamp
-insert into diseaseAlertingTemp;
+from sortedDiseaseStream
+select str:concat( address,', ',city,', ',state,' ',zipCode,', ',country) as location,disease,timestamp
+insert into locationDiseaseStream;
 
-from every(old=diseaseAlertingTemp)->new=diseaseAlertingTemp[
-2 * math:atan(
-  math:sqrt(math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
-, math:sqrt(1-   math:power(math:sin((new.latitude-old.latitude)/2),2) + math:cos(old.latitude) * math:cos(new.latitude) * math:power(math:sin((new.longitude-old.longitude)/2),2))
-) * 6371
-  < $distanceLimit ] within $timeLimit day
-select old.latitude as latitude, old.longitude as longitude, old.formattedAddress as formattedAddress,old.Disease as Disease, count(new.timestamp) as msgCount,new.timestamp as timestamp
-group by old.latitude, old.longitude,old.Disease, old.formattedAddress
-insert into diseaseAlertingTemporary;
+from locationDiseaseStream#geo:geocode(location)
+select latitude, longitude,formattedAddress,disease,timestamp
+insert into latlongDiseaseStream;
 
-from diseaseAlertingTemporary[msgCount > $limit ]
-select latitude,longitude, $distanceLimitl  as radius ,formattedAddress, Disease,msgCount, timestamp
-insert into diseaseAlerting;
+/* positionX and positionY should be something reasonable value */
+
+from latlongDiseaseStream
+select math:round(latitude) as positionX,
+math:round(longitude)  as positionY,disease,timestamp
+insert into pointDiseaseLocationStream;
+
+/* TODO : we need to configure to have the snapshot data */
+
+from pointDiseaseLocationStream#window.time(7 day)
+select positionX,positionY, disease, count(*) as msgCount, timestamp
+group by positionX,positionY, disease
+insert into pointDiseaseCountStream;
+
+from pointDiseaseCountStream[msgCount > $limit ]
+select *
+insert into diseaseAlertStream;

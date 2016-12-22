@@ -7,15 +7,15 @@
 @Plan:trace('true')
 
 @Import('das_hl7_data_publisher_store:1.0.0', arbitrary.data='true')
-define stream dashl7msg (meta_host string, meta_server_name string,
+define stream InputHl7Stream (meta_host string, meta_server_name string,
 correlation_activity_id string,
 content string, type string, timestamp long, message_direction string,
 service_name string, operation_name string, status string, arbitraryDataMap object);
 
-@Export('waitTimeAlerting:1.0.0')
-define stream waitTimeAlerting (waitingTime long, registeredTime long);
+@Export('waitTimeAlertStream:1.0.0')
+define stream waitTimeAlertStream (waitingTime long, registeredTime long);
 
-from dashl7msg
+from InputHl7Stream
 [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND
 (cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A01') AND
 (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND
@@ -24,9 +24,9 @@ from dashl7msg
 select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID,
 cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,
 time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
-insert into admissionRecords;
+insert into admissionRecordStream;
 
-from dashl7msg
+from InputHl7Stream
 [(cast(map:get(arbitraryDataMap, 'MSH.MessageType'),'string') == 'ADT') AND
 (cast(map:get(arbitraryDataMap, 'MSH.MessageType[1]'),'string') == 'A04') AND
 (NOT(cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'), 'string') is null)) AND
@@ -35,12 +35,12 @@ from dashl7msg
 select cast(map:get(arbitraryDataMap, 'PID.PatientID(InternalID)'),'string') as PatientID,
 cast(map:get(arbitraryDataMap, 'PV1.VisitNumber'),'string') as VisitNo,
 time:timestampInMilliseconds(cast(map:get(arbitraryDataMap, 'MSH.Date/TimeofMessage'),'string'),'yyyyMMDDHHMMss.SSS') as timestamp
-insert into registerRecords;
+insert into registerRecordStream;
 
-from every(ar=admissionRecords)->rr=registerRecords[((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))]
+from every(ar=admissionRecordStream)->rr=registerRecordStream[((ar.PatientID == rr.PatientID)AND(ar.VisitNo==rr.VisitNo))]
 select rr.timestamp-ar.timestamp as waitingTime, rr.timestamp as registeredTime
-insert into waitTimeAlert;
+insert into waitTimeStream;
 
-from waitTimeAlert[waitingTime > $limit000 ]
+from waitTimeStream[waitingTime > 1000 ]
 select waitingTime, registeredTime
-insert into waitTimeAlerting;
+insert into waitTimeAlertStream;

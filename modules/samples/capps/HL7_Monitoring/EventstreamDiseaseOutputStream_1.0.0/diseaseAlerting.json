@@ -1,30 +1,19 @@
 {
-  "streamId": "diseaseAlerting:1.0.0",
-  "name": "diseaseAlerting",
+  "name": "diseaseAlertStream",
   "version": "1.0.0",
   "nickName": "",
-  "description": "This stream will store the Disease Alert",
-  "metaData": [],
-  "correlationData": [],
+  "description": "This stream used for disease Alerting",
   "payloadData": [
     {
-      "name": "latitude",
-      "type": "DOUBLE"
-    },
-    {
-      "name": "longitude",
-      "type": "DOUBLE"
-    },
-    {
-      "name": "radius",
+      "name": "positionX",
       "type": "LONG"
     },
     {
-      "name": "formattedAddress",
-      "type": "STRING"
+      "name": "positionY",
+      "type": "LONG"
     },
     {
-      "name": "Disease",
+      "name": "disease",
       "type": "STRING"
     },
     {

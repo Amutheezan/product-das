@@ -53,8 +53,8 @@ function onData(data){
 markers.clearLayers();
 var result=data.message[0].data;
 for(var i=0;i<result.length;i++){
-   var popUp="<b>Alert Info</b>"+ 
-      "<br> Disease : "+ result[i]["Disease"]+
+   var popUp="<b>Alert Info</b>"+
+      "<br> Disease : "+ result[i]["disease"]+
       "<br> Occurances : "+ result[i]["msgCount"];
       var bounds=[[result[i]["positionX"] - 0.5,result[i]["positionY"] - 0.5],
       [result[i]["positionX"] + 0.5,result[i]["positionY"] + 0.5]]

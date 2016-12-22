@@ -219,7 +219,7 @@
 				});
 				}else{
 				query = stringify({
-					query: "Disease : " + diseaseType,
+					query: "disease : " + diseaseType,
 					"start": 0,
 					"count": 10000
 				});

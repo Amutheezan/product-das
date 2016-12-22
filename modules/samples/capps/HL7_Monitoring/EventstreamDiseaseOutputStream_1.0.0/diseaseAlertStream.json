@@ -1,34 +1,19 @@
 {
-  "streamId": "diseaseAlerting:1.0.0",
-  "name": "diseaseAlerting",
+  "name": "diseaseAlertStream",
   "version": "1.0.0",
   "nickName": "",
-  "description": "",
-  "metaData": [],
-  "correlationData": [],
+  "description": "This stream used for disease Alerting",
   "payloadData": [
     {
-      "name": "startLatitude",
-      "type": "DOUBLE"
+      "name": "positionX",
+      "type": "LONG"
     },
     {
-      "name": "startLongitude",
-      "type": "DOUBLE"
+      "name": "positionY",
+      "type": "LONG"
     },
     {
-      "name": "endLatitude",
-      "type": "DOUBLE"
-    },
-    {
-      "name": "endLongitude",
-      "type": "DOUBLE"
-    },
-    {
-      "name": "City",
-      "type": "STRING"
-    },
-    {
-      "name": "Disease",
+      "name": "disease",
       "type": "STRING"
     },
     {
@@ -41,4 +26,3 @@
     }
   ]
 }
-

@@ -1,16 +1,16 @@
 var charts = [{
     name: ROLE_COUNT,
-    columns: ["timestamp", "msgCount","SubType"],
+    columns: ["timestamp", "msgCount","subtype"],
     schema: [{
         "metadata": {
-            "names": ["TIME", "COUNT","SubType"],
+            "names": ["TIME", "COUNT","subtype"],
             "types": ["time", "linear","ordinal"]
         },
         "data": []
     }],
     chartConfig: {
         x: "TIME",
-        charts: [{ type: "line", y: "COUNT",color: "SubType"}],
+        charts: [{ type: "line", y: "COUNT",color: "subtype"}],
         padding: { "top": 30, "left": 60, "bottom": 60, "right": 90 },
         range: true,
         rangeColor: COLOR_BLUE,

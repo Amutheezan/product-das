@@ -121,6 +121,6 @@ var onRangeSelected = function(start, end) {
 
 $(window).resize(function() {
     if(($('body').attr('media-screen') == 'md') || ($('body').attr('media-screen') == 'lg') || ($('body').attr('media-screen') == 'sm')){
-//NEED TO SOME TASK??
+// TODO: Improve resizing the charts
     }
 });

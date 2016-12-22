@@ -12,7 +12,7 @@ correlation_activity_id string,
 content string, type string, timestamp long, message_direction string,
 service_name string, operation_name string, status string, arbitraryDataMap object);
 
-@Export('DiseaseAlertStream:1.0.0')
+@Export('diseaseAlertStream:1.0.0')
 define stream diseaseAlertStream (positionX long, positionY long, disease string,
 msgCount long, timestamp long);
 

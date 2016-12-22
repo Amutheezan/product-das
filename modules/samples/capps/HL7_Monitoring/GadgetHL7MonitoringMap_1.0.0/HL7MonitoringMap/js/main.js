@@ -53,11 +53,11 @@ function onData(data){
 markers.clearLayers();
 var result=data.message[0].data;
 for(var i=0;i<result.length;i++){
-   var popUp="<b>Alert Info</b>"+ "<br> City : " + result[i]["City"] +
+   var popUp="<b>Alert Info</b>"+ 
       "<br> Disease : "+ result[i]["Disease"]+
       "<br> Occurances : "+ result[i]["msgCount"];
-      var bounds=[[result[i]["startLatitude"],result[i]["startLongitude"]],
-      [result[i]["endLatitude"],result[i]["endLongitude"]]]
+      var bounds=[[result[i]["positionX"] - 0.5,result[i]["positionY"] - 0.5],
+      [result[i]["positionX"] + 0.5,result[i]["positionY"] + 0.5]]
      var marker = L.rectangle(bounds, {color: 'blue', weight: 1}).bindPopup(popUp);
      markers.addLayer(marker);
 }

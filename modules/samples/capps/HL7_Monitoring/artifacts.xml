@@ -47,5 +47,7 @@
                     serverRole="DataAnalyticsServer"/>
         <dependency artifact="DataPurging" version="1.0.0" include="true"
                     serverRole="DataAnalyticsServer"/>
+        <dependency artifact="DataPurgingAlerts" version="1.0.0" include="true"
+                    serverRole="DataAnalyticsServer"/>
     </artifact>
 </artifacts>

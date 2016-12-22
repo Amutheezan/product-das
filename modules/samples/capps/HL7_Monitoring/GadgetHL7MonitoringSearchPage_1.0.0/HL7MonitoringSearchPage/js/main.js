@@ -203,9 +203,12 @@ $(function() {
             }
         }
         var urlValues = gadgetUtil.getURLParams();
-        timeFrom = urlValues["timeFrom"];
-        timeTo = urlValues["timeTo"];
-        maxRows = urlValues["maxRows"]
+        timeFrom = urlValues["timeFrom"][0];
+        timeTo = urlValues["timeTo"][0];
+        maxRows = urlValues["maxRows"][0];
+        if(isNull(maxRows) == true){
+          maxRows=DEFAULT_MAX_ROWS;
+        }
         if(isNull(query) == false){
           if(isNull(timeFrom) == false && isNull(timeTo) == false){
             query = "timestamp : [" + timeFrom +" TO " + timeTo + "]" + query;
@@ -217,7 +220,6 @@ $(function() {
             query = "timestamp : [" + timeFrom +" TO " + timeTo + "]";
             $("#query").html(query);
         }
-        console.log(query);
         type = TYPE_SEARCH_CODE;
         oTable.clear().draw();
         oTable.ajax.reload().draw();

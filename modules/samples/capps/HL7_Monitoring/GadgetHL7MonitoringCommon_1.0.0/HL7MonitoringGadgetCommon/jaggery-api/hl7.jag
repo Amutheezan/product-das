@@ -106,12 +106,15 @@
 				var msgType = request.getParameter("msgType");
 				var tableSuffix = request.getParameter("suf");
 				var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE_PER" + timeUnit
+				if(tableSuffix != "ALL"){
+					tableSuffix ="";
+				}
+				var tableName = "DAS_HL7_DATA_PUBLISHER_STORE_PER" + timeUnit + tableSuffix;
 				timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
 				query = stringify({
 					query: "type:" + msgType + " AND timestamp : [" + timeFrom + " TO " + timeTo + "]",
 					"start": 0,
-					"count": 200
+					"count": 1000
 				});
 				resp = connector.search(superTenantId, tableName, query);
 				var dataPoints = [];
@@ -126,13 +129,11 @@
 						var obj = dataPoints[i];
 						if (obj != null && obj.values != null) {
 							if (obj != null) {
-
 							result.push({
 								"timestamp": obj.values.timestamp,
 								"msgCount": obj.values.msgCount,
-								"SubType" : obj.values.subType
+								"subtype" : obj.values.subtype
 							});
-
 							}
 						}
 					}
@@ -209,7 +210,7 @@
 			case NOTIFY_DISEASE:
 			{
                                 var diseaseType=request.getParameter("diseaseType");
-				var tableName = "DISEASEALERTING";
+				var tableName = "DISEASEALERTSTREAM";
 				if (hl7Utils.isNull(diseaseType)){
 				query = stringify({
 					query: "",
@@ -248,11 +249,11 @@
 			 }
 			case NOTIFY_WAIT_TIME:
 			{
-				var tableName = "WAITTIMEALERTING";
+				var tableName = "WAITTIMEALERTSTREAM";
 				query = stringify({
 					query: "*:*",
 					"start": 0,
-					"count": 100
+					"count": 1000
 				});
 				resp = connector.search(superTenantId, tableName, query);
     				var count = connector.searchCount(superTenantId,  tableName, query);

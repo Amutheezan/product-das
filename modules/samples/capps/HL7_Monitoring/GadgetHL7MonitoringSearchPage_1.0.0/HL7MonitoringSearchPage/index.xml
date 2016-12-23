@@ -63,7 +63,7 @@
               <label for="query"> Search Query :</label>
                <textarea class="form-control" rows="5" id="query"></textarea>            </div>
              <div class="nano-content" class="add-padding-1x"  style="position: relative; top: 20px; ">
-               <button  id="searchtog" type="submit" class="btn btn-danger btn-md pull-right" style="position: relative; left: 10px;">
+               <button  id="searchtog" type="submit" class="btn btn-danger btn-md pull-right" style="position: relative; left: 3px;">
                Back To Search
                </button>
                <button  id="updatedSearch" type="submit" class="btn btn-primary btn-md pull-right" >

@@ -20,7 +20,7 @@
           <script src="../HL7MonitoringGadgetCommon/js/gadget-utils.js"></script>
           <script src="js/main.js"></script>
         </head>
-        <body class="gadget">
+        <body class="widget">
 
 <div class="clearfix add-padding-20x" id="label">
 </div>

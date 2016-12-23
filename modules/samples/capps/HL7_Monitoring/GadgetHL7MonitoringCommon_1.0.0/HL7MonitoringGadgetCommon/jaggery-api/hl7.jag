@@ -123,8 +123,6 @@
 				} catch (error) {
 					log.error(error);
 				}
-				var timestamps=[]
-				var count = 0;
 					for (var i = 0; i < dataPoints.length; i++) {
 						var obj = dataPoints[i];
 						if (obj != null && obj.values != null) {

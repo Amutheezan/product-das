@@ -14,6 +14,8 @@ var type = "";
 var selectedData="";
 var oTable;
 var DEFAULT_MAX_ROWS=1000;
+var DEFAULT_START_TIME=new Date(moment().subtract(29, 'days')).getTime();
+var DEFAULT_END_TIME=new Date(moment()).getTime();
 var maxRows;
 
 window.onload=function(){
@@ -29,7 +31,7 @@ $(function() {
     timeTo = gadgetUtil.timeTo();
     $.fn.dataTable.ext.errMode = 'none';
     oTable = $('#tblMessages').DataTable({
-       dom: '<"dataTablesTop"' +
+      dom: '<"dataTablesTop"' +
             'f' +
             '<"dataTables_toolbar">' +
             '>' +
@@ -78,7 +80,6 @@ $(function() {
                "searchable": false
            }
          ]
-
    });
     $('#tblMessages_filter input').unbind();
     $('#tblMessages_filter input').bind('keyup', function(e) {
@@ -203,11 +204,20 @@ $(function() {
             }
         }
         var urlValues = gadgetUtil.getURLParams();
-        timeFrom = urlValues["timeFrom"][0];
-        timeTo = urlValues["timeTo"][0];
-        maxRows = urlValues["maxRows"][0];
-        if(isNull(maxRows) == true){
-          maxRows=DEFAULT_MAX_ROWS;
+        try{
+          timeFrom = urlValues["timeFrom"][0];
+          timeTo = urlValues["timeTo"][0];
+          maxRows = urlValues["maxRows"][0];
+        }catch(e){
+          if(isNull(timeFrom) == true){
+            timeFrom=DEFAULT_START_TIME;
+          }
+          if(isNull(timeTo)== true){
+            timeTo=DEFAULT_END_TIME;
+          }
+          if(isNull(maxRows) == true){
+            maxRows=DEFAULT_MAX_ROWS;
+          }
         }
         if(isNull(query) == false){
           if(isNull(timeFrom) == false && isNull(timeTo) == false){
